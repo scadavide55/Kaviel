@@ -1,0 +1,12 @@
+start
+print "Hello!"
+prnt "this command does not exist"
+print 1 / 0
+define age = 8
+if age > 10
+  print "big"
+else
+  print "small"
+set points = 5
+print "I made it all the way to the end"
+end

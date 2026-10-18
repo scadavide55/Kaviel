@@ -1,14 +1,14 @@
 #!/usr/bin/env node
-/* lang.js — esegue un file .lang dal terminale.
-   node lang.js programma.lang
-   Le risposte ad `ask` arrivano da stdin, una riga per domanda.  */
+/* run.js — runs a .loud file from the terminal.
+   node run.js hello.loud
+   Answers to `ask` come from stdin, one line per question.   */
 
 const fs = require('fs');
-const { run } = require('./motore.js');
+const { run } = require('./engine.js');
 
 const file = process.argv[2];
 if (!file) {
-  console.error('Uso: node lang.js programma.lang');
+  console.error('Usage: node run.js program.loud');
   process.exit(2);
 }
 
@@ -16,7 +16,7 @@ let src;
 try {
   src = fs.readFileSync(file, 'utf8');
 } catch (e) {
-  console.error('Non riesco a leggere ' + file);
+  console.error('I cannot read ' + file);
   process.exit(2);
 }
 
@@ -43,8 +43,8 @@ for (const line of result.output) console.log(line);
 if (result.problems.length) {
   console.error('');
   for (const p of result.problems) {
-    const label = p.kind === 'error' ? 'errore' : p.kind === 'warning' ? 'avviso' : 'suggerimento';
-    console.error('riga ' + p.line + ' · ' + label + ' · ' + p.message);
+    const label = p.kind === 'error' ? 'error' : p.kind === 'warning' ? 'warning' : 'hint';
+    console.error('line ' + p.line + ' · ' + label + ' · ' + p.message);
     if (p.hint) console.error('   ' + p.hint);
   }
   console.error('');

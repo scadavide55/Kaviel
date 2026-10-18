@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="it">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>linguaggio — editor</title>
+<title>Loud — editor</title>
 <style>
   :root {
     --bg: #0e1014;
@@ -34,7 +34,8 @@
     border-bottom: 1px solid var(--line);
     flex: none;
   }
-  header h1 { font-size: 14px; font-weight: 600; margin: 0; letter-spacing: .02em; }
+  header h1 { font-size: 15px; font-weight: 700; margin: 0; letter-spacing: .04em; }
+  header .tag { font-size: 12px; color: var(--quiet); margin-left: 2px; }
   header .spacer { flex: 1; }
   button, select {
     background: #1b2029;
@@ -102,7 +103,7 @@
     word-break: break-word;
     color: #dfe4ec;
   }
-  pre.out:empty::after { content: "niente da mostrare"; color: #3f4653; }
+  pre.out:empty::after { content: "nothing to show"; color: #3f4653; }
   .problem {
     display: grid;
     grid-template-columns: 58px 1fr;
@@ -128,17 +129,18 @@
 <body>
 
 <header>
-  <h1>linguaggio</h1>
-  <select id="examples" title="Esempi">
-    <option value="">Esempi…</option>
-    <option value="ciao">Ciao</option>
-    <option value="dado">Dado 67 / 33</option>
-    <option value="sasso">Sasso, carta, forbici</option>
+  <h1>Loud</h1>
+  <span class="tag">the language that never whispers</span>
+  <select id="examples" title="Examples">
+    <option value="">Examples…</option>
+    <option value="hello">Hello</option>
+    <option value="dice">Dice 67 / 33</option>
+    <option value="rps">Rock, paper, scissors</option>
     <option value="collatz">Collatz</option>
-    <option value="errori">Giro degli errori</option>
+    <option value="errors">Tour of errors</option>
   </select>
   <div class="spacer"></div>
-  <button class="run" id="run">Esegui ⌘↵</button>
+  <button class="run" id="run">Run ⌘↵</button>
 </header>
 
 <main>
@@ -149,18 +151,18 @@
 
   <section class="side">
     <div class="pane output">
-      <div class="pane-head">Risultato</div>
+      <div class="pane-head">Output</div>
       <div class="pane-body"><pre class="out" id="out"></pre></div>
     </div>
     <div class="pane problems">
-      <div class="pane-head">Problemi <span class="count" id="count"></span></div>
+      <div class="pane-head">Problems <span class="count" id="count"></span></div>
       <div class="pane-body" id="problems"></div>
-      <div class="summary" id="summary">Premi Esegui per partire.</div>
+      <div class="summary" id="summary">Press Run to start.</div>
     </div>
   </section>
 </main>
 
-<script src="motore.js"></script>
+<script src="engine.js"></script>
 <script>
 (function () {
   'use strict';
@@ -172,15 +174,15 @@
   var count = document.getElementById('count');
   var summary = document.getElementById('summary');
   var examples = document.getElementById('examples');
-  var STORE = 'linguaggio.sorgente';
+  var STORE = 'loud.source';
 
-  var ESEMPI = {
-    ciao:
+  var SAMPLES = {
+    hello:
 'start\n' +
-'print "Ciao!"\n' +
+'print "Hello!"\n' +
 'end\n',
 
-    dado:
+    dice:
 'start\n' +
 'random 67\n' +
 '  print "Wow!"\n' +
@@ -188,63 +190,63 @@
 '  print "Damn!"\n' +
 'end\n',
 
-    sasso:
+    rps:
 'start\n' +
-'print "Sasso, carta o forbici?"\n' +
+'print "Rock, paper or scissors?"\n' +
 '\n' +
-'define tu = ask("Sasso, carta o forbici? ")\n' +
-'define cpu = pick "sasso", "carta", "forbici"\n' +
+'define you = ask("Rock, paper or scissors? ")\n' +
+'define cpu = pick "rock", "paper", "scissors"\n' +
 '\n' +
-'if tu = cpu\n' +
-'  print "Pari."\n' +
+'if you = cpu\n' +
+'  print "Tie."\n' +
 '\n' +
-'if tu = "sasso"\n' +
-'  if cpu = "carta"\n' +
-'    print "Ho scelto carta. Hai perso."\n' +
-'  if cpu = "forbici"\n' +
-'    print "Ho scelto forbici. Hai vinto!"\n' +
+'if you = "rock"\n' +
+'  if cpu = "paper"\n' +
+'    print "I chose paper. You lose."\n' +
+'  if cpu = "scissors"\n' +
+'    print "I chose scissors. You win!"\n' +
 '\n' +
-'if tu = "carta"\n' +
-'  if cpu = "sasso"\n' +
-'    print "Ho scelto sasso. Hai vinto!"\n' +
-'  if cpu = "forbici"\n' +
-'    print "Ho scelto forbici. Hai perso."\n' +
+'if you = "paper"\n' +
+'  if cpu = "rock"\n' +
+'    print "I chose rock. You win!"\n' +
+'  if cpu = "scissors"\n' +
+'    print "I chose scissors. You lose."\n' +
 '\n' +
-'if tu = "forbici"\n' +
-'  if cpu = "sasso"\n' +
-'    print "Ho scelto sasso. Hai perso."\n' +
-'  if cpu = "carta"\n' +
-'    print "Ho scelto carta. Hai vinto!"\n' +
+'if you = "scissors"\n' +
+'  if cpu = "rock"\n' +
+'    print "I chose rock. You lose."\n' +
+'  if cpu = "paper"\n' +
+'    print "I chose paper. You win!"\n' +
 '\n' +
 'end\n',
 
     collatz:
 'start\n' +
 'define n = 27\n' +
-'define passi = 1\n' +
+'define steps = 1\n' +
 '\n' +
 'until n = 1\n' +
 '  if n % 2 = 0\n' +
 '    set n = n / 2\n' +
 '  else\n' +
 '    set n = n * 3 + 1\n' +
-'  set passi = passi + 1\n' +
+'  set steps = steps + 1\n' +
 '\n' +
-'print "fatto in " passi " passi"\n' +
+'print "done in " steps " steps"\n' +
 'end\n',
 
-    errori:
+    errors:
 'start\n' +
-'print "Ciao!"\n' +
-'prnt "questo comando non esiste"\n' +
+'print "Hello!"\n' +
+'prnt "this command does not exist"\n' +
 'print 1 / 0\n' +
-'define eta = 8\n' +
-'if eta > 10\n' +
-'  print "grande"\n' +
+'define age = 8\n' +
+'if age > 10\n' +
+'  print "big"\n' +
 'else\n' +
-'  print "piccolo"\n' +
-'set punti = 5\n' +
-'print "sono arrivato fino in fondo"\n' +
+'  print "small"\n' +
+'set points = 5\n' +
+'print "I made it all the way to the end"\n' +
 'end\n'
   };
 
@@ -252,13 +254,10 @@
     return text.split('\n').length;
   }
 
-  function drawGutter(marks) {
+  function drawGutter() {
     var n = lineCount(code.value);
     var html = '';
-    for (var i = 1; i <= n; i++) {
-      var cls = marks && marks[i] ? ' class="' + marks[i] + '"' : '';
-      html += '<div' + cls + '>' + i + '</div>';
-    }
+    for (var i = 1; i <= n; i++) html += '<div>' + i + '</div>';
     gutter.innerHTML = html;
     gutter.scrollTop = code.scrollTop;
   }
@@ -284,32 +283,30 @@
 
   var running = false;
 
-  function esegui() {
+  function runIt() {
     if (running) return;
     running = true;
     var src = code.value;
-    try {
-      localStorage.setItem(STORE, src);
-    } catch (e) {}
+    try { localStorage.setItem(STORE, src); } catch (e) {}
 
-    var result = Motore.run(src, {
+    var result = Loud.run(src, {
       input: function (question) {
-        var a = window.prompt(question || 'Rispondi:', '');
+        var a = window.prompt(question || 'Answer:', '');
         return a === null ? '' : a;
       }
     });
 
     out.textContent = result.output.join('\n');
+    problemsBox.innerHTML = '';
 
     var marks = {};
-    problemsBox.innerHTML = '';
     for (var i = 0; i < result.problems.length; i++) {
       var p = result.problems[i];
       var row = document.createElement('div');
       row.className = 'problem ' + p.kind;
-      var kindLabel = p.kind === 'error' ? 'errore' : p.kind === 'warning' ? 'avviso' : 'suggerimento';
+      var kindLabel = p.kind === 'error' ? 'error' : p.kind === 'warning' ? 'warning' : 'hint';
       row.innerHTML =
-        '<div class="where">riga ' + p.line + '</div>' +
+        '<div class="where">line ' + p.line + '</div>' +
         '<div><span class="kind">' + kindLabel + '</span>' +
         '<div class="msg"></div>' +
         (p.hint ? '<div class="hint"></div>' : '') + '</div>';
@@ -329,25 +326,25 @@
       if (el) el.className = marks[line];
     });
 
+    if (result.problems.length === 0) {
+      problemsBox.innerHTML = '<div class="ok" style="font-size:13px">No problems.</div>';
+    }
+
     count.textContent = result.problems.length
-      ? '· ' + result.problems.length + (result.problems.length === 1 ? ' problema' : ' problemi')
+      ? '· ' + result.problems.length + (result.problems.length === 1 ? ' problem' : ' problems')
       : '';
     summary.textContent = result.summary;
     summary.className = 'summary' + (result.problems.length ? '' : ' ok');
 
-    if (result.problems.length === 0) {
-      problemsBox.innerHTML = '<div class="ok" style="font-size:13px">Nessun problema.</div>';
-    }
-
     running = false;
   }
 
-  // avvio
+  // start
   var saved = null;
   try { saved = localStorage.getItem(STORE); } catch (e) {}
   var fromHash = decodeURIComponent((location.hash || '').replace(/^#/, ''));
-  if (fromHash && ESEMPI[fromHash]) code.value = ESEMPI[fromHash];
-  else code.value = saved !== null ? saved : ESEMPI.ciao;
+  if (fromHash && SAMPLES[fromHash]) code.value = SAMPLES[fromHash];
+  else code.value = saved !== null ? saved : SAMPLES.hello;
   drawGutter();
 
   code.addEventListener('input', function () {
@@ -358,7 +355,7 @@
   code.addEventListener('keydown', function (ev) {
     if (ev.key === 'Enter' && (ev.metaKey || ev.ctrlKey)) {
       ev.preventDefault();
-      esegui();
+      runIt();
       return;
     }
     if (ev.key === 'Tab') {
@@ -369,19 +366,19 @@
     }
   });
 
-  document.getElementById('run').addEventListener('click', esegui);
+  document.getElementById('run').addEventListener('click', runIt);
 
   examples.addEventListener('change', function () {
     var key = examples.value;
-    if (!key || !ESEMPI[key]) return;
-    code.value = ESEMPI[key];
+    if (!key || !SAMPLES[key]) return;
+    code.value = SAMPLES[key];
     try { localStorage.setItem(STORE, code.value); } catch (e) {}
     drawGutter();
     examples.value = '';
-    esegui();
+    runIt();
   });
 
-  esegui();
+  runIt();
 })();
 </script>
 </body>

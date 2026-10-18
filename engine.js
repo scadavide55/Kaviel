@@ -1,45 +1,45 @@
-/* motore.js — lessico + parser + interprete del linguaggio.
-   Nessun DOM: gira nel browser (window.Motore) e in Node (require).
+/* engine.js — lexer + parser + interpreter for Loud.
+   No DOM: it runs in the browser (window.Loud) and in Node (require).
 
-   Legge del progetto: il programma non si ferma mai, ma niente passa in silenzio.
-   lessico  → token (NEWLINE, INDENT, DEDENT inclusi)
-   parser   → albero, con recupero: una riga rotta diventa un buco + un problema
-   interprete → cammina l'albero, ogni errore vale "niente" e si continua
+   Project law: the program never stops, but nothing passes in silence.
+   lexer      → tokens (NEWLINE, INDENT, DEDENT included)
+   parser     → tree, with recovery: a broken line becomes a hole + a problem
+   interpreter→ walks the tree, every error is "nothing" and we carry on
 */
 
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
-  else root.Motore = factory();
+  else root.Loud = factory();
 })(typeof self !== 'undefined' ? self : globalThis, function () {
   'use strict';
 
-  // ---------------------------------------------------------------- costanti
+  // ---------------------------------------------------------------- constants
 
   var KEYWORDS = ['start', 'end', 'print', 'define', 'set', 'if', 'else', 'repeat',
-    'until', 'ask', 'random', 'pick', 'true', 'false', 'niente'];
+    'until', 'ask', 'random', 'pick', 'true', 'false', 'nothing'];
   var KEYWORD_SET = new Set(KEYWORDS);
   var TWO_CHAR_OPS = ['==', '!=', '<=', '>='];
   var ONE_CHAR_OPS = '=<>+-*/%(),{}';
   var CMP = ['=', '==', '!=', '<', '>', '<=', '>='];
   var MAX_STEPS = 1000000;
 
-  var ERROR = { __errore: true };
+  var ERROR = { __error: true };
 
   function isErr(v) { return v === ERROR; }
   function isDigit(c) { return c >= '0' && c <= '9'; }
   function isIdentStart(c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c === '_'; }
   function isIdentPart(c) { return isIdentStart(c) || isDigit(c); }
 
-  // ---------------------------------------------------------------- lessico
+  // ---------------------------------------------------------------- lexer
 
   function tokenize(src) {
     var tokens = [];
     var problems = [];
     var len = src.length;
     var indents = [0];
-    var neutral = new Set();          // rientri già perdonati una volta
+    var neutral = new Set();          // indents already forgiven once
     var i = 0, line = 1, col = 1;
-    var depth = 0;                    // dentro ( ) [ ] { } i ritorni a capo non contano
+    var depth = 0;                    // inside ( ) [ ] { } newlines do not count
     var lineHasToken = false;
     var atLineStart = true;
 
@@ -59,7 +59,7 @@
         }
         var nxt = j < len ? src[j] : '';
         if (j >= len || nxt === '\n' || nxt === '\r' || nxt === '#') {
-          // riga vuota o solo commento: non tocca l'indentazione
+          // blank line or comment only: it does not touch indentation
           i = j;
           col = width + 1;
           atLineStart = false;
@@ -68,7 +68,7 @@
         if (!lineHasToken) {
           var top = indents[indents.length - 1];
           if (neutral.has(width) && width !== top) {
-            // già segnalato: si riusa lo stesso livello, senza nuovi token
+            // already reported: reuse the same level, no new tokens
           } else if (width > top) {
             indents.push(width);
             push('indent', width, line, 1);
@@ -79,8 +79,8 @@
             }
             if (indents[indents.length - 1] !== width) {
               problem('error',
-                'Questa riga è spostata a sinistra in un punto che non conosco: l\'ho agganciata al livello più vicino.',
-                'Usa lo stesso numero di spazi delle righe che stanno sopra di lei.', line, 1);
+                'This line is further left than any open block: I snapped it to the nearest one.',
+                'Use the same number of spaces as the lines above it.', line, 1);
               neutral.add(width);
             }
           }
@@ -127,10 +127,10 @@
           i = k + 1;
           line++;
           col = 1;
-          atLineStart = false;      // la riga dopo continua questa
+          atLineStart = false;      // the next line continues this one
           continue;
         }
-        problem('error', 'La barra `\\` da sola vale solo a fine riga, per continuare la riga dopo.', '', line, col);
+        problem('error', 'A `\\` on its own only works at the end of a line, to continue on the next one.', '', line, col);
         i++; col++;
         continue;
       }
@@ -158,7 +158,7 @@
         col += (j2 - i);
         i = j2;
         if (!closed) {
-          problem('error', 'Questo testo non si chiude: manca `"` alla fine.', 'Scrivi `"` dopo l\'ultima lettera.', startLine, startCol);
+          problem('error', 'This text never closes: the `"` at the end is missing.', 'Put `"` after the last letter.', startLine, startCol);
         }
         push('string', out, startLine, startCol);
         tokens[tokens.length - 1].broken = !closed;
@@ -208,12 +208,12 @@
         continue;
       }
 
-      problem('error', 'Non so cosa sia questo simbolo: `' + c + '`.', 'Toglilo oppure scrivilo in un altro modo.', line, col);
+      problem('error', 'I do not know this symbol: `' + c + '`.', 'Remove it or write it another way.', line, col);
       i++; col++;
     }
 
     if (depth > 0) {
-      problem('error', 'C\'è una parentesi aperta che non si chiude mai.', 'Ogni `(` vuole la sua `)`.', line, col);
+      problem('error', 'A bracket is opened and never closed.', 'Every `(` needs its `)`.', line, col);
     }
     if (lineHasToken) push('newline', '\n', line, col);
     while (indents.length > 1) { indents.pop(); push('dedent', 0, line, col); }
@@ -221,7 +221,7 @@
     return { tokens: tokens, problems: problems };
   }
 
-  // ---------------------------------------------------------------- suggerimenti
+  // ---------------------------------------------------------------- suggestions
 
   function levenshtein(a, b) {
     a = a.toLowerCase(); b = b.toLowerCase();
@@ -282,7 +282,7 @@
       if (peek().type !== 'indent') return;
       var bodyStart = peek().line;
       var lastContent = bodyStart;
-      advance();                       // il rientro che apre il blocco
+      advance();                       // the indented line that opens the block
       var nesting = 1;
       while (nesting > 0 && peek().type !== 'eof') {
         var tk = advance();
@@ -292,8 +292,8 @@
       }
       if (!quiet) {
         problem('warning', startTok,
-          'Ho saltato anche le righe ' + bodyStart + '–' + lastContent + ' del blocco `' + what + '`.',
-          'Sistemi l\'intestazione e il blocco torna a posto da solo.');
+          'I skipped lines ' + bodyStart + '–' + lastContent + ' of the `' + what + '` block too.',
+          'Fix the header and the block heals itself.');
       }
     }
 
@@ -302,16 +302,16 @@
     if (!sawStart) {
       problems.push({
         line: 1, col: 1, kind: 'warning',
-        message: 'Il programma dovrebbe cominciare con `start`.',
-        hint: 'Ho eseguito tutto lo stesso.'
+        message: 'A program should start with `start`.',
+        hint: 'I ran everything anyway.'
       });
     }
     if (!sawEnd) {
       var last = tokens[tokens.length - 1];
       problems.push({
         line: Math.max(1, last.line), col: 1, kind: 'warning',
-        message: 'Manca `end` alla fine del programma.',
-        hint: 'Ho eseguito tutto lo stesso.'
+        message: '`end` is missing at the end of the program.',
+        hint: 'I ran everything anyway.'
       });
     }
 
@@ -338,18 +338,18 @@
 
     function parseBlock(kw, headerLine) {
       if (peek().type === 'newline') pos++;
-      else error(peek(), 'Dopo `' + kw + '` bisogna andare a capo.', 'Le righe del blocco vanno sotto, spostate a destra.');
+      else error(peek(), 'After `' + kw + '` you go to the next line.', 'The block goes underneath, indented.');
       if (peek().type !== 'indent') {
         warning({ line: headerLine, col: 1 },
-          '`' + kw + '` non ha un blocco sotto, quindi non fa niente.',
-          'Sposta a destra le righe che devono stare dentro.');
+          '`' + kw + '` has no block under it, so it does nothing.',
+          'Indent the lines that belong to it.');
         return { type: 'Block', body: [], line: headerLine };
       }
       pos++;
       var body = parseStatements();
       if (peek().type === 'dedent') pos++;
       if (body.length === 0) {
-        warning({ line: headerLine, col: 1 }, 'Il blocco di `' + kw + '` è vuoto.', '');
+        warning({ line: headerLine, col: 1 }, 'The `' + kw + '` block is empty.', '');
       }
       return { type: 'Block', body: body, line: headerLine };
     }
@@ -358,8 +358,8 @@
       var t = peek();
 
       if (t.type === 'indent') {
-        error(t, 'Questa riga è spostata a destra, ma la riga sopra non apre un blocco.',
-          'Togli gli spazi in più, oppure metti un `if` o un `repeat` sopra di lei.');
+        error(t, 'This line is indented, but the line above does not open a block.',
+          'Remove the extra spaces, or put an `if` or a `repeat` above it.');
         pos++;
         var escaped = parseStatements();
         if (peek().type === 'dedent') pos++;
@@ -370,12 +370,12 @@
         switch (t.value) {
           case 'start':
             pos++;
-            if (!atEnd()) { error(peek(), 'Dopo `start` non serve altro: `start` sta da solo sulla sua riga.'); recover(); }
+            if (!atEnd()) { error(peek(), 'Nothing goes after `start`: it sits alone on its line.'); recover(); }
             return { type: 'Start', line: t.line };
 
           case 'end':
             pos++;
-            if (!atEnd()) { error(peek(), 'Dopo `end` non serve altro: `end` sta da solo sulla sua riga.'); recover(); }
+            if (!atEnd()) { error(peek(), 'Nothing goes after `end`: it sits alone on its line.'); recover(); }
             return { type: 'End', line: t.line };
 
           case 'print': {
@@ -388,7 +388,7 @@
               if (isOp(',')) pos++;
             }
             if (values.length === 0) {
-              error(t, '`print` ha bisogno di qualcosa da mostrare.', 'Per esempio: print "ciao"');
+              error(t, '`print` needs something to show.', 'For example: print "hello"');
             }
             return { type: 'Print', values: values, line: t.line };
           }
@@ -398,7 +398,7 @@
             pos++;
             var nameTok = peek();
             if (nameTok.type !== 'ident') {
-              error(nameTok, 'Dopo `' + t.value + '` serve un nome.', 'Per esempio: ' + t.value + ' anni = 12');
+              error(nameTok, 'After `' + t.value + '` comes a name.', 'For example: ' + t.value + ' age = 12');
               recover();
               return null;
             }
@@ -408,12 +408,12 @@
               pos++;
               var numTok = peek();
               if (numTok.type === 'number' && isFinite(numTok.value)) { slot = Math.floor(numTok.value); pos++; }
-              else { error(numTok, 'Dentro `{ }` va un numero, come in `' + nameTok.value + '{1}`.', ''); recover(); return null; }
+              else { error(numTok, 'Inside `{ }` goes a number, like in `' + nameTok.value + '{1}`.', ''); recover(); return null; }
               if (isOp('}')) pos++;
-              else { error(peek(), 'Manca la `}` che chiude `{ ' + slot + '`.', ''); recover(); return null; }
+              else { error(peek(), 'The `}` that closes `{ ' + slot + '` is missing.', ''); recover(); return null; }
             }
             if (!isOp('=')) {
-              error(peek(), 'Dopo il nome manca `=`.', 'Per esempio: ' + t.value + ' ' + nameTok.value + ' = 12');
+              error(peek(), 'After the name the `=` is missing.', 'For example: ' + t.value + ' ' + nameTok.value + ' = 12');
               recover();
               return null;
             }
@@ -421,7 +421,7 @@
             var expr = parseExpression();
             known.add(nameTok.value);
             if (!atEnd()) {
-              error(peek(), 'Non capisco questa parte della riga.', 'Una riga fa una cosa sola.');
+              error(peek(), 'I do not understand this part of the line.', 'One line does one thing.');
               recover();
               return null;
             }
@@ -434,7 +434,7 @@
             var cond = parseExpression();
             if (problems.length > beforeCond || !atEnd()) {
               if (!atEnd() && problems.length === beforeCond) {
-                error(peek(), 'Dopo la condizione dell\'`if` non serve altro.', 'Per esempio: if anni > 10');
+                error(peek(), 'Nothing goes after the `if` condition.', 'For example: if age > 10');
               }
               skipBrokenBlock(t, 'if');
               return null;
@@ -444,7 +444,7 @@
             if (isKw('else')) {
               var elseTok = advance();
               if (isKw('if')) {
-                error(peek(), '`else if` non esiste: metti `else` e poi l\'`if` sulla riga dopo, spostato a destra.', '');
+                error(peek(), '`else if` does not exist: write `else`, then `if` on the next line, indented.', '');
                 skipBrokenBlock(elseTok, 'else');
                 return { type: 'If', cond: cond, body: body, otherwise: null, line: t.line };
               }
@@ -454,7 +454,7 @@
           }
 
           case 'else':
-            error(t, '`else` da solo non vuol dire niente: deve venire subito dopo un blocco `if`, allo stesso livello.', '');
+            error(t, '`else` alone means nothing: it must come right after an `if` block, at the same level.', '');
             skipBrokenBlock(t, 'else', true);
             return null;
 
@@ -465,7 +465,7 @@
             var head = parseExpression();
             if (problems.length > beforeHead || !atEnd()) {
               if (!atEnd() && problems.length === beforeHead) {
-                error(peek(), 'Dopo `' + t.value + '` non serve altro.', 'Per esempio: repeat 3');
+                error(peek(), 'Nothing goes after `' + t.value + '`.', 'For example: repeat 3');
               }
               skipBrokenBlock(t, t.value);
               return null;
@@ -480,7 +480,7 @@
             var weight = parseExpression();
             if (problems.length > beforeWeight || !atEnd()) {
               if (!atEnd() && problems.length === beforeWeight) {
-                error(peek(), 'Dopo `random` ci va solo il numero delle probabilità.', 'Per esempio: random 67');
+                error(peek(), 'After `random` comes only the chance.', 'For example: random 67');
               }
               skipBrokenBlock(t, 'random');
               return null;
@@ -493,10 +493,10 @@
           case 'pick':
           case 'true':
           case 'false':
-          case 'niente': {
+          case 'nothing': {
             var exprStmt = parseExpression();
             if (!atEnd()) {
-              error(peek(), 'Non capisco questa parte della riga.', 'Una riga fa una cosa sola.');
+              error(peek(), 'I do not understand this part of the line.', 'One line does one thing.');
               recover();
               return null;
             }
@@ -504,7 +504,7 @@
           }
 
           default:
-            error(t, 'Non so cosa voglia dire `' + t.value + '` qui.', '');
+            error(t, 'I do not know what `' + t.value + '` means here.', '');
             recover();
             return null;
         }
@@ -517,36 +517,36 @@
 
         if (afterName.type === 'op' && afterName.value === '=') {
           var sug = suggestFor(t.value, KEYWORDS.concat(Array.from(known)));
-          error(t, '`=` da solo non assegna: confronta due cose.',
-            'Per creare `' + t.value + '` si usa `define ' + t.value + ' = ...`, per cambiarlo `set ' + t.value + ' = ...`.' + (sug ? ' (Forse volevi `' + sug + '`?)' : ''));
+          error(t, '`=` on its own does not assign: it compares two things.',
+            'To create `' + t.value + '` use `define ' + t.value + ' = ...`, to change it use `set ' + t.value + ' = ...`.' + (sug ? ' (Did you mean `' + sug + '`?)' : ''));
           recover();
           return null;
         }
         if (nextT.type === 'op' && nextT.value === '(') {
-          error(t, 'Non ci sono ancora le funzioni scritte da te: `' + t.value + '` non è un comando.',
-            'I comandi di adesso sono: print, define, set, if, else, repeat, until, random, pick, ask.');
+          error(t, 'Functions written by you do not exist yet: `' + t.value + '` is not a command.',
+            'The commands so far are: print, define, set, if, else, repeat, until, random, pick, ask.');
           recover();
           return null;
         }
         var suggestion = suggestFor(t.value, KEYWORDS.concat(Array.from(known)));
-        error(t, 'Non conosco `' + t.value + '`.', suggestion ? 'Forse volevi scrivere `' + suggestion + '`?' : '');
+        error(t, 'I do not know `' + t.value + '`.', suggestion ? 'Did you mean `' + suggestion + '`?' : '');
         recover();
         return null;
       }
 
       if (t.type === 'string' || t.type === 'number') {
-        error(t, 'Questa riga comincia con un valore, ma un valore da solo non fa niente.',
-          'Per mostrarlo: print ' + t.text);
+        error(t, 'This line starts with a value, but a value alone does nothing.',
+          'To show it: print ' + t.text);
         recover();
         return null;
       }
 
-      error(t, 'Non capisco questa riga.', '');
+      error(t, 'I do not understand this line.', '');
       recover();
       return null;
     }
 
-    // ---- espressioni
+    // ---- expressions
 
     function parseExpression() { return parseComparison(); }
 
@@ -623,14 +623,14 @@
           pos++;
           return { type: 'Literal', value: t.value === 'true', line: t.line };
         }
-        if (t.value === 'niente') {
+        if (t.value === 'nothing') {
           pos++;
           return { type: 'Literal', value: null, line: t.line };
         }
         if (t.value === 'ask') {
           pos++;
           if (!isOp('(')) {
-            error(t, '`ask` vuole la domanda tra parentesi.', 'Per esempio: ask("Come ti chiami? ")');
+            error(t, '`ask` wants the question between brackets.', 'For example: ask("What is your name? ")');
             return { type: 'Bad', line: t.line };
           }
           pos++;
@@ -645,7 +645,7 @@
             }
           }
           if (isOp(')')) pos++;
-          else error(peek(), 'Manca la `)` che chiude `ask`.', '');
+          else error(peek(), 'The `)` that closes `ask` is missing.', '');
           return { type: 'Ask', args: args, line: t.line };
         }
         if (t.value === 'pick') {
@@ -659,11 +659,11 @@
             break;
           }
           if (items.length === 0) {
-            error(t, '`pick` ha bisogno di almeno un valore da scegliere.', 'Per esempio: pick "sasso", "carta"');
+            error(t, '`pick` needs at least one value to choose from.', 'For example: pick "rock", "paper"');
           }
           return { type: 'Pick', items: items, line: t.line };
         }
-        error(t, 'Qui non ci può stare `' + t.value + '`.', '');
+        error(t, '`' + t.value + '` does not belong here.', '');
         pos++;
         return { type: 'Bad', line: t.line };
       }
@@ -675,12 +675,12 @@
           pos++;
           var num = peek();
           if (num.type === 'number') { slot = Math.floor(num.value); pos++; }
-          else { error(num, 'Dentro `{ }` ci va un numero.', 'Per esempio: punti{2}'); }
+          else { error(num, 'Inside `{ }` goes a number.', 'For example: points{2}'); }
           if (isOp('}')) pos++;
-          else error(peek(), 'Manca `}`.', '');
+          else error(peek(), 'The `}` is missing.', '');
         }
         if (isOp('(')) {
-          error(t, 'Non ci sono ancora le funzioni scritte da te: `' + t.value + '` non è un comando.', '');
+          error(t, 'Functions written by you do not exist yet: `' + t.value + '` is not a command.', '');
           skipCallArgs();
           return { type: 'Bad', line: t.line };
         }
@@ -691,20 +691,20 @@
         pos++;
         var inner = parseExpression();
         if (isOp(')')) pos++;
-        else error(peek(), 'Manca la `)` che chiude la parentesi.', '');
+        else error(peek(), 'The `)` that closes the bracket is missing.', '');
         return inner;
       }
 
-      error(t, 'Qui manca qualcosa da calcolare.', 'Per esempio: print 1 + 2, oppure define x = "ciao".');
+      error(t, 'Something to compute is missing here.', 'For example: print 1 + 2, or define x = "hello".');
       if (!atEnd()) pos++;
       return { type: 'Bad', line: t.line };
     }
   }
 
-  // ---------------------------------------------------------------- valori
+  // ---------------------------------------------------------------- values
 
   function show(v) {
-    if (v === null) return 'niente';
+    if (v === null) return 'nothing';
     if (typeof v === 'number') {
       if (!isFinite(v)) return String(v);
       if (Number.isInteger(v)) return String(v);
@@ -713,8 +713,8 @@
     return String(v);
   }
 
-  /* I valori di un print stanno uno accanto all'altro separati da uno spazio,
-     ma solo se quello spazio non c'è già: print "ciao " nome stampa "ciao Davide". */
+  /* The values of a print stand side by side, separated by one space,
+     but only if that space is not there already: print "hi " name shows "hi Davide". */
   function joinPrinted(parts) {
     var out = '';
     for (var i = 0; i < parts.length; i++) {
@@ -731,10 +731,10 @@
   }
 
   function typeName(v) {
-    if (typeof v === 'number') return 'un numero';
-    if (typeof v === 'string') return 'un testo';
-    if (typeof v === 'boolean') return 'true o false';
-    return 'niente';
+    if (typeof v === 'number') return 'a number';
+    if (typeof v === 'string') return 'a text';
+    if (typeof v === 'boolean') return 'true or false';
+    return 'nothing';
   }
 
   function truthy(v) {
@@ -744,7 +744,7 @@
     return !!v;
   }
 
-  // ---------------------------------------------------------------- interprete
+  // ---------------------------------------------------------------- interpreter
 
   function Interpreter(opts) {
     this.output = opts.output || [];
@@ -773,8 +773,8 @@
     this.steps++;
     if (this.steps > this.limit) {
       this.error(line,
-        'Ho eseguito più di ' + this.limit.toLocaleString('it-IT') + ' istruzioni e mi sono fermato: c\'è un ciclo che non finisce mai.',
-        'Guarda la condizione di `repeat` / `until`: dentro il ciclo qualcosa deve cambiare davvero.');
+        'I ran more than ' + this.limit.toLocaleString('en-US') + ' steps and stopped: a loop is not ending.',
+        'Look at the `repeat` / `until` condition: something inside the loop must really change.');
       this.stopped = true;
     }
   };
@@ -801,12 +801,12 @@
       var w = this.eval(group[i].weight);
       if (isErr(w)) { weights.push(0); continue; }
       if (typeof w !== 'number') {
-        this.error(group[i].line, 'Le probabilità di `random` vogliono numeri, non ' + typeName(w) + '.', 'Per esempio: random 67');
+        this.error(group[i].line, 'The chances of `random` want numbers, not ' + typeName(w) + '.', 'For example: random 67');
         weights.push(0);
         continue;
       }
       if (w < 0) {
-        this.error(group[i].line, 'Una probabilità negativa non ha senso.', 'Usa numeri da 0 a 100.');
+        this.error(group[i].line, 'A negative chance makes no sense.', 'Use numbers from 0 to 100.');
         weights.push(0);
         continue;
       }
@@ -814,13 +814,13 @@
       total += w;
     }
     if (total <= 0) {
-      this.error(group[0].line, 'Nessuna faccia del `random` ha una probabilità maggiore di zero: non ho scelto niente.', '');
+      this.error(group[0].line, 'No face of this `random` has a chance above zero: nothing was picked.', '');
       return;
     }
     if (Math.abs(total - 100) > 1e-9) {
       this.warning(group[0].line,
-        'Le probabilità di questo `random` fanno ' + show(Math.round(total * 1e6) / 1e6) + ' invece di 100: le ho adattate.',
-        'Se i numeri sono le percentuali, devono sommare 100.');
+        'The chances of this `random` add up to ' + show(Math.round(total * 1e6) / 1e6) + ' instead of 100: I adjusted them.',
+        'If the numbers are percentages, they must add up to 100.');
     }
     var draw = this.rng() * total;
     var picked = group.length - 1;
@@ -833,7 +833,6 @@
   };
 
   Interpreter.prototype.execStatement = function (st) {
-    var self = this;
     this.tick(st.line);
 
     switch (st.type) {
@@ -851,7 +850,7 @@
         var parts = [];
         for (var i = 0; i < st.values.length; i++) {
           var v = this.eval(st.values[i]);
-          if (isErr(v)) return;               // riga saltata: l'errore è già stato detto
+          if (isErr(v)) return;               // line skipped: the error was already said
           parts.push(show(v));
         }
         this.output.push(joinPrinted(parts));
@@ -863,8 +862,8 @@
         if (isErr(dv)) return;
         var dk = this.key(st.name, st.slot);
         if (this.vars.has(dk)) {
-          this.warning(st.line, '`' + st.name + '` esisteva già: ho messo il nuovo valore.',
-            'Se volevi cambiarlo, il comando è `set`.');
+          this.warning(st.line, '`' + st.name + '` already existed: the new value took over.',
+            'To change it on purpose, the command is `set`.');
         }
         this.vars.set(dk, dv);
         return;
@@ -875,8 +874,8 @@
         if (isErr(sv)) return;
         var sk = this.key(st.name, st.slot);
         if (!this.vars.has(sk)) {
-          this.warning(st.line, '`' + st.name + '` non esisteva: l\'ho creato adesso.',
-            'Per crearlo apposta si usa `define`.');
+          this.warning(st.line, '`' + st.name + '` did not exist: I created it just now.',
+            'To create it on purpose, use `define`.');
         }
         this.vars.set(sk, sv);
         return;
@@ -887,7 +886,7 @@
         var cv = this.eval(st.cond);
         if (isErr(cv)) {
           if (this.problems.length === beforeCond) {
-            this.error(st.line, 'La condizione di questo `if` non ha funzionato: ho saltato il blocco.', '');
+            this.error(st.line, 'The `if` condition did not work: I skipped the block.', '');
           }
           return;
         }
@@ -901,17 +900,17 @@
         var nv = this.eval(st.expr);
         if (isErr(nv)) {
           if (this.problems.length === beforeN) {
-            this.error(st.line, 'Non so quante volte ripetere: ho saltato il blocco.', '');
+            this.error(st.line, 'I do not know how many times to repeat: I skipped the block.', '');
           }
           return;
         }
         if (typeof nv !== 'number') {
-          this.error(st.line, '`repeat` vuole un numero di giri, non ' + typeName(nv) + '.', 'Per esempio: repeat 3');
+          this.error(st.line, '`repeat` wants a number of turns, not ' + typeName(nv) + '.', 'For example: repeat 3');
           return;
         }
         var times = Math.floor(nv);
-        if (times < 0) { this.error(st.line, '`repeat` non può girare un numero negativo di volte.', ''); return; }
-        if (times !== nv) this.warning(st.line, '`repeat ' + show(nv) + '`: ho arrotondato a ' + times + ' giri.', '');
+        if (times < 0) { this.error(st.line, '`repeat` cannot run a negative number of times.', ''); return; }
+        if (times !== nv) this.warning(st.line, '`repeat ' + show(nv) + '`: I rounded it to ' + times + ' turns.', '');
         for (var r = 0; r < times; r++) {
           if (this.stopped) return;
           this.tick(st.line);
@@ -928,7 +927,7 @@
           var uv = this.eval(st.expr);
           if (isErr(uv)) {
             if (this.problems.length === beforeU) {
-              this.error(st.line, 'La condizione di questo `until` non ha funzionato: mi sono fermato.', '');
+              this.error(st.line, 'The `until` condition did not work: I stopped here.', '');
             }
             return;
           }
@@ -938,12 +937,11 @@
       }
 
       default:
-        this.error(st.line, 'Il motore non conosce questa istruzione.', '');
+        this.error(st.line, 'The engine does not know this statement.', '');
     }
   };
 
   Interpreter.prototype.eval = function (node) {
-    var self = this;
     switch (node.type) {
       case 'Literal':
         return node.value;
@@ -956,8 +954,8 @@
           var names = [];
           this.vars.forEach(function (_v, key) { names.push(String(key).split('\u0000')[0]); });
           var sug = suggestFor(node.name, names);
-          this.error(node.line, 'Non conosco `' + node.name + '`. L\'hai creato con `define`?',
-            sug ? 'Forse volevi `' + sug + '`?' : '');
+          this.error(node.line, 'I do not know `' + node.name + '`. Did you create it with `define`?',
+            sug ? 'Did you mean `' + sug + '`?' : '');
           return ERROR;
         }
         return this.vars.get(k);
@@ -967,7 +965,7 @@
         var uv = this.eval(node.expr);
         if (isErr(uv)) return ERROR;
         if (typeof uv !== 'number') {
-          this.error(node.line, 'Il `-` vuole un numero, non ' + typeName(uv) + '.', '');
+          this.error(node.line, 'A `-` wants a number, not ' + typeName(uv) + '.', '');
           return ERROR;
         }
         return -uv;
@@ -984,19 +982,19 @@
           args.push(a);
         }
         if (!this.input) {
-          this.error(node.line, '`ask` ha bisogno di qualcuno che risponda, e qui non c\'è nessuno.',
-            'Da terminale la domanda legge l\'input; nella pagina si apre una finestrella.');
+          this.error(node.line, '`ask` needs someone to answer, and there is nobody here.',
+            'From the terminal the question reads the input; in the page a small window opens.');
           return ERROR;
         }
-        if (args.length > 1) this.warning(node.line, '`ask` accetta una domanda sola: ho usato la prima.', '');
+        if (args.length > 1) this.warning(node.line, '`ask` takes one question: I used the first one.', '');
         var question = args.length ? show(args[0]) : '';
         var answer = this.input(question);
         if (answer === undefined || answer === null) {
-          this.error(node.line, 'Non ho ricevuto nessuna risposta alla domanda.', '');
+          this.error(node.line, 'No answer came back to the question.', '');
           return ERROR;
         }
         answer = String(answer);
-        if (answer === '') this.warning(node.line, 'La risposta era vuota.', '');
+        if (answer === '') this.warning(node.line, 'The answer was empty.', '');
         return answer;
       }
 
@@ -1015,7 +1013,7 @@
       }
 
       default:
-        this.error(node.line, 'Il motore non conosce questa espressione.', '');
+        this.error(node.line, 'The engine does not know this expression.', '');
         return ERROR;
     }
   };
@@ -1032,8 +1030,8 @@
       var same = true;
       if (typeof l !== typeof r) {
         this.warning(node.line,
-          'Stai confrontando ' + typeName(l) + ' con ' + typeName(r) + ': non potranno mai essere uguali.',
-          'Forse una delle due parti è un testo e l\'altra un numero?');
+          'You are comparing ' + typeName(l) + ' with ' + typeName(r) + ': they can never be equal.',
+          'Maybe one side is a text and the other a number?');
         same = false;
       } else {
         same = l === r;
@@ -1046,8 +1044,8 @@
     }
 
     if (typeof l !== 'number' || typeof r !== 'number') {
-      this.error(node.line, 'Il `' + op + '` vuole due numeri, ma qui c\'è ' + typeName(l) + ' e ' + typeName(r) + '.',
-        op === '+' ? 'Per attaccare due testi si usa `+` con almeno un testo.' : '');
+      this.error(node.line, 'A `' + op + '` wants two numbers, but here there is ' + typeName(l) + ' and ' + typeName(r) + '.',
+        op === '+' ? 'To glue two texts, `+` needs at least one text.' : '');
       return ERROR;
     }
 
@@ -1057,13 +1055,13 @@
       case '*': return l * r;
       case '/':
         if (r === 0) {
-          this.error(node.line, 'Non si può dividere per zero.', 'Il divisore deve essere diverso da 0.');
+          this.error(node.line, 'You cannot divide by zero.', 'The divisor must not be 0.');
           return ERROR;
         }
         return l / r;
       case '%':
         if (r === 0) {
-          this.error(node.line, 'Non si può dividere per zero (il `%` divide per trovare il resto).', '');
+          this.error(node.line, 'You cannot divide by zero (the `%` divides to find the rest).', '');
           return ERROR;
         }
         return l % r;
@@ -1072,11 +1070,11 @@
       case '<=': return l <= r;
       case '>=': return l >= r;
     }
-    this.error(node.line, 'Non conosco l\'operatore `' + op + '`.', '');
+    this.error(node.line, 'I do not know the operator `' + op + '`.', '');
     return ERROR;
   };
 
-  // ---------------------------------------------------------------- avvio
+  // ---------------------------------------------------------------- run
 
   function run(src, options) {
     options = options || {};
@@ -1097,8 +1095,8 @@
     try {
       interp.execList(program.statements);
     } catch (e) {
-      interp.error(1, 'Errore interno del motore: ' + (e && e.message ? e.message : 'sconosciuto') + '.',
-        'Non è colpa del tuo programma: segnalalo.');
+      interp.error(1, 'Internal engine error: ' + (e && e.message ? e.message : 'unknown') + '.',
+        'Not your program\'s fault: report it.');
     }
 
     problems = problems.concat(interp.problems);
@@ -1118,10 +1116,10 @@
       steps: interp.steps,
       stopped: interp.stopped,
       summary: problems.length === 0
-        ? 'Finito · nessun problema'
-        : 'Finito · ' + problems.length + ' problemi (' +
-          errors + (errors === 1 ? ' errore' : ' errori') + ', ' +
-          warnings + (warnings === 1 ? ' avviso' : ' avvisi') + ')'
+        ? 'Done · no problems'
+        : 'Done · ' + problems.length + ' problems (' +
+          errors + (errors === 1 ? ' error' : ' errors') + ', ' +
+          warnings + (warnings === 1 ? ' warning' : ' warnings') + ')'
     };
   }
 

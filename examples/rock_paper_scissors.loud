@@ -1,0 +1,28 @@
+start
+print "Rock, paper or scissors?"
+
+define you = ask("Rock, paper or scissors? ")
+define cpu = pick "rock", "paper", "scissors"
+
+if you = cpu
+  print "Tie."
+
+if you = "rock"
+  if cpu = "paper"
+    print "I chose paper. You lose."
+  if cpu = "scissors"
+    print "I chose scissors. You win!"
+
+if you = "paper"
+  if cpu = "rock"
+    print "I chose rock. You win!"
+  if cpu = "scissors"
+    print "I chose scissors. You lose."
+
+if you = "scissors"
+  if cpu = "rock"
+    print "I chose rock. You lose."
+  if cpu = "paper"
+    print "I chose paper. You win!"
+
+end

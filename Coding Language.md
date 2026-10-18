@@ -339,13 +339,14 @@ testo sorgente
 output + problemi
 ```
 
-Tre file, nessuna dipendenza:
+Quattro file, nessuna dipendenza:
 
 | File | Ruolo |
 |---|---|
 | `motore.js` | lessico + parser + interprete. **Niente DOM.** Gira in browser e in Node |
 | `linguaggio.html` | editor, pannello Risultato, pannello Problemi, evidenziazione righe |
 | `test.js` | esegue gli esempi del §10 in Node e confronta output e numero di problemi |
+| `lang.js` | esegue un file `.lang` dal terminale (`node lang.js prova.lang`) |
 
 Il motore separato dal DOM è quello che rende possibile testare davvero il linguaggio invece di guardarlo a occhio.
 
@@ -355,8 +356,8 @@ Il motore separato dal DOM è quello che rende possibile testare davvero il ling
 
 | Versione | Cosa | Stato |
 |---|---|---|
-| v0.1 | `start/end`, `print`, `define`, `set`, `if/else`, `repeat`, numeri e testo, tutti gli errori del §8 | da fare |
-| v0.2 | `ask`, `random`, `pick`, `until`, `keypress` | da fare |
+| v0.1 | `start/end`, `print`, `define`, `set`, `if/else`, `repeat`, numeri e testo, tutti gli errori del §8 | **fatto** |
+| v0.2 | `ask`, `random`, `pick`, `until`, `keypress` | fatto tranne `keypress` |
 | v0.3 | funzioni dell'utente, liste, `break` | da fare |
 | v0.4 | `import` con moduli veri | da fare |
 | beta | `.lang` con nome definitivo, esempi pronti, errori in italiano e inglese | da fare |
@@ -373,8 +374,8 @@ Mappa sul notepad:
 ## 13. DAI DECIDERE
 
 1. **Il nome del linguaggio.** Serve prima della beta, e lo scegli tu: è la sola cosa che non posso decidere al posto tuo.
-2. **`random` con o senza le righe consecutive?** L'alternativa è un blocco unico (`choose` ... `end`) che costa una parola e un `end` in più. Ho scelto le righe consecutive: meno da imparare.
-3. **`pick` è un corpo estraneo?** Fa una cosa che `random` non fa (restituisce un valore), ma è una parola chiave in più. Se non ti convince, si toglie e si torna alla forma del tuo draft.
+2. **`random` con o senza le righe consecutive?** (deciso e implementato: righe consecutive. L'alternativa costava una parola e un `end` in più.)
+3. **`pick` è un corpo estraneo?** (implementato: `pick "sasso", "carta", "forbici"` restituisce il valore. Se non ti convince, si toglie.)
 4. **Tutto in italiano o tutto in inglese?** Le parole chiave sono inglesi perché le hai scritte così. I messaggi in v1 sono in italiano: se il linguaggio deve essere internazionale, servono due file di messaggi.
 
 ---
@@ -392,3 +393,49 @@ Mappa sul notepad:
 | `if keypress{1} = Ask{1}` | confronto tra tipi diversi → avviso | nel tuo draft quell'errore passava silenzioso |
 | `import Random` | niente import in v1 | una parola in meno finché non carica niente di vero |
 | `end` | `end` | resta: è il confine del programma |
+
+---
+
+## 15. Stato dell'implementazione (19 ottobre 2026)
+
+Il motore esiste e gira. Non è una simulazione: `motore.js` è lessico + parser + interprete veri.
+
+### Come si usa
+
+```
+node test.js                          # 45 test, tutti i casi del §8
+node lang.js prova.lang               # esegue un file, chiede le risposte su stdin
+open linguaggio.html                  # editor con Risultato e Problemi
+```
+
+`node` su questo Mac sta in `/usr/local/bin/node`, che non è nel PATH della shell: o si scrive il percorso intero, o si aggiunge `/usr/local/bin` al PATH.
+
+### Cosa è stato verificato
+
+| Prova | Risultato |
+|---|---|
+| 45 test in `test.js` | tutti passati |
+| esempi §10 (dado, sasso-carta-forbici, Collatz) | output atteso |
+| Collatz di 27 | arriva a 1 in 112 passi contati da 1 (`until`), 111 passi di calcolo |
+| `random 67/33` su 1000 giri | 600–750 successi (atteso ~670) |
+| pagina `linguaggio.html` in Brave headless | gira, colora le righe 3 · 4 · 10, il programma arriva a `end` |
+| `lang.js` con `ask` da stdin | legge la riga e continua |
+
+### Decisioni prese costruendo (non erano nella specifica)
+
+| Cosa | Scelta | Motivo |
+|---|---|---|
+| `print "steps = " passi` | spazio aggiunto solo se non c'è già | altrimenti stampava `steps =  112` con due spazi: è la riga che si scrive più spesso |
+| `==` | accettato come `=` | chi arriva da Python lo scrive; rifiutarlo era un errore per niente |
+| messaggio "ho saltato le righe 8–10" | **avviso**, non errore | l'errore vero è già segnato sulla riga dell'intestazione: due errori per una svista confondono |
+| `if` la cui condizione va in errore | un solo messaggio (quello dell'espressione) | due messaggi sulla stessa riga sono rumore |
+| limite 1 000 000 istruzioni | errore + programma fermo | è l'unico caso in cui il programma si ferma, §8 |
+| `until` | implementato in anticipo | senza, il Collatz stampa la stessa riga 111 volte |
+| `end` | `end` | resta: è il confine del programma |
+
+### Cosa manca per arrivare alla v1
+
+1. `keypress` — richiede un ponte tra eventi del browser e interprete, non è una parola chiave.
+2. Funzioni scritte dall'utente e liste (v0.3): senza liste il sasso-carta-forbici resta lungo.
+3. `break`, oppure un modo per uscire da un `repeat` prima della fine.
+4. Il nome. Finché non c'è, l'estensione resta `.lang`.

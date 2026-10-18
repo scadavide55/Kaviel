@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Kaviel IDE tests</title>
+<style>body { font: 14px/1.6 system-ui; } iframe { width: 1000px; height: 650px; border: 1px solid #888; } pre { white-space: pre-wrap; }</style>
+<h1>Kaviel IDE tests</h1>
+<p>Run on a local server. Tests temporarily replace and then restore the saved source.</p>
+<pre id="results">Running…</pre>
+<iframe id="editor" title="Editor under test"></iframe>
+<script>
+(async function () {
+  'use strict';
+  var frame = document.getElementById('editor');
+  var results = document.getElementById('results');
+  var passed = 0, failed = 0, log = [];
+  var original = localStorage.getItem('kaviel.source');
+  function check(name, condition) {
+    if (condition) passed++; else failed++;
+    log.push((condition ? 'PASS ' : 'FAIL ') + name);
+  }
+  var loads = 0;
+  function load(hash) {
+    return new Promise(function (resolve) {
+      frame.onload = resolve;
+      frame.src = 'kaviel.html?ide-test=' + (++loads) + (hash || '');
+    });
+  }
+  function key(code, name, extra) {
+    code.dispatchEvent(new frame.contentWindow.KeyboardEvent('keydown', Object.assign({key: name, bubbles: true, cancelable: true}, extra)));
+  }
+  function setSource(text, start, end) {
+    var code = frame.contentDocument.getElementById('code');
+    code.value = text;
+    code.dispatchEvent(new frame.contentWindow.Event('input', {bubbles: true}));
+    code.setSelectionRange(start === undefined ? text.length : start, end === undefined ? (start === undefined ? text.length : start) : end);
+    return code;
+  }
+  try {
+    localStorage.setItem('kaviel.source', 'start\nprint "saved"\nend');
+    await load();
+    var doc = frame.contentDocument, win = frame.contentWindow;
+    var code = doc.getElementById('code');
+    check('Restores saved source', code.value.includes('"saved"'));
+    check('Does not run restored source automatically', doc.getElementById('out').textContent === '');
+    check('Both panels visible before Run', doc.querySelector('.pane.output').clientHeight > 0 && doc.querySelector('.pane.problems').clientHeight > 0);
+    doc.getElementById('run').click();
+    check('Run displays output', doc.getElementById('out').textContent === 'saved');
+    check('Successful run displays empty Problems state', doc.getElementById('problems').textContent === 'No problems.');
+
+    code = setSource('start\nprnt "bad"\nprint "alive"\nend');
+    key(code, 'Enter', {ctrlKey: true});
+    check('Ctrl+Enter runs and continues after a language error', doc.getElementById('out').textContent === 'alive');
+    var problem = doc.querySelector('button.problem');
+    check('Problem is keyboard-focusable', !!problem && problem.tabIndex === 0);
+    problem.click();
+    check('Problem selects exact source line', code.value.slice(code.selectionStart, code.selectionEnd) === 'prnt "bad"' && doc.activeElement === code);
+    check('Error marks gutter', doc.getElementById('gutter').children[1].className === 'error');
+    code.dispatchEvent(new win.Event('input', {bubbles: true}));
+    check('Editing clears stale diagnostic links and marks', !doc.querySelector('.problem') && !doc.querySelector('.gutter .error') && doc.getElementById('summary').textContent.includes('previous run'));
+
+    code = setSource('x');
+    key(code, 'Tab');
+    check('Tab inserts two spaces and persists immediately', code.value === 'x  ' && localStorage.getItem('kaviel.source') === code.value);
+    code = setSource('a\nb\nc', 0, 4);
+    key(code, 'Tab');
+    check('Tab indents selected lines, not next line', code.value === '  a\n  b\nc');
+    key(code, 'Tab', {shiftKey: true});
+    check('Shift+Tab reverses multiline indent', code.value === 'a\nb\nc');
+    code = setSource('  a', 2);
+    key(code, 'Tab', {shiftKey: true});
+    check('Shift+Tab unindents current line', code.value === 'a' && code.selectionStart === 0);
+    code = setSource('abc', 0);
+    key(code, 'Tab', {shiftKey: true});
+    check('Shift+Tab at start is safe', code.value === 'abc' && code.selectionStart === 0);
+    code = setSource('if true');
+    key(code, 'Enter');
+    check('Enter indents a block by two spaces', code.value === 'if true\n  ');
+    code = setSource('  print "a"');
+    key(code, 'Enter');
+    check('Enter preserves normal indentation', code.value === '  print "a"\n  ');
+    code = setSource('');
+    var paste = new win.Event('paste', {bubbles: true, cancelable: true});
+    Object.defineProperty(paste, 'clipboardData', {value: {getData: function () { return '\tprint "a\tb"\r\n'; }}});
+    code.dispatchEvent(paste);
+    check('Paste normalizes indent tabs and CRLF, preserving string tabs', code.value === '    print "a\tb"\n');
+
+    var examples = doc.getElementById('examples');
+    examples.value = 'rps';
+    var prompts = 0;
+    win.prompt = function () { prompts++; return 'rock'; };
+    examples.dispatchEvent(new win.Event('change'));
+    check('Selecting example loads and saves without prompting', prompts === 0 && code.value.includes('ask(') && localStorage.getItem('kaviel.source') === code.value);
+    check('Selecting example clears unrelated output', doc.getElementById('out').textContent === '');
+    var run = win.Kaviel.run;
+    win.Kaviel.run = function () { throw new Error('Test editor failure'); };
+    doc.getElementById('run').click();
+    check('Unexpected failure leaves readable message', doc.getElementById('summary').textContent.includes('Editor error'));
+    win.Kaviel.run = run;
+    setSource('start\nprint "recovered"\nend');
+    doc.getElementById('run').click();
+    check('Run works again after unexpected failure', doc.getElementById('out').textContent === 'recovered');
+
+    await load('#collatz');
+    check('Hash loads the requested example', frame.contentDocument.getElementById('code').value.includes('define n = 27'));
+    await load('#%');
+    check('Malformed hash does not break editor initialization', frame.contentDocument.getElementById('gutter').children.length > 0);
+    await load('#toString');
+    check('Inherited object names are not examples', frame.contentDocument.getElementById('code').value.includes('recovered'));
+    localStorage.setItem('kaviel.source', '');
+    await load();
+    check('Empty saved source remains empty', frame.contentDocument.getElementById('code').value === '');
+    frame.style.width = '390px';
+    doc = frame.contentDocument;
+    check('Narrow layout keeps editor and both panels visible', doc.getElementById('code').clientHeight > 0 && doc.querySelector('.pane.output').clientHeight > 0 && doc.querySelector('.pane.problems').clientHeight > 0 && doc.documentElement.scrollWidth <= 390);
+  } catch (error) {
+    failed++;
+    log.push('FAIL test runner: ' + error.stack);
+  } finally {
+    if (original === null) localStorage.removeItem('kaviel.source');
+    else localStorage.setItem('kaviel.source', original);
+    results.textContent = passed + ' passed, ' + failed + ' failed\n' + log.join('\n');
+    document.title = failed ? 'FAIL — Kaviel IDE tests' : 'PASS — Kaviel IDE tests';
+    document.body.dataset.failed = String(failed);
+  }
+})();
+</script>
+</html>

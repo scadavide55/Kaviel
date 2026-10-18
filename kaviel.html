@@ -112,7 +112,18 @@
     border-bottom: 1px dashed #1c212a;
     cursor: pointer;
   }
+  button.problem { width: 100%; text-align: left; background: transparent; border: 0; border-bottom: 1px dashed #1c212a; border-radius: 0; }
   .problem:last-child { border-bottom: 0; }
+  button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .empty { color: var(--quiet); font-size: 13px; }
+  @media (max-width: 700px) {
+    header { flex-wrap: wrap; gap: 8px; }
+    header .tag { display: none; }
+    main { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(160px, 1fr) minmax(180px, 1fr); }
+    .editor { border-right: 0; border-bottom: 1px solid var(--line); }
+    .side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .pane.output { border-bottom: 0; border-right: 1px solid var(--line); }
+  }
   .problem .where {
     font: 12px/1.6 ui-monospace, Menlo, monospace;
     color: var(--quiet);
@@ -254,6 +265,45 @@
     return text.split('\n').length;
   }
 
+  function saveSource() {
+    try { localStorage.setItem(STORE, code.value); } catch (e) {}
+  }
+
+  function sourceChanged() {
+    drawGutter();
+    saveSource();
+    examples.value = '';
+    problemsBox.innerHTML = '<div class="empty">Source changed. Run to check it.</div>';
+    count.textContent = '';
+    summary.textContent = 'Source changed. Output is from the previous run.';
+    summary.className = 'summary';
+  }
+
+  function indentSelection(unindent) {
+    var start = code.selectionStart, end = code.selectionEnd;
+    if (!unindent && start === end) {
+      code.setRangeText('  ', start, end, 'end');
+    } else {
+      var first = code.value.lastIndexOf('\n', start - 1) + 1;
+      if (start === 0) first = 0;
+      // A selection ending at the next line's start does not include that line.
+      var last = end > start && code.value[end - 1] === '\n' ? end - 1 : end;
+      var block = code.value.slice(first, last);
+      var lines = block.split('\n');
+      var firstDelta = 0, totalDelta = 0;
+      lines = lines.map(function (line, i) {
+        var remove = unindent ? Math.min(2, (line.match(/^ */) || [''])[0].length) : 0;
+        var delta = unindent ? -remove : 2;
+        if (i === 0) firstDelta = delta;
+        totalDelta += delta;
+        return unindent ? line.slice(remove) : '  ' + line;
+      });
+      code.setRangeText(lines.join('\n'), first, last, 'preserve');
+      code.setSelectionRange(Math.max(first, start + firstDelta), Math.max(first, end + totalDelta));
+    }
+    sourceChanged();
+  }
+
   function drawGutter() {
     var n = lineCount(code.value);
     var html = '';
@@ -286,99 +336,126 @@
   function runIt() {
     if (running) return;
     running = true;
-    var src = code.value;
-    try { localStorage.setItem(STORE, src); } catch (e) {}
+    saveSource();
+    try {
+      showResult(Kaviel.run(code.value, {
+        input: function (question) {
+          var a = window.prompt(question || 'Answer:', '');
+          return a === null ? '' : a;
+        }
+      }));
+    } catch (e) {
+      out.textContent = '';
+      problemsBox.textContent = 'The editor could not run this program. Your source is still saved.';
+      count.textContent = '';
+      clearGutter();
+      summary.textContent = 'Editor error. You can try Run again.';
+      summary.className = 'summary';
+    } finally {
+      running = false;
+    }
+  }
 
-    var result = Kaviel.run(src, {
-      input: function (question) {
-        var a = window.prompt(question || 'Answer:', '');
-        return a === null ? '' : a;
-      }
-    });
-
+  function showResult(result) {
     out.textContent = result.output.join('\n');
     problemsBox.innerHTML = '';
-
     var marks = {};
     for (var i = 0; i < result.problems.length; i++) {
       var p = result.problems[i];
-      var row = document.createElement('div');
+      var row = document.createElement('button');
+      row.type = 'button';
       row.className = 'problem ' + p.kind;
       var kindLabel = p.kind === 'error' ? 'error' : p.kind === 'warning' ? 'warning' : 'hint';
       row.innerHTML =
-        '<div class="where">line ' + p.line + '</div>' +
-        '<div><span class="kind">' + kindLabel + '</span>' +
-        '<div class="msg"></div>' +
-        (p.hint ? '<div class="hint"></div>' : '') + '</div>';
+        '<span class="where"></span>' +
+        '<span><span class="kind">' + kindLabel + '</span>' +
+        '<span class="msg" style="display:block"></span>' +
+        (p.hint ? '<span class="hint" style="display:block"></span>' : '') + '</span>';
+      row.querySelector('.where').textContent = 'line ' + p.line;
       row.querySelector('.msg').textContent = p.message;
       if (p.hint) row.querySelector('.hint').textContent = p.hint;
       row.addEventListener('click', (function (line) {
         return function () { selectLine(line); };
       })(p.line));
       problemsBox.appendChild(row);
-
-      if (!marks[p.line] || p.kind === 'error') marks[p.line] = p.kind === 'error' ? 'error' : 'warning';
+      if (p.kind === 'error' || p.kind === 'warning') {
+        if (!marks[p.line] || p.kind === 'error') marks[p.line] = p.kind;
+      }
     }
-
     clearGutter();
     Object.keys(marks).forEach(function (line) {
       var el = gutter.children[Number(line) - 1];
       if (el) el.className = marks[line];
     });
-
     if (result.problems.length === 0) {
       problemsBox.innerHTML = '<div class="ok" style="font-size:13px">No problems.</div>';
     }
-
     count.textContent = result.problems.length
       ? '· ' + result.problems.length + (result.problems.length === 1 ? ' problem' : ' problems')
       : '';
     summary.textContent = result.summary;
     summary.className = 'summary' + (result.problems.length ? '' : ' ok');
-
-    running = false;
   }
 
-  // start
-  var saved = null;
+  // Restore source without running it: loading a draft must not open prompts.
+  var saved = null, fromHash = '';
   try { saved = localStorage.getItem(STORE); } catch (e) {}
-  var fromHash = decodeURIComponent((location.hash || '').replace(/^#/, ''));
-  if (fromHash && SAMPLES[fromHash]) code.value = SAMPLES[fromHash];
-  else code.value = saved !== null ? saved : SAMPLES.hello;
+  try { fromHash = decodeURIComponent((location.hash || '').replace(/^#/, '')); } catch (e) {}
+  if (Object.prototype.hasOwnProperty.call(SAMPLES, fromHash)) {
+    code.value = SAMPLES[fromHash];
+    examples.value = fromHash;
+  } else code.value = saved !== null ? saved : SAMPLES.hello;
   drawGutter();
+  problemsBox.innerHTML = '<div class="empty">Run to check your program.</div>';
+  code.setAttribute('aria-label', 'Kaviel source code');
+  examples.setAttribute('aria-label', 'Load an example');
 
-  code.addEventListener('input', function () {
-    drawGutter();
-    try { localStorage.setItem(STORE, code.value); } catch (e) {}
-  });
+  code.addEventListener('input', sourceChanged);
   code.addEventListener('scroll', function () { gutter.scrollTop = code.scrollTop; });
+  code.addEventListener('paste', function (ev) {
+    if (!ev.clipboardData) return;
+    var text = ev.clipboardData.getData('text/plain');
+    // Preserve the engine's four-space meaning for pasted indentation tabs.
+    var normalized = text.replace(/\r\n?/g, '\n').replace(/^[ \t]*\t[ \t]*/gm, function (indent) {
+      return indent.replace(/\t/g, '    ');
+    });
+    if (normalized === text) return;
+    ev.preventDefault();
+    code.setRangeText(normalized, code.selectionStart, code.selectionEnd, 'end');
+    sourceChanged();
+  });
   code.addEventListener('keydown', function (ev) {
     if (ev.key === 'Enter' && (ev.metaKey || ev.ctrlKey)) {
       ev.preventDefault();
       runIt();
-      return;
-    }
-    if (ev.key === 'Tab') {
+    } else if (ev.key === 'Tab') {
       ev.preventDefault();
-      var start = code.selectionStart, end = code.selectionEnd;
-      code.setRangeText('  ', start, end, 'end');
-      drawGutter();
+      indentSelection(ev.shiftKey);
+    } else if (ev.key === 'Enter' && !ev.isComposing && !ev.altKey && !ev.shiftKey) {
+      ev.preventDefault();
+      var start = code.selectionStart;
+      var first = start === 0 ? 0 : code.value.lastIndexOf('\n', start - 1) + 1;
+      var before = code.value.slice(first, start);
+      var indent = (before.match(/^ */) || [''])[0];
+      if (/^\s*(if|else|repeat|until|random)\b/.test(before)) indent += '  ';
+      code.setRangeText('\n' + indent, start, code.selectionEnd, 'end');
+      sourceChanged();
     }
   });
 
   document.getElementById('run').addEventListener('click', runIt);
-
   examples.addEventListener('change', function () {
     var key = examples.value;
-    if (!key || !SAMPLES[key]) return;
+    if (!Object.prototype.hasOwnProperty.call(SAMPLES, key)) return;
     code.value = SAMPLES[key];
-    try { localStorage.setItem(STORE, code.value); } catch (e) {}
-    drawGutter();
-    examples.value = '';
-    runIt();
+    sourceChanged();
+    examples.value = key;
+    out.textContent = '';
+    summary.textContent = 'Example loaded. Press Run to start.';
+    code.setSelectionRange(0, 0);
+    code.scrollTop = 0;
+    gutter.scrollTop = 0;
   });
-
-  runIt();
 })();
 </script>
 </body>

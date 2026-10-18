@@ -407,6 +407,17 @@ open kaviel.html                        # editor with Output and Problems
 
 `node` on this Mac sits in `/usr/local/bin/node`, which is not on the shell PATH: either type the whole path or add `/usr/local/bin` to PATH.
 
+### Editor controls and checks
+
+- Run with the button, `Cmd+Enter` or `Ctrl+Enter`. Restoring a draft or loading an example does not run it automatically.
+- `Tab` inserts two spaces; with a selection it indents the selected lines. `Shift+Tab` removes up to two leading spaces. Enter keeps indentation and adds two spaces after a block header.
+- Source changes, including indentation, are saved to `localStorage`. Editing clears old problem links and marks output as belonging to the previous run.
+- Problems are buttons: click one, or focus it and press Enter, to select its source line.
+- Pasted indentation tabs become four spaces, matching the engine. Tabs inside text remain unchanged.
+- Output and Problems stay visible, including on narrow screens.
+
+For the browser checks, serve this folder locally (`python3 -m http.server 8765 --bind 127.0.0.1`) and open `http://127.0.0.1:8765/ide-test.html`. The page runs 27 checks and restores the previous saved source afterward. Do not edit another editor tab while these checks run.
+
 ### What has been verified
 
 | Check | Result |

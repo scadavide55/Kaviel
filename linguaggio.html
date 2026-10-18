@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>linguaggio — editor</title>
+<style>
+  :root {
+    --bg: #0e1014;
+    --panel: #14171d;
+    --line: #232833;
+    --text: #e6e9ef;
+    --quiet: #8b93a3;
+    --accent: #7cc4ff;
+    --err: #ff6b6b;
+    --warn: #e8c15a;
+    --ok: #67d98b;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+    flex: none;
+  }
+  header h1 { font-size: 14px; font-weight: 600; margin: 0; letter-spacing: .02em; }
+  header .spacer { flex: 1; }
+  button, select {
+    background: #1b2029;
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 7px;
+    padding: 6px 11px;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  button:hover, select:hover { border-color: #39414f; }
+  button.run { background: #1d3b53; border-color: #2b5a7d; color: #d8ecff; font-weight: 600; }
+  main { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); overflow: hidden; }
+
+  .editor { display: flex; min-width: 0; border-right: 1px solid var(--line); background: #0c0e12; }
+  .gutter {
+    flex: none;
+    width: 52px;
+    padding: 12px 8px 40px 0;
+    text-align: right;
+    font: 13px/22px ui-monospace, SFMono-Regular, Menlo, monospace;
+    color: #39404e;
+    overflow: hidden;
+    user-select: none;
+    background: #0a0c10;
+    border-right: 1px solid #181c24;
+  }
+  .gutter div { position: relative; }
+  .gutter div.error { color: var(--err); font-weight: 700; }
+  .gutter div.warning { color: var(--warn); font-weight: 700; }
+  textarea {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    resize: none;
+    background: transparent;
+    color: var(--text);
+    padding: 12px 16px 40px 12px;
+    font: 13px/22px ui-monospace, SFMono-Regular, Menlo, monospace;
+    tab-size: 2;
+    white-space: pre;
+    overflow: auto;
+  }
+
+  .side { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+  .pane { display: flex; flex-direction: column; min-height: 0; }
+  .pane.output { flex: 1 1 46%; border-bottom: 1px solid var(--line); }
+  .pane.problems { flex: 1 1 54%; }
+  .pane-head {
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 14px;
+    font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
+    color: var(--quiet);
+    border-bottom: 1px solid var(--line);
+    flex: none;
+  }
+  .pane-head .count { color: var(--quiet); text-transform: none; letter-spacing: 0; font-size: 12px; }
+  .pane-body { overflow: auto; padding: 10px 14px 16px; flex: 1; }
+  pre.out {
+    margin: 0;
+    font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: #dfe4ec;
+  }
+  pre.out:empty::after { content: "niente da mostrare"; color: #3f4653; }
+  .problem {
+    display: grid;
+    grid-template-columns: 58px 1fr;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px dashed #1c212a;
+    cursor: pointer;
+  }
+  .problem:last-child { border-bottom: 0; }
+  .problem .where {
+    font: 12px/1.6 ui-monospace, Menlo, monospace;
+    color: var(--quiet);
+  }
+  .problem.error .where { color: var(--err); }
+  .problem.warning .where { color: var(--warn); }
+  .problem .msg { font-size: 13px; }
+  .problem .hint { color: var(--quiet); font-size: 12px; margin-top: 2px; }
+  .problem .kind { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--quiet); }
+  .ok { color: var(--ok); }
+  .summary { padding: 8px 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--quiet); flex: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>linguaggio</h1>
+  <select id="examples" title="Esempi">
+    <option value="">Esempi…</option>
+    <option value="ciao">Ciao</option>
+    <option value="dado">Dado 67 / 33</option>
+    <option value="sasso">Sasso, carta, forbici</option>
+    <option value="collatz">Collatz</option>
+    <option value="errori">Giro degli errori</option>
+  </select>
+  <div class="spacer"></div>
+  <button class="run" id="run">Esegui ⌘↵</button>
+</header>
+
+<main>
+  <section class="editor">
+    <div class="gutter" id="gutter"></div>
+    <textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+  </section>
+
+  <section class="side">
+    <div class="pane output">
+      <div class="pane-head">Risultato</div>
+      <div class="pane-body"><pre class="out" id="out"></pre></div>
+    </div>
+    <div class="pane problems">
+      <div class="pane-head">Problemi <span class="count" id="count"></span></div>
+      <div class="pane-body" id="problems"></div>
+      <div class="summary" id="summary">Premi Esegui per partire.</div>
+    </div>
+  </section>
+</main>
+
+<script src="motore.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var code = document.getElementById('code');
+  var gutter = document.getElementById('gutter');
+  var out = document.getElementById('out');
+  var problemsBox = document.getElementById('problems');
+  var count = document.getElementById('count');
+  var summary = document.getElementById('summary');
+  var examples = document.getElementById('examples');
+  var STORE = 'linguaggio.sorgente';
+
+  var ESEMPI = {
+    ciao:
+'start\n' +
+'print "Ciao!"\n' +
+'end\n',
+
+    dado:
+'start\n' +
+'random 67\n' +
+'  print "Wow!"\n' +
+'random 33\n' +
+'  print "Damn!"\n' +
+'end\n',
+
+    sasso:
+'start\n' +
+'print "Sasso, carta o forbici?"\n' +
+'\n' +
+'define tu = ask("Sasso, carta o forbici? ")\n' +
+'define cpu = pick "sasso", "carta", "forbici"\n' +
+'\n' +
+'if tu = cpu\n' +
+'  print "Pari."\n' +
+'\n' +
+'if tu = "sasso"\n' +
+'  if cpu = "carta"\n' +
+'    print "Ho scelto carta. Hai perso."\n' +
+'  if cpu = "forbici"\n' +
+'    print "Ho scelto forbici. Hai vinto!"\n' +
+'\n' +
+'if tu = "carta"\n' +
+'  if cpu = "sasso"\n' +
+'    print "Ho scelto sasso. Hai vinto!"\n' +
+'  if cpu = "forbici"\n' +
+'    print "Ho scelto forbici. Hai perso."\n' +
+'\n' +
+'if tu = "forbici"\n' +
+'  if cpu = "sasso"\n' +
+'    print "Ho scelto sasso. Hai perso."\n' +
+'  if cpu = "carta"\n' +
+'    print "Ho scelto carta. Hai vinto!"\n' +
+'\n' +
+'end\n',
+
+    collatz:
+'start\n' +
+'define n = 27\n' +
+'define passi = 1\n' +
+'\n' +
+'until n = 1\n' +
+'  if n % 2 = 0\n' +
+'    set n = n / 2\n' +
+'  else\n' +
+'    set n = n * 3 + 1\n' +
+'  set passi = passi + 1\n' +
+'\n' +
+'print "fatto in " passi " passi"\n' +
+'end\n',
+
+    errori:
+'start\n' +
+'print "Ciao!"\n' +
+'prnt "questo comando non esiste"\n' +
+'print 1 / 0\n' +
+'define eta = 8\n' +
+'if eta > 10\n' +
+'  print "grande"\n' +
+'else\n' +
+'  print "piccolo"\n' +
+'set punti = 5\n' +
+'print "sono arrivato fino in fondo"\n' +
+'end\n'
+  };
+
+  function lineCount(text) {
+    return text.split('\n').length;
+  }
+
+  function drawGutter(marks) {
+    var n = lineCount(code.value);
+    var html = '';
+    for (var i = 1; i <= n; i++) {
+      var cls = marks && marks[i] ? ' class="' + marks[i] + '"' : '';
+      html += '<div' + cls + '>' + i + '</div>';
+    }
+    gutter.innerHTML = html;
+    gutter.scrollTop = code.scrollTop;
+  }
+
+  function clearGutter() {
+    var kids = gutter.children;
+    for (var i = 0; i < kids.length; i++) kids[i].className = '';
+  }
+
+  function selectLine(line) {
+    var lines = code.value.split('\n');
+    var start = 0;
+    for (var i = 0; i < line - 1 && i < lines.length; i++) start += lines[i].length + 1;
+    var end = start + (lines[line - 1] ? lines[line - 1].length : 0);
+    code.focus();
+    code.setSelectionRange(start, end);
+    var lineHeight = 22, top = (line - 1) * lineHeight;
+    if (top < code.scrollTop || top > code.scrollTop + code.clientHeight - 60) {
+      code.scrollTop = Math.max(0, top - code.clientHeight / 3);
+      gutter.scrollTop = code.scrollTop;
+    }
+  }
+
+  var running = false;
+
+  function esegui() {
+    if (running) return;
+    running = true;
+    var src = code.value;
+    try {
+      localStorage.setItem(STORE, src);
+    } catch (e) {}
+
+    var result = Motore.run(src, {
+      input: function (question) {
+        var a = window.prompt(question || 'Rispondi:', '');
+        return a === null ? '' : a;
+      }
+    });
+
+    out.textContent = result.output.join('\n');
+
+    var marks = {};
+    problemsBox.innerHTML = '';
+    for (var i = 0; i < result.problems.length; i++) {
+      var p = result.problems[i];
+      var row = document.createElement('div');
+      row.className = 'problem ' + p.kind;
+      var kindLabel = p.kind === 'error' ? 'errore' : p.kind === 'warning' ? 'avviso' : 'suggerimento';
+      row.innerHTML =
+        '<div class="where">riga ' + p.line + '</div>' +
+        '<div><span class="kind">' + kindLabel + '</span>' +
+        '<div class="msg"></div>' +
+        (p.hint ? '<div class="hint"></div>' : '') + '</div>';
+      row.querySelector('.msg').textContent = p.message;
+      if (p.hint) row.querySelector('.hint').textContent = p.hint;
+      row.addEventListener('click', (function (line) {
+        return function () { selectLine(line); };
+      })(p.line));
+      problemsBox.appendChild(row);
+
+      if (!marks[p.line] || p.kind === 'error') marks[p.line] = p.kind === 'error' ? 'error' : 'warning';
+    }
+
+    clearGutter();
+    Object.keys(marks).forEach(function (line) {
+      var el = gutter.children[Number(line) - 1];
+      if (el) el.className = marks[line];
+    });
+
+    count.textContent = result.problems.length
+      ? '· ' + result.problems.length + (result.problems.length === 1 ? ' problema' : ' problemi')
+      : '';
+    summary.textContent = result.summary;
+    summary.className = 'summary' + (result.problems.length ? '' : ' ok');
+
+    if (result.problems.length === 0) {
+      problemsBox.innerHTML = '<div class="ok" style="font-size:13px">Nessun problema.</div>';
+    }
+
+    running = false;
+  }
+
+  // avvio
+  var saved = null;
+  try { saved = localStorage.getItem(STORE); } catch (e) {}
+  var fromHash = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+  if (fromHash && ESEMPI[fromHash]) code.value = ESEMPI[fromHash];
+  else code.value = saved !== null ? saved : ESEMPI.ciao;
+  drawGutter();
+
+  code.addEventListener('input', function () {
+    drawGutter();
+    try { localStorage.setItem(STORE, code.value); } catch (e) {}
+  });
+  code.addEventListener('scroll', function () { gutter.scrollTop = code.scrollTop; });
+  code.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Enter' && (ev.metaKey || ev.ctrlKey)) {
+      ev.preventDefault();
+      esegui();
+      return;
+    }
+    if (ev.key === 'Tab') {
+      ev.preventDefault();
+      var start = code.selectionStart, end = code.selectionEnd;
+      code.setRangeText('  ', start, end, 'end');
+      drawGutter();
+    }
+  });
+
+  document.getElementById('run').addEventListener('click', esegui);
+
+  examples.addEventListener('change', function () {
+    var key = examples.value;
+    if (!key || !ESEMPI[key]) return;
+    code.value = ESEMPI[key];
+    try { localStorage.setItem(STORE, code.value); } catch (e) {}
+    drawGutter();
+    examples.value = '';
+    esegui();
+  });
+
+  esegui();
+})();
+</script>
+</body>
+</html>

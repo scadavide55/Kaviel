@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Loud — editor</title>
+<title>Kaviel — editor</title>
 <style>
   :root {
     --bg: #0e1014;
@@ -129,8 +129,8 @@
 <body>
 
 <header>
-  <h1>Loud</h1>
-  <span class="tag">the language that never whispers</span>
+  <h1>Kaviel</h1>
+  <span class="tag">the language that speaks</span>
   <select id="examples" title="Examples">
     <option value="">Examples…</option>
     <option value="hello">Hello</option>
@@ -174,7 +174,7 @@
   var count = document.getElementById('count');
   var summary = document.getElementById('summary');
   var examples = document.getElementById('examples');
-  var STORE = 'loud.source';
+  var STORE = 'kaviel.source';
 
   var SAMPLES = {
     hello:
@@ -289,7 +289,7 @@
     var src = code.value;
     try { localStorage.setItem(STORE, src); } catch (e) {}
 
-    var result = Loud.run(src, {
+    var result = Kaviel.run(src, {
       input: function (question) {
         var a = window.prompt(question || 'Answer:', '');
         return a === null ? '' : a;

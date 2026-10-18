@@ -1,4 +1,4 @@
-# Loud — project specification
+# Kaviel — project specification
 
 Living document. Every decision taken lives here; what is still open is marked **OPEN**.
 The original hand-written draft is in `draft`, this file replaces it as the reference.
@@ -36,7 +36,7 @@ end
 - If they are missing: everything still runs and a **warning** appears (law 1).
 - No other files, no `import` in v1 (see §9).
 - Comments: `#` to the end of the line.
-- File extension: `.loud`.
+- File extension: `.kaviel`.
 
 ---
 
@@ -348,9 +348,9 @@ Four files, no dependencies:
 | File | Role |
 |---|---|
 | `engine.js` | lexer + parser + interpreter. **No DOM.** Runs in the browser and in Node |
-| `loud.html` | editor, Output panel, Problems panel, line marks |
+| `kaviel.html` | editor, Output panel, Problems panel, line marks |
 | `test.js` | runs the §10 examples in Node and compares output and problem counts |
-| `run.js` | runs a `.loud` file from the terminal (`node run.js hello.loud`) |
+| `run.js` | runs a `.kaviel` file from the terminal (`node run.js hello.kaviel`) |
 
 `examples/` holds runnable programs. The engine kept apart from the DOM is what makes it possible to really test the language instead of looking at it.
 
@@ -372,7 +372,7 @@ Four files, no dependencies:
 
 1. **`keypress`** — how it plugs into the page: a keyword that waits for a key press needs the editor to pause the engine midway. It is the only v0.2 item left.
 
-Everything else that was open is closed: the name is **Loud**, `random` uses consecutive lines, `pick` stays, and the whole project (code, messages, docs, page) is in English.
+Everything else that was open is closed: the name is **Kaviel**, `random` uses consecutive lines, `pick` stays, and the whole project (code, messages, docs, page) is in English.
 
 ---
 
@@ -401,8 +401,8 @@ The engine exists and runs. It is not a mock-up: `engine.js` is a real lexer + p
 
 ```
 node test.js                          # every case of §8
-node run.js examples/collatz.loud     # runs a file, reads answers from stdin
-open loud.html                        # editor with Output and Problems
+node run.js examples/collatz.kaviel     # runs a file, reads answers from stdin
+open kaviel.html                        # editor with Output and Problems
 ```
 
 `node` on this Mac sits in `/usr/local/bin/node`, which is not on the shell PATH: either type the whole path or add `/usr/local/bin` to PATH.
@@ -415,7 +415,7 @@ open loud.html                        # editor with Output and Problems
 | §10 examples (dice, rock-paper-scissors, Collatz) | expected output |
 | Collatz of 27 | reaches 1 in 111 computation steps; counted from 1 it reads 112 |
 | `random 67/33` over 1000 runs | 600–750 successes (expected ~670) |
-| `loud.html` in headless Brave | runs, marks the right lines, reaches `end`, shows 3 problems |
+| `kaviel.html` in headless Brave | runs, marks the right lines, reaches `end`, shows 3 problems |
 | `run.js` with `ask` from stdin | reads the line and carries on |
 
 ### Decisions taken while building (they were not in the spec)

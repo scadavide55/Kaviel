@@ -1,5 +1,5 @@
-/* engine.js — lexer + parser + interpreter for Loud.
-   No DOM: it runs in the browser (window.Loud) and in Node (require).
+/* engine.js — lexer + parser + interpreter for Kaviel.
+   No DOM: it runs in the browser (window.Kaviel) and in Node (require).
 
    Project law: the program never stops, but nothing passes in silence.
    lexer      → tokens (NEWLINE, INDENT, DEDENT included)
@@ -9,7 +9,7 @@
 
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
-  else root.Loud = factory();
+  else root.Kaviel = factory();
 })(typeof self !== 'undefined' ? self : globalThis, function () {
   'use strict';
 

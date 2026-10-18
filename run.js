@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-/* run.js — runs a .loud file from the terminal.
-   node run.js hello.loud
+/* run.js — runs a .kaviel file from the terminal.
+   node run.js hello.kaviel
    Answers to `ask` come from stdin, one line per question.   */
 
 const fs = require('fs');
@@ -8,7 +8,7 @@ const { run } = require('./engine.js');
 
 const file = process.argv[2];
 if (!file) {
-  console.error('Usage: node run.js program.loud');
+  console.error('Usage: node run.js program.kaviel');
   process.exit(2);
 }
 

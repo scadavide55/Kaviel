@@ -16,10 +16,12 @@
   // ---------------------------------------------------------------- constants
 
   var KEYWORDS = ['start', 'end', 'print', 'define', 'set', 'if', 'else', 'repeat',
-    'until', 'ask', 'random', 'pick', 'true', 'false', 'nothing'];
+    'until', 'ask', 'random', 'pick', 'return', 'break',
+    'true', 'false', 'nothing'];
   var KEYWORD_SET = new Set(KEYWORDS);
+  var OPERATORS = ['and', 'or', 'not'];
   var TWO_CHAR_OPS = ['==', '!=', '<=', '>='];
-  var ONE_CHAR_OPS = '=<>+-*/%(),{}';
+  var ONE_CHAR_OPS = '=<>+-*/%(),{}[]';
   var CMP = ['=', '==', '!=', '<', '>', '<=', '>='];
   var MAX_STEPS = 1000000;
 
@@ -189,6 +191,7 @@
         col += (j4 - i);
         i = j4;
         push(KEYWORD_SET.has(word) ? 'keyword' : 'ident', word, line, wordCol, word);
+        tokens[tokens.length - 1].friendly = OPERATORS.indexOf(word) >= 0;
         lineHasToken = true;
         continue;
       }
@@ -257,6 +260,9 @@
     var pos = 0;
     var known = new Set();
     var sawStart = false, sawEnd = false;
+    var declaredFunctions = new Set();
+    var functionDepth = 0, loopDepth = 0;
+    var mainEndLine = 1;
 
     function peek(k) { return tokens[Math.min(pos + (k || 0), tokens.length - 1)]; }
     function advance() { return tokens[pos++]; }
@@ -298,6 +304,7 @@
     }
 
     var statements = parseStatements();
+    mainEndLine = lastProgramLine(statements);
 
     if (!sawStart) {
       problems.push({
@@ -315,7 +322,87 @@
       });
     }
 
-    return { statements: statements, sawStart: sawStart, sawEnd: sawEnd };
+    return {
+      statements: statements,
+      sawStart: sawStart,
+      sawEnd: sawEnd,
+      declaredFunctions: Array.from(declaredFunctions),
+      mainEndLine: mainEndLine
+    };
+
+    function lastProgramLine(list) {
+      var last = 1;
+      for (var i = 0; i < list.length; i++) {
+        if (list[i].type !== 'Function') last = list[i].line;
+      }
+      return last;
+    }
+
+    function parseFunction(t, name) {
+      pos += 1; // past the function name: now on `(`
+      if (functionDepth) {
+        error(name, 'A function must be defined outside other functions.', 'Move it to its own line at the start of the program.');
+        skipBrokenBlock(t, 'define');
+        return null;
+      }
+      if (!isOp('(')) { error(peek(), 'Function parameters go inside `( )`.', 'For example: define double(n)'); skipBrokenBlock(t, 'define'); return null; }
+      pos++;
+      var params = [], valid = true;
+      while (!atEnd() && !isOp(')')) {
+        var p = advance();
+        if (p.type !== 'ident' || params.indexOf(p.value) >= 0) {
+          error(p, 'Each function parameter needs a different name.', ''); valid = false; break;
+        }
+        params.push(p.value);
+        if (!isOp(',')) break;
+        pos++;
+      }
+      if (!isOp(')')) { error(peek(), 'The `)` after the function parameters is missing.', ''); valid = false; }
+      else pos++;
+      if (!valid || !atEnd()) { if (valid) error(peek(), 'Nothing goes after a function header.', ''); skipBrokenBlock(t, 'define'); return null; }
+      var savedLoops = loopDepth;
+      loopDepth = 0; functionDepth++;
+      var body = parseBlock('define', t.line);
+      functionDepth--; loopDepth = savedLoops;
+      declaredFunctions.add(name.value);
+      return { type: 'Function', name: name.value, params: params, body: body, line: t.line };
+    }
+
+    function inlineAction() {
+      var next = peek(1);
+      return isOp('=') && next.type === 'keyword' && ['print', 'ask', 'set', 'define', 'return', 'break'].indexOf(next.value) >= 0 && (next.value !== 'ask' || peek(2).value === '{');
+    }
+
+    function parseKeyDefinition(t) {
+      pos++;
+      var slot = parseQuestionSlot('keypress');
+      if (slot === null) { recover(); return null; }
+      if (!isOp('=')) { error(peek(), 'A key definition needs `=` and a key.', 'For example: define keypress{1} = C'); recover(); return null; }
+      pos++;
+      var key = advance();
+      if (!atEnd() || (key.type !== 'ident' && key.type !== 'string')) {
+        error(key, 'A key must be a letter or a name such as Enter, Space or ArrowUp.', 'For example: define keypress{1} = C'); recover(); return null;
+      }
+      var supported = ['Enter', 'Space', 'Escape', 'Tab', 'Backspace', 'Delete', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+      if (key.value.length !== 1 && supported.indexOf(key.value) < 0) {
+        error(key, 'This key name is not supported.', 'Use one character, Enter, Space, Escape or an arrow key.'); return null;
+      }
+      return { type: 'DefineKey', slot: slot, key: key.value, line: t.line };
+    }
+
+    function parseKeyLink(t) {
+      pos++;
+      var keySlot = parseQuestionSlot('keypress');
+      if (keySlot === null) { recover(); return null; }
+      if (!isOp('=') || peek(1).value !== 'ask') {
+        error(peek(), 'Link the key to a question with `= ask{n}`.', 'For example: if keypress{1} = ask{1}'); recover(); return null;
+      }
+      pos += 2;
+      var questionSlot = parseQuestionSlot('ask');
+      if (questionSlot === null) { recover(); return null; }
+      if (!atEnd()) { error(peek(), 'Nothing goes after a key-to-question link.', ''); recover(); return null; }
+      return { type: 'AwaitQuestion', keySlot: keySlot, slot: questionSlot, line: t.line };
+    }
 
     function parseStatements() {
       var list = [];
@@ -454,6 +541,8 @@
             pos++;
             var nameTok = peek();
             if (t.value === 'define' && isKw('ask')) return parseQuestionDefinition(t);
+            if (t.value === 'define' && nameTok.value === 'keypress' && peek(1).value === '{') return parseKeyDefinition(t);
+            if (t.value === 'define' && nameTok.type === 'ident' && peek(1).value === '(') return parseFunction(t, nameTok);
             if (nameTok.type !== 'ident') {
               error(nameTok, 'After `' + t.value + '` comes a name.', 'For example: ' + t.value + ' age = 12');
               recover();
@@ -474,6 +563,16 @@
               if (isOp('}')) pos++;
               else { error(peek(), 'The `}` that closes `{ ' + slot + '` is missing.', ''); recover(); return null; }
             }
+            var indices = [];
+            while (isOp('[')) {
+              pos++;
+              indices.push(parseExpression());
+              if (!isOp(']')) { error(peek(), 'The `]` after the list position is missing.', ''); recover(); return null; }
+              pos++;
+            }
+            if (indices.length && t.value !== 'set') {
+              error(t, 'Change a list item with `set`.', 'For example: set items[1] = 5'); recover(); return null;
+            }
             if (!isOp('=')) {
               error(peek(), 'After the name the `=` is missing.', 'For example: ' + t.value + ' ' + nameTok.value + ' = 12');
               recover();
@@ -487,21 +586,40 @@
               recover();
               return null;
             }
-            return { type: t.value === 'define' ? 'Define' : 'Set', name: nameTok.value, slot: slot, expr: expr, line: t.line };
+            return { type: t.value === 'define' ? 'Define' : 'Set', name: nameTok.value, slot: slot, indices: indices, expr: expr, line: t.line };
           }
+
+          case 'return': {
+            pos++;
+            if (!functionDepth) { error(t, '`return` belongs inside a function.', 'A function starts with define name(...).'); recover(); return null; }
+            var value = atEnd() ? { type: 'Literal', value: null, line: t.line } : parseExpression();
+            if (!atEnd()) { error(peek(), 'Nothing goes after the returned value.', ''); recover(); return null; }
+            return { type: 'Return', expr: value, line: t.line };
+          }
+
+          case 'break':
+            pos++;
+            if (!loopDepth || !atEnd()) { error(t, '`break` sits alone inside a repeat or until loop.', ''); recover(); return null; }
+            return { type: 'Break', line: t.line };
 
           case 'if': {
             pos++;
+            if (peek().value === 'keypress' && peek(1).value === '{') return parseKeyLink(t);
             var beforeCond = problems.length;
             var cond = parseExpression();
-            if (problems.length > beforeCond || !atEnd()) {
+            if (problems.length > beforeCond || (!atEnd() && !inlineAction())) {
               if (!atEnd() && problems.length === beforeCond) {
                 error(peek(), 'Nothing goes after the `if` condition.', 'For example: if age > 10');
               }
               skipBrokenBlock(t, 'if');
               return null;
             }
-            var body = parseBlock('if', t.line);
+            var body;
+            if (inlineAction()) {
+              pos++;
+              var action = parseStatement();
+              body = { type: 'Block', body: action ? [action] : [], line: t.line };
+            } else body = parseBlock('if', t.line);
             var otherwise = null;
             if (isKw('else')) {
               var elseTok = advance();
@@ -532,7 +650,9 @@
               skipBrokenBlock(t, t.value);
               return null;
             }
+            loopDepth++;
             var loopBody = parseBlock(t.value, t.line);
+            loopDepth--;
             return { type: t.value === 'repeat' ? 'Repeat' : 'Until', expr: head, body: loopBody, line: t.line };
           }
 
@@ -587,10 +707,9 @@
           return null;
         }
         if (nextT.type === 'op' && nextT.value === '(') {
-          error(t, 'Functions written by you do not exist yet: `' + t.value + '` is not a command.',
-            'The commands so far are: print, define, set, if, else, repeat, until, random, pick, ask.');
-          recover();
-          return null;
+          var call = parseExpression();
+          if (!atEnd()) { error(peek(), 'Nothing goes after this function call.', ''); recover(); return null; }
+          return { type: 'ExprStmt', expr: call, line: t.line };
         }
         var suggestion = suggestFor(t.value, KEYWORDS.concat(Array.from(known)));
         error(t, 'I do not know `' + t.value + '`.', suggestion ? 'Did you mean `' + suggestion + '`?' : '');
@@ -612,16 +731,28 @@
 
     // ---- expressions
 
-    function parseExpression() { return parseComparison(); }
+    function parseExpression() { return parseLogic('or', parseAnd); }
+    function parseAnd() { return parseLogic('and', parseComparison); }
+    function parseLogic(word, next) {
+      var left = next();
+      while (peek().value === word) {
+        var t = advance();
+        left = { type: 'Binary', op: word, left: left, right: next(), line: t.line };
+      }
+      return left;
+    }
 
     function parseComparison() {
       var left = parseAdditive();
       for (;;) {
         var t = peek();
+        if (inlineAction()) break;
         if (t.type === 'op' && CMP.indexOf(t.value) >= 0) {
           pos++;
+          var op = t.value === '==' ? '=' : t.value;
+          if (op === '=' && (peek().value === 'under' || peek().value === 'over')) op = advance().value;
           var right = parseAdditive();
-          left = { type: 'Binary', op: t.value === '==' ? '=' : t.value, left: left, right: right, line: t.line };
+          left = { type: 'Binary', op: op, left: left, right: right, line: t.line };
         } else break;
       }
       return left;
@@ -655,11 +786,19 @@
 
     function parseUnary() {
       var t = peek();
-      if (t.type === 'op' && t.value === '-') {
+      if ((t.type === 'op' && t.value === '-') || t.value === 'not') {
         pos++;
-        return { type: 'Unary', op: '-', expr: parseUnary(), line: t.line };
+        return { type: 'Unary', op: t.value, expr: parseUnary(), line: t.line };
       }
-      return parsePrimary();
+      var node = parsePrimary();
+      while (isOp('[')) {
+        pos++;
+        var index = parseExpression();
+        if (!isOp(']')) { error(peek(), 'The `]` after the list position is missing.', ''); return { type: 'Bad', line: t.line }; }
+        pos++;
+        node = { type: 'Index', list: node, index: index, line: t.line };
+      }
+      return node;
     }
 
     function skipCallArgs() {
@@ -675,6 +814,19 @@
 
     function parsePrimary() {
       var t = peek();
+      if (isOp('[')) {
+        pos++;
+        var listItems = [];
+        while (!atEnd() && !isOp(']')) {
+          var beforeItem = pos;
+          listItems.push(parseExpression());
+          if (pos === beforeItem || !isOp(',')) break;
+          pos++;
+        }
+        if (!isOp(']')) { error(peek(), 'The `]` that closes this list is missing.', 'For example: [1, 2, 3]'); return { type: 'Bad', line: t.line }; }
+        pos++;
+        return { type: 'List', items: listItems, line: t.line };
+      }
 
       if (t.type === 'number' || t.type === 'string') {
         pos++;
@@ -750,9 +902,17 @@
           else error(peek(), 'The `}` is missing.', '');
         }
         if (isOp('(')) {
-          error(t, 'Functions written by you do not exist yet: `' + t.value + '` is not a command.', '');
-          skipCallArgs();
-          return { type: 'Bad', line: t.line };
+          pos++;
+          var callArgs = [];
+          while (!atEnd() && !isOp(')')) {
+            var beforeArg = pos;
+            callArgs.push(parseExpression());
+            if (pos === beforeArg || !isOp(',')) break;
+            pos++;
+          }
+          if (!isOp(')')) { error(peek(), 'The `)` after the function arguments is missing.', ''); return { type: 'Bad', line: t.line }; }
+          pos++;
+          return { type: 'Call', name: t.value, args: callArgs, line: t.line };
         }
         return { type: 'Name', name: t.value, slot: slot, line: t.line };
       }
@@ -1178,55 +1338,22 @@
 
   // ---------------------------------------------------------------- run
 
-  function run(src, options) {
-    options = options || {};
-    var problems = [];
-
-    var lex = tokenize(src);
-    problems = problems.concat(lex.problems);
-
-    var program = parse(lex.tokens, problems);
-
-    var interp = new Interpreter({
-      output: [],
-      input: options.input || null,
-      rng: options.rng || Math.random,
-      limit: options.limit || MAX_STEPS
-    });
-
-    try {
-      interp.execList(program.statements);
-    } catch (e) {
-      interp.error(1, 'Internal engine error: ' + (e && e.message ? e.message : 'unknown') + '.',
-        'Not your program\'s fault: report it.');
+  var runtime;
+  function getRuntime() {
+    if (!runtime) {
+      var create = typeof module === 'object' && module.exports ? require('./runtime.js') : globalThis.KavielRuntime;
+      if (!create) throw new Error('Load runtime.js before engine.js.');
+      runtime = create({ tokenize: tokenize, parse: parse, suggestFor: suggestFor, MAX_STEPS: MAX_STEPS });
     }
-
-    problems = problems.concat(interp.problems);
-    problems.sort(function (a, b) { return (a.line - b.line) || (a.col - b.col); });
-
-    var errors = 0, warnings = 0;
-    for (var i = 0; i < problems.length; i++) {
-      if (problems[i].kind === 'error') errors++;
-      else if (problems[i].kind === 'warning') warnings++;
-    }
-
-    return {
-      output: interp.output,
-      problems: problems,
-      errors: errors,
-      warnings: warnings,
-      steps: interp.steps,
-      stopped: interp.stopped,
-      summary: problems.length === 0
-        ? 'Done · no problems'
-        : 'Done · ' + problems.length + ' problems (' +
-          errors + (errors === 1 ? ' error' : ' errors') + ', ' +
-          warnings + (warnings === 1 ? ' warning' : ' warnings') + ')'
-    };
+    return runtime;
   }
+  function run(src, options) { return getRuntime().run(src, options); }
+  function runAsync(src, options) { return getRuntime().runAsync(src, options); }
 
   return {
+    VERSION: '1.0.0',
     run: run,
+    runAsync: runAsync,
     tokenize: tokenize,
     parse: parse,
     KEYWORDS: KEYWORDS,

@@ -39,6 +39,7 @@
       "runtime.js",
       "strings.js",
       "tutorials.js",
+      "run.js",
       "examples/**/*",
       "electron/**/*"
     ],
@@ -90,6 +91,7 @@
       "category": "Education",
       "icon": "build/icon.png",
       "artifactName": "Kaviel-${version}-beta-linux-${arch}.${ext}"
-    }
+    },
+    "artifactName": "Kaviel-${version}-${os}-${arch}.${ext}"
   }
 }

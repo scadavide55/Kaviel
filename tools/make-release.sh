@@ -19,7 +19,7 @@ done
 
 rm -rf "dist/$NAME" "dist/$NAME.zip"
 mkdir -p "dist/$NAME/application"
-cp index.html kaviel.html editor.css editor-ui.js engine.js i18n.js lessons.js runtime.js strings.js tutorials.js run.js README.md LANGUAGE.md LICENSE package.json "dist/$NAME/"
+cp index.html kaviel.html editor.css editor-ui.js engine.js i18n.js lessons.js runtime.js strings.js tutorials.js run.js README.md LANGUAGE.md LICENSE CHANGELOG.md package.json "dist/$NAME/"
 cp -R examples "dist/$NAME/examples"
 cp "dist/$DMG" "dist/$EXE" "dist/$TGZ" "dist/$NAME/application/"
 

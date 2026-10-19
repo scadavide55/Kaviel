@@ -27,7 +27,7 @@ The installers are published with each release, not stored in the repository (ea
 |---|---|
 | macOS (Intel and Apple silicon) | `Kaviel-1.0.0-beta-universal.dmg` |
 | Windows 10 and 11 | `Kaviel-1.0.0-beta-setup.exe` |
-| Linux (64-bit) | `Kaviel-1.0.0-beta-linux-x64.tar.gz` |
+| Linux (64-bit) | `Kaviel-1.5.0-beta-linux-x64.tar.gz` |
 
 To build them yourself, see "Building the installers" below.
 
@@ -44,7 +44,7 @@ The installers are not signed with a paid developer certificate, so the system m
 
 ## On the command line
 
-Kaviel 1.0 runs on Node.js 20 or newer, with no packages to install:
+The command runs on Node.js 20 or newer, with no packages to install. The desktop app installs it for you:
 
 ```
 node run.js run examples/hello.kv

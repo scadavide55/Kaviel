@@ -504,6 +504,50 @@
     lesson.steps.forEach(function (step) { step.code = window.KavielI18n.code(step.code); });
   });
 
+  // ---------------------------------------------------------- only in the app
+  // The desktop app writes the `kaviel` command on this computer, so it also
+  // carries a lesson that the website cannot have: the terminal, on this system.
+  if (window.kavielDesktop) {
+    var IS_WIN = /Windows/i.test(navigator.userAgent);
+    var IS_MAC = /Mac/i.test(navigator.userAgent);
+    var cli = window.kavielDesktop.cli || {};
+    var where = cli.dir || (IS_WIN ? '%LOCALAPPDATA%\\Kaviel\\bin' : '~/.local/bin');
+    var openTerminal = IS_WIN ? 'Start menù, scrivi "Prompt dei comandi" e aprilo.'
+      : IS_MAC ? 'Premi Cmd+Spazio, scrivi "Terminale" e aprilo.'
+      : 'Apri il terminale dal menù delle applicazioni.';
+    var TEXT = {
+      it: ['Il terminale, su questo computer', 'L\'app ti ha installato un comando', [
+        ['Il comando kaviel', 'Insieme all\'app è stato messo sul computer un comando chiamato kaviel. Non ha una finestra: si scrive nel terminale, e fa girare un programma con lo stesso motore dell\'app.\n\n' + openTerminal + '\n\nIl comando si trova in ' + where + '.', 'kaviel 1.5.0-beta'],
+        ['Fai girare un programma', 'Salva un programma con il pulsante Save: finisce nella cartella Download, con un nome che termina in .kv.\n\nNel terminale scrivi kaviel run e poi il percorso del file. Se non vuoi scrivere tutto il percorso, trascina il file dal Finder dentro la finestra del terminale: il percorso si scrive da solo.', 'Hello from my file'],
+        ['Aiuto e versione', 'Due comandi che servono sempre: kaviel help mostra come si usa, kaviel version dice quale versione sta girando.\n\nSe il terminale risponde "command not found", la cartella ' + where + ' non è nel PATH: chiudi e riapri il terminale, oppure aggiungi quella cartella al PATH nel tuo file di configurazione.', 'kaviel run <file.kv>   Run a program']
+      ]],
+      en: ['The terminal, on this computer', 'The app installed a command', [
+        ['The kaviel command', 'Together with the app, a command called kaviel was put on this computer. It has no window: you type it in a terminal, and it runs a program with the same engine as the app.\n\n' + (IS_WIN ? 'Open the Start menu, type "Command Prompt" and open it.' : IS_MAC ? 'Press Cmd+Space, type "Terminal" and open it.' : 'Open a terminal from your applications menu.') + '\n\nThe command lives in ' + where + '.', 'kaviel 1.5.0-beta'],
+        ['Run a program', 'Save a program with the Save button: it lands in your Downloads folder, with a name ending in .kv.\n\nIn the terminal, type kaviel run and then the path of the file. If you do not want to type the whole path, drag the file into the terminal window and the path writes itself.', 'Hello from my file'],
+        ['Help and version', 'Two commands you always need: kaviel help shows how to use it, kaviel version says which version is running.\n\nIf the terminal answers "command not found", the folder ' + where + ' is not on your PATH: close and reopen the terminal, or add that folder to PATH in your shell configuration file.', 'kaviel run <file.kv>   Run a program']
+      ]],
+      fr: ['Le terminal, sur cet ordinateur', 'L\'app a installé une commande', [
+        ['La commande kaviel', 'Avec l\'app, une commande appelée kaviel a été mise sur cet ordinateur. Elle n\'a pas de fenêtre : tu l\'écris dans un terminal, et elle lance un programme avec le même moteur que l\'app.\n\n' + (IS_WIN ? 'Ouvre le menu Démarrer, tape « Invite de commandes » et ouvre-la.' : IS_MAC ? 'Appuie sur Cmd+Espace, tape « Terminal » et ouvre-le.' : 'Ouvre un terminal depuis le menu des applications.') + '\n\nLa commande se trouve dans ' + where + '.', 'kaviel 1.5.0-beta'],
+        ['Lance un programme', 'Enregistre un programme avec le bouton Save : il arrive dans ton dossier Téléchargements, avec un nom qui finit par .kv.\n\nDans le terminal, tape kaviel run puis le chemin du fichier. Si tu ne veux pas taper tout le chemin, glisse le fichier dans la fenêtre du terminal : le chemin s\'écrit tout seul.', 'Hello from my file'],
+        ['Aide et version', 'Deux commandes toujours utiles : kaviel help montre comment s\'en servir, kaviel version dit quelle version tourne.\n\nSi le terminal répond « command not found », le dossier ' + where + ' n\'est pas dans le PATH : ferme et rouvre le terminal, ou ajoute ce dossier au PATH dans le fichier de configuration de ton shell.', 'kaviel run <file.kv>   Run a program']
+      ]]
+    };
+    var pack = TEXT[LANG] || TEXT.en;
+    var lesson = {title: pack[0], subtitle: pack[1], steps: []};
+    pack[2].forEach(function (row, i) {
+      lesson.steps.push({
+        title: row[0],
+        text: row[1],
+        code: i === 0 ? 'kaviel version' : i === 1 ? 'kaviel run Downloads/hello.kv' : 'kaviel help',
+        see: row[2],
+        turn: i === 0 ? (LANG === 'it' ? 'Scrivi kaviel version nel terminale e premi Invio.' : LANG === 'fr' ? 'Tape kaviel version dans le terminal et appuie sur Entrée.' : 'Type kaviel version in the terminal and press Enter.') : '',
+        slip: '',
+        desktopOnly: true
+      });
+    });
+    TUTORIALS.push(lesson);
+  }
+
   // One short sentence for each line of code, so the child knows what every line does.
   function explain(line) {
     var t = line.trim(), m, e = EXPLAIN;

@@ -382,7 +382,7 @@ node run.js program.kv    the same run, older habit
 - Ctrl+C stops the program and prints `Stopped by you.`
 - Exit codes: 0 finished, 1 at least one error, 2 file unreadable or command incomplete, 130 stopped.
 
-The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kaviel` (already on the PATH); it calls `run.js` with `/usr/local/bin/node`, because Node is not on the interactive PATH on this Mac. It runs programs from any folder: `kaviel run path/to/name.kv`.
+The `kaviel` command comes with the desktop app: on first launch the app writes a launcher to `~/.local/bin/kaviel` on macOS and Linux, or `%LOCALAPPDATA%\Kaviel\bin\kaviel.cmd` on Windows, and the app itself is the Node that runs `run.js`. The launcher points at the app, so moving the app means running it once again from the new place. The app also carries a lesson about the terminal, in the three languages, written for the system it finds itself on. It runs programs from any folder: `kaviel run path/to/name.kv`.
 
 ---
 

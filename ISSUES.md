@@ -30,6 +30,19 @@
 | H1 | 405 lines of the old interpreter removed from `engine.js` |
 | D | every count in the README and the specification brought up to date, help aligned |
 
+## Still open after 1.5
+
+| Item | Why it is still open |
+|---|---|
+| `import`, objects, file access | they are new features, not fixes; each one needs a design decision of its own |
+| the game in `examples/citadel.kv` speaks English | its lines are pieces glued together (`"you hit the"` + name + `"for"` + damage); a dictionary would produce broken Italian. It needs the program rewritten sentence by sentence, not a translation table |
+| the editor is about ten times slower than the terminal | 18 s against 1.7 s for the citadel; it needs profiling, not a guess |
+| the download address hard-codes the release tag | one line in `kaviel.html`; it breaks if the tag is renamed |
+| the installers are not signed | needs a paid certificate |
+| early commits still contain the hand-written draft | removing it rewrites history |
+| Esc while a program waits for the Escape key | read from the code, never proven in a browser |
+| no 1.5 installer has been built or tried | needs `npm install` and a build of three platforms |
+
 This file is the list that was started on 19 October 2026 and then checked again, item by item, against the code.
 Every line below was **run or read**, not guessed. Where a claim could not be reproduced it says so.
 

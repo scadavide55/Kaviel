@@ -1,7 +1,7 @@
 # Kaviel — what still has to be fixed
 
-Everything here was found by reading the code and running it, on 19 October 2026, against version 1.0.0-beta.
-Each item says where it is, how it was proven, and what to do. Nothing here is a guess.
+This file is the list that was started on 19 October 2026 and then checked again, item by item, against the code.
+Every line below was **run or read**, not guessed. Where a claim could not be reproduced it says so.
 
 Priority: **P0** breaks a program silently · **P1** wrong or missing behaviour · **P2** rough edge · **P3** tidiness.
 
@@ -13,49 +13,120 @@ Priority: **P0** breaks a program silently · **P1** wrong or missing behaviour 
 
 `if pick 1, 2 = 2` does not compare: the parser puts `(2 = 2)` inside the list of values, so the condition tests the picked value itself and is always true.
 
-Proof: a loop of 200 rounds, `if pick 1, 2 = 2` was true **200/200**. With the comparison on the other side, `if 2 = pick 1, 2`, it was correct: **42/100**. With `set v = pick 1, 2` first and then `if v = 2`, correct: **104/200**.
+Proof: a loop of 200 rounds was true **200/200**. With `set v = pick 1, 2` first and then `if v = 2`: **104/200**, correct. With the comparison on the other side, `if 2 = pick 1, 2`: **42/100**, correct.
 
-Where: `engine.js:876-890`, the `pick` branch builds its items with `parseExpression()`, which keeps reading operators to the right.
+Where: `engine.js:876-890`.
 
-Fix: parse each item one precedence level lower (additive), or make `pick` require parentheses when used inside an expression. A test must be added: `pick` on the left of `= <> <= >= + - * /` returns a value of its own list, never a boolean.
+Fix: parse each item one precedence level lower, or require parentheses. Add the test.
 
 ### A2 · the same swallowing with arithmetic — **P1**
 
-`pick 1, 2 + 10` can read as "pick between 1 and 12". Same root cause as A1, same fix.
+`pick 1, 2 + 10` reads as "pick between 1 and 12". Same fix as A1.
 
-### A3 · `define` inside a loop prints a warning on every round — **P1**
+### A3 · `define` inside a loop warns on every round — **P1**
 
-A block is not a scope: the second time through, the name "already exists" and the interpreter warns. A beginner writing a loop gets two warnings for a correct program. In `examples/citadel.kv` this had to be avoided by hand.
+A block is not a scope: the second time through, the name "already exists". `repeat 3` with `define x` inside gave 2 warnings for a correct program. The citadel had to avoid it by hand.
 
-Proof: a `repeat 3` with `define x = i * 10` inside gave 2 warnings ("`x` already existed").
+Decide: block scope, silence, or a line in the specification.
 
-Decide: either blocks get their own scope, or `define` inside a loop is silent, or the specification says plainly that names are global and `define` is only for the first time.
+### A4 · an index must be a whole number, and there is no integer division — **P1**
 
-### A4 · a whole number is required to index a list, and there is no integer division — **P1**
+`items[(1 + 10) / 2]` is an error because `/` gives 5.5. Every index computation needs a helper `int(x) = x - x % 1`.
 
-`items[(1 + 10) / 2]` is an error, because `/` gives 5.5. There is no `//`. Every program that computes an index must carry a helper like `int(x) = x - x % 1` — the citadel needs it for its binary search.
+### A5 · `%` follows the sign of the left side — **P2**
 
-Suggestion: accept a whole-number float as a position, and/or add `//`.
+`-5 % 3` is **-2**, `5 % -3` is **2**. The `int()` helper depends on it. Not in the specification.
 
-### A5 · `%` follows the sign of the left side, and the specification never says so — **P2**
-
-`-5 % 3` is **-2**, `5 % -3` is **2**. The `int()` helper depends on it, and the map arithmetic in the citadel relies on adding `size` before `%`. It belongs in §9 of the specification in one line.
-
-### A6 · `nothing` prints as the word "nothing" — **P1** (already OPEN §19)
-
-`print nothing` shows `nothing`. Most small languages print an empty line. Decide, and write it down.
+### A6 · `nothing` prints as the word "nothing" — **P1** (OPEN §19)
 
 ### A7 · `keypress` only works together with `ask` — **P2**
 
-`if keypress{1} = print "got it"` is an error: "Link the key to a question with `= ask{n}`". So a program cannot simply wait for a key; it must also ask a question. The citadel works around it by asking the name right after the key.
+`if keypress{1} = print "x"` is an error; a program cannot simply wait for a key.
 
 ### A8 · error message grammar — **P3**
 
-Calling `g(x)` with two arguments says: "`g` needs 1 arguments, not 2". It has to say "1 argument", singular. `runtime.js`, the arity check.
+`g(x)` called with two arguments says "needs 1 arguments, not 2".
 
-### A9 · the step limit message accuses the wrong thing — **P2**
+### A9 · the step limit accuses the wrong thing — **P2**
 
-A big but correct program that reaches 1,000,000 steps gets "a loop is not ending. Look at the repeat / until condition". In the citadel the loop was ending fine; the program was simply doing more work than the budget (it recomputed a path search every turn). Suggest: "the program used its 1,000,000 steps" plus the biggest loop.
+A large but correct program gets "a loop is not ending". It happened with the first citadel, whose loop was ending fine.
+
+### A10 · **NEW** — the words `and`, `or`, `not`, `under`, `over` break when written as quoted text — **P0**
+
+The parser looks at the value of a token, not its kind.
+
+| Written | Gives | Should give |
+|---|---|---|
+| `print "Tom" "and" "Jerry"` | `true` | `Tom and Jerry` |
+| `print "a" "or" "b"` | `true` | `a or b` |
+| `print "not"` | error "Something to compute is missing here" | `not` |
+
+Consequence: a beginner writes "rock and roll" in a game and the program answers `true`. Nothing in the tests covers it. Where: `parseLogic`, `parseNot`, `parseUnary` in `engine.js`.
+
+### A11 · **NEW** — a text that doubles ends in "Internal engine error" — **P1**
+
+`define s = "ab"` and `set s = s + s` in a loop works up to 26 rounds (**134,217,728 characters**), then fails at round 27 with "Internal engine error. The program stopped safely." — a message that blames the engine, not the program, and gives no limit. Note the failure arrives *before* the fixed limit of the output (10 000 lines), so the step budget never runs out: it is the memory of a text.
+
+There is no maximum text length anywhere in `engine.js` or `runtime.js`, while lists stop at 100 000 items and output at 10 000 lines. Fix: a limit on text length (say 1 000 000 characters), and a message that says "this text is too long".
+
+### A12 · **NEW** — accented letters cannot be part of a name — **P1**
+
+`define città = 5` gives `I do not know this symbol: à`. The interface speaks Italian and French, so `città`, `età`, `perché` are natural names. Either allow `\p{L}` in names, or say plainly "use letters without accents".
+
+### A13 · **NEW** — the decimal comma is refused — **P1**
+
+`number("1,5")` is an error. For Italian, French and Belgian users the comma is the normal decimal mark. Accept it, or say in the message that a dot is needed.
+
+### A14 · **NEW** — the same error repeats for every round of a loop — **P1**
+
+A wrong name inside `repeat 50` produced **50 identical problems** (100 lines in the terminal). At the 1 000 000 step limit the Problems panel fills with copies. Fix: deduplicate by line and message with a counter ("×50"), and cap the number shown.
+
+### A15 · **NEW** — `else` after a one-line `if` is an error — **P0 for the promise of the language**
+
+```
+if a = 1 = print "uno"
+else
+  print "altro"
+```
+gives "`else` alone means nothing". The law "one thing, one way" is broken: the one-line `if` and the block `if` behave differently. Either support it, or make the message say "an `else` needs the block form".
+
+### A16 · **NEW** — code after `end` runs with no warning — **P2**
+
+```
+start
+print "a"
+end
+print "b"
+```
+prints `a` and then `b`, silently. At least a warning.
+
+### A17 · **NEW** — a function cannot be called before its definition — **P2**
+
+`print f(2)` before `define f(x)` is an error, although the specification (§7) says "functions may be called before their line". Either register all functions first, or correct §7 and say in the message "define it higher up".
+
+### A18 · **NEW** — `print "Ciao" nome "!"` gives `Ciao Mario !` — **P1 for the promise, P2 for the code**
+
+The rule "one space between pieces" puts a space before the `!`. Written in the specification, but ugly in Italian and French. Decide: attach `! ? . , : ;` to the piece before them, or document it loudly.
+
+### A19 · **NEW** — `print "" nome` starts with a space — **P2**
+
+Same family as A18.
+
+### A20 · **NEW** — `and` and `or` turn anything into a boolean, and `print` shows it — **P1**
+
+`print 1 and 2` is `true`, `print 0 and 1` is `false`, `print "x" or 1` is `true`. Also `if 0` is false: **0, "", false and nothing are false** — a hidden rule that appears nowhere in the specification, the lessons or the guide. Either document truthiness and booleans, or make `print 1 and 2` an error.
+
+### A21 · **NEW** — `<` and `>` refuse text — **P2**
+
+`if "a" < "b"` is an error ("A `<` wants two numbers"). Fine, but the lesson on text says only that `=` works. Documented or supported, decide.
+
+### A22 · **NEW** — `define length = 3` is accepted, `define print = 3` is not — **P1**
+
+The built-in commands `length`, `append`, `number` can be shadowed by a variable, and the function then breaks. A child naming a box `length` breaks `length()`. Reserve them like keywords, with the same hint.
+
+### A23 · **NEW** — the message about `under`/`over` says "response" — **P3**
+
+`if a = under 5` where `a` is text says "this response is not a valid number", but `a` is not an answer. Make the message say "this value".
 
 ---
 
@@ -63,14 +134,14 @@ A big but correct program that reaches 1,000,000 steps gets "a loop is not endin
 
 | Missing | Why it matters |
 |---|---|
-| `for each` to walk a list | without it, every list needs a counter, an index and three lines (OPEN §19) |
-| text tools: take a part, upper/lower, find, split | `length` works on text, nothing else; no quiz can check an answer letter by letter |
+| `for each` to walk a list | every list needs a counter and three lines (OPEN §19) |
+| text tools: a part, upper/lower, find, split | `length` is the only text command |
 | integer division `//` | see A4 |
 | `import` / modules | the language stops at one file (OPEN §19) |
-| objects / records | a monster is three separate variables and three globals |
-| `random` as an expression, e.g. `random(1, 6)` | today `random` is a statement with blocks; `pick` covers values only |
+| objects / records | a monster is three globals |
+| `random` as an expression (`random(1, 6)`) | `random` is a statement, `pick` covers values only |
 | reading and writing files | nothing survives a run |
-| a real `while` | `until` is enough today, but reads backwards for a negative condition |
+| a way to type a new line inside text that the lessons teach | `\n` works but nobody says so |
 
 ---
 
@@ -78,14 +149,11 @@ A big but correct program that reaches 1,000,000 steps gets "a loop is not endin
 
 | Measurement | Result |
 |---|---|
-| The citadel in the terminal, whole game | **1.7 s** |
-| The same game in the editor (browser) | **18 s** |
+| The citadel, terminal | **1.7 s** |
+| The citadel, editor in the browser | **18 s** |
 | `fib(16)`, 3193 calls, terminal | 0.2 s |
-| 2000 loop iterations, terminal | 0.06 s |
 
-The browser is about ten times slower than the terminal for the same program. The editor rebuilds output through the DOM and the runtime is a generator with an await per statement; worth profiling before the next release, because a beginner seeing 18 s concludes that the program is broken.
-
-Also: the step budget of 1,000,000 is reached by real programs (the first version of the citadel hit it). Either raise it or make the work per statement cheaper.
+The browser is about ten times slower. The editor rebuilds the output element on every line; profile before the next release, because a beginner seeing 18 s thinks the program is broken.
 
 ---
 
@@ -95,20 +163,27 @@ Also: the step budget of 1,000,000 is reached by real programs (the first versio
 |---|---|---|
 | `README.md:66` | `examples/` · 14 small programs | 15 |
 | `LANGUAGE.md:343` | `ide-test.html` · 136 browser checks | 137 |
-| `LANGUAGE.md:384` | … 13 lessons (50 steps …) and 14 examples | 15 examples |
+| `LANGUAGE.md:384` | 13 lessons … and 14 examples | 15 examples |
 | `LANGUAGE.md:400` | `ide-test.html` in Brave · 136 passed | 137 |
-| `LANGUAGE.md:403` | The ten examples in `examples/` | there are 15, and one needs input |
-| `LANGUAGE.md:18` | v1 has 14 keywords | the engine reserves 17 words: `true`, `false` and `nothing` are literals but cannot be used as names either |
-| `kaviel help` | `kaviel run <file.kv>   Run a program` / `kaviel help               Show this help` | the columns do not line up |
+| `LANGUAGE.md:403` | The ten examples in `examples/` | 15, and one needs input |
+| `LANGUAGE.md:18` | v1 has 14 keywords | the engine reserves 17 (`true`, `false`, `nothing` are literals but cannot be names) |
+| `kaviel help` | the two columns do not line up | |
+| `LANGUAGE.md` §7 | functions may be called before their line | they cannot (A17) |
+| `examples/citadel.kv` header | "Every word of the language appears at least once" | `break` appears **0 times**; `int` and `sign` are defined and never used |
+| everywhere | 0, "", false and nothing are false | never written down (A20) |
 
 ---
 
 ## E. Translations
 
-- **E1** · the new example is not translated: "The citadel" and "The biggest program of all" are missing from `i18n.js`, so the button stays English in Italian and French. **P2**
-- **E2** · the text inside quotes in `examples/citadel.kv` is not in `strings.js` (goblin, skeleton, "blocks the way!", "critical hit!"…), so the game speaks English in both languages. Every other example is translated. **P2**
-- **E3** · `i18n.js` has the entry "Lessons and examples" twice. Harmless, but it means the table is not checked. **P3**
-- **E4** · nothing checks that every label in `kaviel.html` has a translation; a missing one silently stays English.
+- **E1** · "The citadel" and "The biggest program of all" are missing from `i18n.js`: the button stays English. **P2**
+- **E2** · the text inside quotes in `examples/citadel.kv` is not in `strings.js`, so the game speaks English in Italian and French. **P2**
+- **E3** · "Lessons and examples" is in `i18n.js` twice. **P3**
+- **E4** · nothing checks that every label in `kaviel.html` has a translation.
+- **E5** · **NEW** · the Italian and French lessons still say "right" in English ("una con sinistra, una con right", "une fois avec right"). **P2**
+- **E6** · **NEW** · "Your own game!" is not translated in the last lesson. **P2**
+- **E7** · **NEW** · in the French lesson "Si ceci, alors cela" there is a doubled phrase: "poussées à droite vers la droite". **P3**
+- **E8** · **NEW** · `questions.kv` and `keypress.kv` still print `You are 14 Years old.` — capital Y, from the original hand-written example. `years old.` reads better. **P3**
 
 ---
 
@@ -117,41 +192,70 @@ Also: the step budget of 1,000,000 is reached by real programs (the first versio
 | Hole | Consequence |
 |---|---|
 | no test puts `pick` on the left of a comparison | A1 shipped in 1.0 |
-| `test.js:438` tests `pick` with a fixed `rng` and one value | it proves the value is in range, never that the distribution is right |
-| nothing checks that every file in `examples/` is linked from the editor | two links (`guess_the_number.kv`, `times_table.kv`) pointed at files that do not exist until today |
-| nothing checks i18n coverage | see E1 and E4 |
-| no example is run with scripted input in the tests | `questions.kv`, `keypress.kv` and the citadel are never exercised by the suite |
-| no test of the browser at 100 % (only headless, one viewport) | layout on a real phone unverified |
+| no test writes `"and"`, `"or"`, `"not"` as text | A10 shipped in 1.0 |
+| nothing checks text length | A11 |
+| nothing checks accented names or the decimal comma | A12, A13 |
+| nothing checks that errors are not repeated per round | A14 |
+| no test of one-line `if` followed by `else` | A15 |
+| nothing runs code after `end` | A16 |
+| nothing checks calling a function before its line | A17 (and the spec says otherwise) |
+| `test.js:438` tests `pick` with a fixed random number | it proves the value is in range, never the distribution |
+| nothing checks that every file in `examples/` is linked | two links pointed at missing files until today |
+| nothing checks i18n coverage | E1 to E8 |
+| no example is run with scripted input | `questions.kv`, `keypress.kv`, the citadel never run in the suite |
 
 ---
 
 ## G. Packaging and release
 
-- **G1** · the desktop app does not install the `kaviel` command: `package.json` `build.files` does not include `run.js`, and the app is sandboxed. Decided, but it should be written in the README next to "On the command line". **P2**
-- **G2** · the Windows `.exe` and the Linux `.tar.gz` have never been launched on a real machine of those systems. Only built. **P1 for confidence, not for code**
-- **G3** · no continuous integration: nothing runs the four suites on a push, so a broken commit can be published. **P2**
-- **G4** · `editor-ui.js?v=1.0.0` in `kaviel.html` is a hand-written cache key: change the file and forget the number, and browsers keep the old script (this happened today, and cost four reloads). Make it part of the release script. **P2**
-- **G5** · the download address in `kaviel.html` hard-codes the tag `kaviel-1.0.0`: rename the release and the button breaks. It is one line, but nothing checks it. **P2**
-- **G6** · installers are not signed: macOS and Windows warn on first launch. Written in the README, cannot be fixed without paying. **P3**
-- **G7** · the early commits of the public repository still contain the hand-written `draft` that was later removed. Removing it needs a history rewrite. **P3**
-- **G8** · `tools/make-release.sh` still packs `application/` into a zip that is no longer published. Either keep it and say why, or drop it. **P3**
+- **G1** · the desktop app does not install the `kaviel` command; `build.files` has no `run.js` and the app is sandboxed. **P2**
+- **G2** · the Windows `.exe` and the Linux `.tar.gz` have never been launched on those systems. **P1 for confidence**
+- **G3** · no continuous integration: nothing runs the four suites on a push. **P2**
+- **G4** · `editor-ui.js?v=1.0.0` is a hand-written cache key; forget to change it and browsers keep the old script (this happened). **P2**
+- **G5** · the download address hard-codes the tag `kaviel-1.0.0`. **P2**
+- **G6** · installers are not signed: the systems warn on first launch. **P3**
+- **G7** · early commits of the public repository still contain the hand-written `draft`. Removing it needs a history rewrite. **P3**
+- **G8** · `tools/make-release.sh` packages `application/` into a zip nobody publishes any more. **P3**
+- **G9** · **NEW** · the release zip copies `README.md` and `LANGUAGE.md` but **not** `LICENSE`, `package.json` or `CHANGELOG`. **P3**
+- **G10** · **NEW** · `run.js` requires `fs` and never uses it; `ARROWS` is only used in key mode. Dead weight in the command line. **P3**
+- **G11** · **NEW** · the version `1.0.0` lives in `engine.js:1363`, in `package.json` and inside the release file names with a fixed `-beta`. Three places to change, one forgotten is enough. **P2**
 
 ---
 
-## H. Product questions, not code
+## H. Dead code
 
-- **H1** · no child has ever used the lessons. Every claim about a six-year-old is a hope until one does, without help, while somebody writes down where it stops.
-- **H2** · the last lesson asks for about 25 lines typed by hand; on a phone the symbol bar is the only way to write `{ }`.
-- **H3** · the lessons cannot be reset as a group: the ticks live in `localStorage` and only the panel can clear them one by one.
-- **H4** · a program that uses `ask` cannot be run without a person at the keyboard, so the editor cannot show an example *and* its output before it is run.
+- **H1** · **NEW** · `engine.js` still contains the old `Interpreter` (from line 988 to about 1346) with `show`, `joinPrinted`, `typeName`, `truthy` and `skipCallArgs`. Nothing uses it: `engine.js` hands everything to `runtime.js`. Two implementations in one repository is a trap: someone will fix the wrong one. **P1**
+
+---
+
+## I. Not verified, to try in the browser
+
+These come from reading `kaviel.html` and `editor-ui.js`, not from running them.
+
+- **I1** · Esc stops the run *before* the key waiter sees it (`kaviel.html:565`), so a program waiting for `Escape` can never receive it.
+- **I2** · Stop while a question is open may produce a fake error ("The input could not be read").
+- **I3** · the output grows with a DOM update per line; with 10 000 lines it will crawl (this is part of C).
+- **I4** · choosing an example overwrites the draft in the editor without asking.
+- **I5** · `under` and `over` are not highlighted: they are missing from `KEYWORDS`.
+- **I6** · the terminal lets arrow keys through as `[A` when it reads a whole line.
+
+---
+
+## J. Product questions, not code
+
+- **J1** · no child has ever used the lessons. Every claim about a six-year-old is a hope until one does, without help, while somebody writes down where it stops.
+- **J2** · the last lesson asks for about 25 lines typed by hand.
+- **J3** · the lessons cannot be reset as a group.
+- **J4** · a program with `ask` cannot be shown already run.
 
 ---
 
 ## The order I would fix them in
 
-1. **A1 + A2** — the only ones that give a wrong answer without saying anything.
-2. **A3** — every beginner will meet it in the first week.
-3. **A4 + B `for each`** — the two things that make real programs long.
-4. **C** — the browser speed, before telling anyone the editor is usable.
-5. **D + E** — the documents and the translations, an hour of work.
-6. **F** — the tests that would have caught A1 and the two dead links.
+1. **A1, A2, A10** — the three that give a wrong answer without saying so.
+2. **A15, A22** — they break the two promises of the language: one way to do a thing, and a name never bites you.
+3. **A14, A11** — a broken loop must not bury the screen, and a text must have a limit.
+4. **A3, A4, A12, A13** — what a beginner meets in the first week.
+5. **C** — the browser speed, before telling anyone the editor is usable.
+6. **H1, D, E** — dead code, documents, translations: an afternoon.
+7. **F** — the tests that would have caught all of the above.

@@ -1,5 +1,8 @@
 # Kaviel 1.0
 
+**[Try it in your browser](https://scadavide55.github.io/Kaviel/)** · no install, no account, works offline ·
+[Download the desktop app](https://github.com/scadavide55/Kaviel/releases)
+
 Kaviel is a very small programming language. A program reads almost like English, and every line says what it does:
 
 ```
@@ -81,4 +84,4 @@ To try the desktop app without building it: `npm start`.
 
 ## License
 
-Kaviel is not published under an open license yet.
+Kaviel is released under the MIT license: you can use it, change it and share it, as long as this notice stays with it. See [LICENSE](LICENSE).

@@ -20,7 +20,7 @@
     "electron": "44.9.0",
     "electron-builder": "26.15.3"
   },
-  "license": "UNLICENSED",
+  "license": "MIT",
   "build": {
     "appId": "app.kaviel.ide",
     "productName": "Kaviel",

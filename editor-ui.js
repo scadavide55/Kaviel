@@ -153,12 +153,17 @@
     var ua = navigator.userAgent;
     var os = /Android|iPhone|iPad|iPod/i.test(ua) ? '' : /Mac/i.test(ua) ? 'mac' : /Win/i.test(ua) ? 'win' : /Linux|X11/i.test(ua) ? 'linux' : '';
     if (!app || !app.files || !os || !app.files[os]) { link.remove(); return; }
-    link.setAttribute('href', app.base + app.files[os]);
-    link.setAttribute('download', app.files[os]);
+    // Served over the web the installers are not in the repository: they are in the release.
+    var fromWeb = location.protocol === 'http:' || location.protocol === 'https:';
+    var where = fromWeb && app.release ? app.release : app.base;
+    link.setAttribute('href', where + app.files[os]);
+    if (fromWeb && app.release) link.removeAttribute('download');
+    else link.setAttribute('download', app.files[os]);
     link.setAttribute('title', t('Download Kaviel for your computer') + ' — ' + {mac: 'macOS', win: 'Windows', linux: 'Linux'}[os]);
     // From a website, say so plainly when the installer is not there yet (a 404 page helps nobody).
     link.addEventListener('click', function (ev) {
       if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+      if (app.release) return; // the release address is always there; no need to ask first
       ev.preventDefault();
       fetch(link.href, {method: 'HEAD'}).then(function (response) {
         if (response.ok) location.href = link.href;

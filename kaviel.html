@@ -12,6 +12,9 @@
   window.KAVIEL_APP = {
     version: '1.0.0-beta',
     base: 'application/',
+    // Where the installers are when the page is served by GitHub Pages:
+    // they are too big for the repository, so they live in the release.
+    release: 'https://github.com/scadavide55/Kaviel/releases/download/kaviel-1.0.0/',
     files: {mac: 'Kaviel-1.0.0-beta-universal.dmg', win: 'Kaviel-1.0.0-beta-setup.exe', linux: 'Kaviel-1.0.0-beta-linux-x64.tar.gz'}
   };
   // The desktop app never shows the download button: it is already installed.
@@ -21,7 +24,7 @@
 <body>
 
 <header class="topbar">
-  <a class="brand" href="kaviel.html" aria-label="Kaviel, start page">
+  <a class="brand" href="./" aria-label="Kaviel, start page">
     <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" class="logo-bg"/><path d="M11 8v16M11 17l9-9M14.5 14l6.5 10" class="logo-k"/></svg>
     <span>Kaviel</span>
   </a>

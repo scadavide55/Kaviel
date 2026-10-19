@@ -500,18 +500,21 @@
     check('Using a symbol marks the file as edited', doc.getElementById('edited').hidden === false);
     var download = doc.getElementById('download');
     var downloadHref = download.getAttribute('href');
-    check('The download button points at the installer for this system', !!download && /application\/Kaviel-.+\.(dmg|exe|tar\.gz)$/.test(downloadHref) && download.hasAttribute('download'));
+    check('The download button points at the installer for this system', !!download && /(application\/|releases\/download\/.+\/)Kaviel-.+\.(dmg|exe|tar\.gz)$/.test(downloadHref));
     doc.documentElement.dataset.desktop = '1';
     check('The desktop app hides the download button', win.getComputedStyle(download).display === 'none');
     delete doc.documentElement.dataset.desktop;
 
     // The installers are not kept in the repository, so the page is checked twice:
     // with the file present it must download, without it must say so instead of opening a broken page.
+    var localInstaller = downloadHref;
     var installerHere = false;
     try {
-      installerHere = (await fetch(downloadHref, {method: 'HEAD'})).ok;
+      installerHere = (await fetch(localInstaller, {method: 'HEAD'})).ok;
     } catch (e) { installerHere = false; }
-    if (installerHere) {
+    if (win.KAVIEL_APP && win.KAVIEL_APP.release) {
+      check('Over the web the download goes to the release, not to a missing file', downloadHref.indexOf(win.KAVIEL_APP.release) === 0 && !download.hasAttribute('download'));
+    } else if (installerHere) {
       var clickedDownload = doc.getElementById('download');
       clickedDownload.click();
       check('An installer that exists is downloaded, not reported as missing', doc.getElementById('toast').hidden || doc.getElementById('toast-text').textContent.indexOf('Kaviel-1.0.0-beta-') < 0);

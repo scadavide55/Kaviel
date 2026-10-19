@@ -301,3 +301,7 @@ dialog::backdrop { background: #2b242088; }
   #theme-toggle { display: none; }
   .brand { margin-right: 0; }
 }
+
+.lang { padding: 6px 8px; background: var(--card); border: 2px solid var(--line); border-radius: 9px; font-weight: 600; }
+.lang:hover { border-color: var(--edge); }
+@media (max-width: 460px) { .lang { max-width: 74px; } }

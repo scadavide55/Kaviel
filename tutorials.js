@@ -322,6 +322,7 @@
     }
   ];
 
+  if (window.KavielI18n) window.KavielI18n.lessons(TUTORIALS);
   window.KavielTutorials = TUTORIALS;
 
   var panel = document.getElementById('tutorial');

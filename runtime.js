@@ -301,10 +301,12 @@
       const right = yield* this.eval(node.right); if (right === ERROR) return ERROR;
       const op = node.op;
       if (op === 'and' || op === 'or') return truthy(right);
-      if (op === 'under' || op === 'over') {
+      if (op === 'under' || op === 'over' || op === 'is') {
         const a = numeric(left), b = numeric(right);
-        if (a === ERROR || b === ERROR) return this.error(node.line, '`' + op + '` needs numeric values; this response is not a valid number.');
-        return op === 'under' ? a < b : a > b;
+        if (a === ERROR || b === ERROR) return this.error(node.line, '`' + op + '` compares numbers, and one of these two values is not a number.', 'If it comes from a question, check that the answer is really a number.');
+        if (op === 'under') return a < b;
+        if (op === 'over') return a > b;
+        return a === b;
       }
       if (op === '=' || op === '!=') {
         const comparable = typeName(left) === typeName(right);

@@ -20,7 +20,12 @@ for (const [age, label] of [['17', 'young'], ['18', 'exactly'], ['19', 'adult']]
 }
 check('thresholds read numbers out of padded text', program('define ask{1} = ("Age?")\nask{1}\nif answer{1} = under 19 = print "young"\nif answer{1} = over 17 = print "adult"'), {input: [' 18 '], output: ['young', 'adult']});
 for (const input of ['hello', '', '0x12', 'Infinity']) check('invalid numeric input ' + input,
-  program('define ask{1} = ("Age?")\nask{1}\nif answer{1} = over 18 = print "wrong"\nprint "alive"'), {input: [input], output: ['alive'], errors: 1, contains: 'numeric'});
+  program('define ask{1} = ("Age?")\nask{1}\nif answer{1} = over 18 = print "wrong"\nprint "alive"'), {input: [input], output: ['alive'], errors: 1, contains: 'not a number'});
+for (const [written, says] of [['18', 'yes'], [' 18 ', 'yes'], ['18.0', 'yes'], ['17', 'no'], ['19', 'no']]) {
+  check('is reads a number from the answer: ' + written, program('define ask{1} = ("Age?")\nask{1}\nif answer{1} = is 18 = print "yes"'), {input: [written], output: says === 'yes' ? ['yes'] : []});
+}
+check('is works on plain numbers and on text', program('print 18 = is 18\nprint "18" = is 18\nprint "18" = 18'), {output: ['true', 'true', 'false'], errors: 0, warnings: 1});
+check('is refuses text that is not a number', program('print "ciao" = is 18\nprint "alive"'), {output: ['alive'], errors: 1, contains: 'not a number'});
 check('inline equality', program('define x = 2\nif x = 2 = print "yes"\nif x = 3 = print "no"'), {output: ['yes']});
 check('inline set and numbered question', program('define ask{1} = ("Name?")\ndefine x = 0\nif true = set x = 2\nif x = 2 = ask{1}\nprint answer{1} x'), {input: ['Ada'], output: ['Ada 2']});
 check('legacy comparison to ask call', program('if "yes" = ask("?")\n  print "same"'), {input: ['yes'], output: ['same']});

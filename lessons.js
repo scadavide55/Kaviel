@@ -99,7 +99,7 @@ Hello Ada`, `Run it and type your name.`, `The curly brackets { } are part of th
 You can ask them in any order. The number is what links a question to its answer.`, `Your name? Ada
 Your city? Rome
 Ada lives in Rome`, `Add a third question about your favourite food.`, ``],
-        ['Under 18 or over 18', `Kaviel has two special words to compare numbers: under and over. under 18 means smaller than 18. over 18 means bigger than 18, so 18 itself is neither under nor over.
+        ['Under 18 or over 18', `Kaviel has two special words to compare numbers: under and over. under 18 means smaller than 18. over 18 means bigger than 18, so 18 itself is neither under nor over. A third word, is, asks for exactly that number: answer{1} = is 18.
 
 The lines below are the short way to write a choice. They read like English: if the answer is under 18, print this.`, `Type 10: You are under 18.
 Type 18: You are exactly 18.`, `Run it twice. Once with 10, once with 18.`, `If you type a word instead of a number, Kaviel says it is not a number and carries on.`],
@@ -377,7 +377,7 @@ Ciao Ada`, `Eseguilo e scrivi il tuo nome.`, `Le parentesi graffe { } fanno part
 Puoi farle in qualsiasi ordine. Il numero è ciò che collega una domanda alla sua risposta.`, `Il tuo nome? Ada
 La tua città? Rome
 Ada vive a Rome`, `Aggiungi una terza domanda sul tuo cibo preferito.`, ``],
-        ['Sotto i 18 o sopra i 18', `Kaviel ha due parole speciali per confrontare i numeri: under e over. under 18 vuol dire più piccolo di 18. over 18 vuol dire più grande di 18, quindi 18 non è né sotto né sopra.
+        ['Sotto i 18 o sopra i 18', `Kaviel ha due parole speciali per confrontare i numeri: under e over. under 18 vuol dire più piccolo di 18. over 18 vuol dire più grande di 18, quindi 18 non è né sotto né sopra. Una terza parola, is, chiede esattamente quel numero: answer{1} = is 18.
 
 Le righe qui sotto sono il modo corto di scrivere una scelta. Si leggono come in inglese: se la risposta è under 18, stampa questo.`, `Scrivi 10: Hai meno di 18 anni.
 Scrivi 18: Hai 18 anni o più.`, `Eseguilo due volte. Una con 10, una con 18.`, `Se scrivi una parola invece di un numero, Kaviel dice che non è un numero e continua.`],
@@ -655,7 +655,7 @@ Salut Ada`, `Lance-le et écris ton prénom.`, `Les accolades { } font partie du
 Tu peux les poser dans n'importe quel ordre. Le numéro relie une question à sa réponse.`, `Ton prénom ? Ada
 Ta ville ? Rome
 Ada habite à Rome`, `Ajoute une troisième question sur ton plat préféré.`, ``],
-        ['Moins de 18 ou plus de 18', `Kaviel a deux mots spéciaux pour comparer des nombres : under et over. under 18 veut dire plus petit que 18. over 18 veut dire plus grand que 18, donc 18 n'est ni l'un ni l'autre.
+        ['Moins de 18 ou plus de 18', `Kaviel a deux mots spéciaux pour comparer des nombres : under et over. under 18 veut dire plus petit que 18. over 18 veut dire plus grand que 18, donc 18 n'est ni l'un ni l'autre. Un troisième mot, is, demande exactement ce nombre : answer{1} = is 18.
 
 Les lignes ci-dessous sont la façon courte d'écrire un choix. Elles se lisent comme en anglais : si la réponse est under 18, affiche ceci.`, `Tape 10 : Tu as moins de 18 ans.
 Tape 18 : Tu as 18 ans ou plus.`, `Lance-le deux fois. Une fois avec 10, une fois avec 18.`, `Si tu tapes un mot au lieu d'un nombre, Kaviel dit que ce n'est pas un nombre et continue.`],

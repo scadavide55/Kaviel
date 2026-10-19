@@ -15,7 +15,7 @@ Six laws follow. If a proposal breaks one of them, the proposal is wrong, not th
 |---|---|---|
 | 1 | **It never stops** | a broken line is skipped, the rest runs to `end` |
 | 2 | **Nothing is silent** | every error leaves a visible mark, with line and explanation |
-| 3 | **Few words** | one word per idea, no synonyms; v1 has 14 keywords (§2) |
+| 3 | **Few words** | one word per idea, no synonyms; the engine reserves 23 words, of which 14 are commands and 5 (`under`, `over`, `is`, `and`, `or`) are words used inside a sentence |
 | 4 | **One thing, one way** | two syntaxes for the same action are a design bug |
 | 5 | **It reads as it happens** | indentation is the block, `print "hi"`, `=` is equality, `under 18` reads like English |
 | 6 | **The first error is not the last** | every error is reported in one run, not one per run |
@@ -153,7 +153,9 @@ if answer{1} = under 18 = print "You are under 18."
 if answer{1} = over 18 = print "You are over 18."
 ```
 
-- `under 18` is **< 18**; `over 18` is **> 18**, the same as `>` and `<`. So 17 is under, 19 is over, and 18 is neither: write `number(answer{1}) = 18` for the exact case. (Decided by Davide on 20 October 2026.)
+- `under 18` is **< 18**; `over 18` is **> 18**, the same as `<` and `>`. So 17 is under, 19 is over, and 18 is neither.
+- `is 18` is **= 18**, read as a number: it works on text too, so `answer{1} = is 18` is true for `18`, ` 18 ` and `18.0`.
+- All three read numbers out of text and refuse text that is not a number. (Decided by Davide on 20 October 2026.)
 - They read numbers out of the answer, including `" 18 "`, `"17.5"`, `"1e3"`. Text that is not a number → **error** on that line, run continues.
 - They work on both sides: `if 18 = over answer{1}` is the same test.
 - Ordinary comparisons stay strict: `"18" = 18` is `false` with a warning, because one is text and one is a number.
@@ -421,6 +423,7 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 | list positions | start at 1 | **Davide's decision** |
 | `define ask{1}` with no text | error | **Davide's decision** |
 | `under 18` / `over 18` | `< 18` / `> 18` | **Davide's decision**, changed on 20 October 2026 so that they match `<` and `>` |
+| `is 18` | `= 18` on numbers, and it reads a number out of text | **Davide's decision**, 20 October 2026: the third word beside under and over |
 | builtins | `length`, `append`, `number` | the three every first program needs; more would be words to learn |
 | `not` | covers the whole comparison after it: `not age = 9` is `not (age = 9)` | Davide asked for it, 19 Oct 2026 |
 | unknown word in an expression | the hint also says: put it in quotes to show it as text | a first program often forgets the quotes |

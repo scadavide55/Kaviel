@@ -17,7 +17,7 @@
 
   var KEYWORDS = ['start', 'end', 'print', 'define', 'set', 'if', 'else', 'repeat',
     'until', 'ask', 'random', 'pick', 'return', 'break',
-    'true', 'false', 'nothing', 'and', 'or', 'not', 'under', 'over'];
+    'true', 'false', 'nothing', 'and', 'or', 'not', 'under', 'over', 'is'];
   var KEYWORD_SET = new Set(KEYWORDS);
   var OPERATORS = ['and', 'or', 'not'];
   var TWO_CHAR_OPS = ['==', '!=', '<=', '>='];
@@ -763,7 +763,7 @@
         if (t.type === 'op' && CMP.indexOf(t.value) >= 0) {
           pos++;
           var op = t.value === '==' ? '=' : t.value;
-          if (op === '=' && peek().type === 'keyword' && (peek().value === 'under' || peek().value === 'over')) op = advance().value;
+          if (op === '=' && peek().type === 'keyword' && (peek().value === 'under' || peek().value === 'over' || peek().value === 'is')) op = advance().value;
           var right = parseAdditive();
           left = { type: 'Binary', op: op, left: left, right: right, line: t.line };
         } else break;

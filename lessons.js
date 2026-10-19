@@ -314,43 +314,43 @@ When you are happy, press Save to keep your game as a .kv file. Show it to your 
       ['Conosci l\'editor', 'Un giro prima di iniziare', [
         ['Il tuo spazio di lavoro', `Qui scriverai i programmi. Un programma è una lista di istruzioni per il computer, come una ricetta è una lista di istruzioni per cucinare.
 
-Il grande riquadro bianco è dove scrivi. Il riquadro nero a destra si chiama Risultato: è come lo schermo del computer e mostra cosa dice il tuo programma. Il riquadro sotto è Problemi: ti dice quando qualcosa non va, e dice sempre in quale riga.`, `La parola Hello! compare nel riquadro nero del Risultato.`, `Premi il pulsante verde Esegui in alto a destra.`, ``],
+Il grande riquadro bianco è dove scrivi. Il riquadro nero a destra si chiama Risultato: è come lo schermo del computer e mostra cosa dice il tuo programma. Il riquadro sotto è Problemi: ti dice quando qualcosa non va, e dice sempre in quale riga.`, `La parola Ciao! compare nel riquadro nero del Risultato.`, `Premi il pulsante verde Esegui in alto a destra.`, ``],
         ['Esegui, Ferma e Salva', `Esegui fa partire il programma. Ferma lo interrompe, se non finisce mai. Salva mette il programma sul tuo computer come file che finisce con .kv, così lo tieni per sempre. Apri riporta un file salvato. Nuovo ti dà una pagina vuota.
 
-La pagina ricorda il tuo lavoro anche da sola, ma un file salvato è più sicuro.`, `Hello again!`, `Premi Salva e trova il file nella cartella Download. Poi premi Nuovo e poi Apri per riportare il programma.`, ``],
+La pagina ricorda il tuo lavoro anche da sola, ma un file salvato è più sicuro.`, `Ciao di nuovo!`, `Premi Salva e trova il file nella cartella Download. Poi premi Nuovo e poi Apri per riportare il programma.`, ``],
         ['Come funzionano le lezioni', `Ogni lezione è fatta di piccoli passi. In ogni passo leggi cosa significa un'idea, vedi il codice con una breve nota accanto a ogni riga, e poi provi.
 
 Ci sono due pulsanti. Scrivilo tu ti dà una pagina vuota, così scrivi le righe. Scrivere è il modo in cui si impara davvero. Mettilo nell'editor inserisce il codice già pronto.
 
-Se ti blocchi non si rompe niente. Kaviel non si blocca mai: ti dice cosa non va e continua.`, `I can type code!`, `Premi Scrivilo tu, scrivi le tre righe che vedi a sinistra e premi Esegui.`, `Scrivi le righe esattamente. Virgolette e spazi contano.`]
+Se ti blocchi non si rompe niente. Kaviel non si blocca mai: ti dice cosa non va e continua.`, `So scrivere codice!`, `Premi Scrivilo tu, scrivi le tre righe che vedi a sinistra e premi Esegui.`, `Scrivi le righe esattamente. Virgolette e spazi contano.`]
       ]],
       ['Saluta', 'Il tuo primo programma', [
         ['Fai parlare il computer', `I computer fanno esattamente quello che dici loro, un'istruzione dopo l'altra, dall'alto verso il basso. Ogni istruzione è una riga.
 
-Ogni programma Kaviel inizia con la parola start e finisce con la parola end, come un panino con il pane da entrambi i lati. In mezzo, la parola print dice al computer di mostrare qualcosa sullo schermo.`, `Hello!`, `Eseguilo. Poi cambia Hello! con una tua parola e riesegui.`, `Scrivi bene print. Se scrivi prnt, Kaviel te lo dice e salta quella riga.`],
+Ogni programma Kaviel inizia con la parola start e finisce con la parola end, come un panino con il pane da entrambi i lati. In mezzo, la parola print dice al computer di mostrare qualcosa sullo schermo.`, `Ciao!`, `Eseguilo. Poi cambia Ciao! con una tua parola e riesegui.`, `Scrivi bene print. Se scrivi prnt, Kaviel te lo dice e salta quella riga.`],
         ['Di\' più di una cosa', `Ogni riga print mostra una nuova riga di testo. Il computer le fa in ordine, come quando leggi un libro dall'alto in basso.
 
-L'ordine conta. Se scambi due righe, anche le parole escono scambiate.`, `Hello!
-My name is Kaviel.
-Nice to meet you.`, `Aggiungi una riga che dice il tuo nome. Poi scambia due righe e guarda cosa succede.`, ``],
+L'ordine conta. Se scambi due righe, anche le parole escono scambiate.`, `Ciao!
+Mi chiamo Kaviel.
+Piacere di conoscerti.`, `Aggiungi una riga che dice il tuo nome. Poi scambia due righe e guarda cosa succede.`, ``],
         ['Le parole vanno tra virgolette', `Le parole si chiamano testo, e il testo si scrive sempre tra virgolette doppie, così: "ciao". Le virgolette dicono al computer: queste lettere sono solo parole, non un comando.
 
-I numeri sono diversi. Non vogliono le virgolette. E il computer sa fare i conti: scrivi 2 + 3 e mostra 5.`, `I am learning to code.
+I numeri sono diversi. Non vogliono le virgolette. E il computer sa fare i conti: scrivi 2 + 3 e mostra 5.`, `Sto imparando a programmare.
 7
-5`, `Cambia il 7 con la tua età. Poi prova print 100 - 1.`, `Se dimentichi le virgolette, come in print Hello, Kaviel pensa che Hello sia il nome di una scatola e ti dice di usare le virgolette.`],
+5`, `Cambia il 7 con la tua età. Poi prova print 100 - 1.`, `Se dimentichi le virgolette, come in print Ciao, Kaviel pensa che Ciao sia il nome di una scatola e ti dice di usare le virgolette.`],
         ['Note per le persone', `A volte vuoi lasciare un messaggio dentro il codice, per te o per un amico, senza che il computer lo legga. Inizia la riga con # e il computer la salta.
 
-I bravi programmatori scrivono note di continuo, per ricordarsi dopo perché hanno scritto qualcosa.`, `The note above is invisible.`, `Scrivi una tua nota con # all'inizio. Eseguilo: il risultato non cambia.`, ``]
+I bravi programmatori scrivono note di continuo, per ricordarsi dopo perché hanno scritto qualcosa.`, `La nota qui sopra è invisibile.`, `Scrivi una tua nota con # all'inizio. Eseguilo: il risultato non cambia.`, ``]
       ]],
       ['Nomi e scatole', 'Ricorda le cose per dopo', [
         ['Una scatola con un nome', `Immagina una scatola con un'etichetta. Puoi metterci dentro qualcosa e dopo chiederla leggendo l'etichetta. La parola define crea una scatola nuova.
 
 Qui l'etichetta è name e dentro la scatola c'è la parola Ada. Dopo, ogni volta che scrivi name, il computer apre la scatola e usa quello che c'è dentro.`, `Ada
-Hello Ada`, `Metti il tuo nome nella scatola.`, `Usa define una sola volta per ogni scatola. Per cambiarla dopo usa set (passo successivo).`],
+Ciao Ada`, `Metti il tuo nome nella scatola.`, `Usa define una sola volta per ogni scatola. Per cambiarla dopo usa set (passo successivo).`],
         ['Cambia cosa c\'è dentro', `set mette qualcosa di nuovo in una scatola che ha già un'etichetta. La cosa vecchia viene buttata e quella nuova prende il suo posto.
 
-Pensa a un tabellone dei punti: quando qualcuno segna, il numero cambia, ma il tabellone è sempre lo stesso.`, `Now: 7
-Next year: 8`, `Aggiungi un altro set che salta avanti di dieci anni.`, `Se usi set su una scatola che non esiste, Kaviel la crea e ti avvisa. Di solito è un errore di battitura.`],
+Pensa a un tabellone dei punti: quando qualcuno segna, il numero cambia, ma il tabellone è sempre lo stesso.`, `Adesso: 7
+Anno prossimo: 8`, `Aggiungi un altro set che salta avanti di dieci anni.`, `Se usi set su una scatola che non esiste, Kaviel la crea e ti avvisa. Di solito è un errore di battitura.`],
         ['Fai i conti', `Il computer è velocissimo con la matematica. + somma, - sottrae, * moltiplica e / divide. Il segno % dà quello che resta dopo una divisione: 10 % 3 fa 1, perché 3 sta tre volte in 10 e resta 1.
 
 La stella * vuol dire per, perché la lettera x sembra una lettera qualsiasi.`, `15
@@ -360,63 +360,63 @@ La stella * vuol dire per, perché la lettera x sembra una lettera qualsiasi.`, 
 1`, `Prova un conto grande, come 123 * 456.`, `Dividere per zero è impossibile. Kaviel te lo dice e va avanti.`],
         ['Mescola parole e scatole', `print può mostrare tante cose in una riga, una dopo l'altra. Parole, numeri e scatole si possono mescolare. Il computer mette uno spazio in mezzo.
 
-Se vuoi attaccare i pezzi senza spazio, usa +, come in "Woof" + "!".`, `My pet is a dog
-It has 4 legs.
-Total legs for 3 pets: 12
-Woof!!`, `Cambia l'animale in un uccello e le zampe in 2.`, `Un + tra parole le attacca senza nessuno spazio.`]
+Se vuoi attaccare i pezzi senza spazio, usa +, come in "Bau" + "!".`, `Il mio animale è un cane
+Ha 4 zampe.
+Zampe di 3 animali: 12
+Bau!!`, `Cambia l'animale in un uccello e le zampe in 2.`, `Un + tra parole le attacca senza nessuno spazio.`]
       ]],
       ['Fai domande', 'Parla con chi usa il tuo programma', [
         ['Prepara una domanda, poi falla', `Per parlare con chi usa il tuo programma servono due passi. Prima scrivi la domanda: define ask{1} scrive la domanda numero 1 ma non la fa ancora. Poi ask{1} la fa davvero e aspetta.
 
-Quando lo esegui, nel Risultato compare una casella. Scrivi la risposta e premi Invio. La risposta viene salvata, e answer{1} serve per rileggerla.`, `What is your name? Ada
-Hello Ada`, `Eseguilo e scrivi il tuo nome.`, `Le parentesi graffe { } fanno parte del nome. Non sono parentesi tonde.`],
+Quando lo esegui, nel Risultato compare una casella. Scrivi la risposta e premi Invio. La risposta viene salvata, e answer{1} serve per rileggerla.`, `Come ti chiami? Ada
+Ciao Ada`, `Eseguilo e scrivi il tuo nome.`, `Le parentesi graffe { } fanno parte del nome. Non sono parentesi tonde.`],
         ['Due domande', `Ogni domanda ha il suo numero, così le risposte non si mescolano. La domanda 1 va con answer{1}, la domanda 2 va con answer{2}.
 
-Puoi farle in qualsiasi ordine. Il numero è ciò che collega una domanda alla sua risposta.`, `Your name? Ada
-Your city? Rome
-Ada lives in Rome`, `Aggiungi una terza domanda sul tuo cibo preferito.`, ``],
+Puoi farle in qualsiasi ordine. Il numero è ciò che collega una domanda alla sua risposta.`, `Il tuo nome? Ada
+La tua città? Rome
+Ada vive a Rome`, `Aggiungi una terza domanda sul tuo cibo preferito.`, ``],
         ['Sotto i 18 o sopra i 18', `Kaviel ha due parole speciali per confrontare i numeri: under e over. under 18 vuol dire più piccolo di 18. over 18 vuol dire 18 o più grande, quindi 18 conta come over.
 
-Le righe qui sotto sono il modo corto di scrivere una scelta. Si leggono come in inglese: se la risposta è under 18, stampa questo.`, `Scrivi 10: You are under 18.
-Scrivi 18: You are 18 or older.`, `Eseguilo due volte. Una con 10, una con 18.`, `Se scrivi una parola invece di un numero, Kaviel dice che non è un numero e continua.`],
+Le righe qui sotto sono il modo corto di scrivere una scelta. Si leggono come in inglese: se la risposta è under 18, stampa questo.`, `Scrivi 10: Hai meno di 18 anni.
+Scrivi 18: Hai 18 anni o più.`, `Eseguilo due volte. Una con 10, una con 18.`, `Se scrivi una parola invece di un numero, Kaviel dice che non è un numero e continua.`],
         ['Trasforma una risposta in numero', `Una risposta è sempre testo, anche se scrivi cifre. Testo e numeri sono cose diverse. Se aggiungi 1 al testo "5" ottieni 51, perché il computer li attacca.
 
 number() trasforma il testo in un vero numero. Dopo, la matematica funziona bene.`, `Scrivi 4:
-Double is 8
-Plus ten is 14`, `Fai stampare il numero per 100.`, `number() funziona solo se il testo è davvero un numero.`]
+Il doppio è 8
+Più dieci fa 14`, `Fai stampare il numero per 100.`, `number() funziona solo se il testo è davvero un numero.`]
       ]],
       ['Fai scelte', 'Lascia decidere il programma', [
         ['Se questo, allora quello', `Un programma può scegliere. if guarda qualcosa ed esegue le righe sotto solo se è vero. Quelle righe sono spostate a destra di due spazi. Il tasto Tab lo fa per te.
 
-L'ultimo print non è spostato a destra, quindi viene sempre eseguito, qualunque cosa succeda sopra.`, `You win!
-Well done.
-The game is over.`, `Cambia il punteggio in 3. Quali righe spariscono?`, `Se dimentichi di spostare le righe a destra, Kaviel ti avvisa che sotto l'if non c'è niente.`],
+L'ultimo print non è spostato a destra, quindi viene sempre eseguito, qualunque cosa succeda sopra.`, `Hai vinto!
+Bravo.
+Il gioco è finito.`, `Cambia il punteggio in 3. Quali righe spariscono?`, `Se dimentichi di spostare le righe a destra, Kaviel ti avvisa che sotto l'if non c'è niente.`],
         ['Altrimenti', `else è l'altra strada. Quando il controllo è falso, vengono eseguite le righe sotto else. Si prende una sola strada, mai tutte e due.
 
-Pensa a un bivio: vai a sinistra se il controllo è vero, a destra se è falso.`, `Try again.`, `Trova un punteggio che fa dire You win!`, `Scrivi else subito dopo le righe dell'if, allo stesso livello dell'if.`],
+Pensa a un bivio: vai a sinistra se il controllo è vero, a destra se è falso.`, `Riprova.`, `Trova un punteggio che fa dire Hai vinto!`, `Scrivi else subito dopo le righe dell'if, allo stesso livello dell'if.`],
         ['Scegli su una riga', `Quando il lavoro è piccolo puoi scrivere tutto su una riga. Un secondo = mette l'azione sulla stessa riga del controllo. Leggilo così: se l'età è 16, allora stampa.
 
-Il primo = nella riga vuol dire uguale. Il secondo = separa solo il controllo dall'azione.`, `Exactly sixteen
-Younger`, `Cambia l'età in 25 ed eseguilo.`, ``],
-        ['Confronta le parole', `Si possono confrontare anche le parole. Un solo = chiede: queste due cose sono esattamente uguali? Maiuscole e minuscole contano, quindi "Red" e "red" sono diverse.
+Il primo = nella riga vuol dire uguale. Il secondo = separa solo il controllo dall'azione.`, `Esattamente sedici
+Più piccolo`, `Cambia l'età in 25 ed eseguilo.`, ``],
+        ['Confronta le parole', `Si possono confrontare anche le parole. Un solo = chiede: queste due cose sono esattamente uguali? Maiuscole e minuscole contano, quindi "Red" e "rosso" sono diverse.
 
-Come un semaforo: se il colore è rosso, fermati. Altrimenti, vai.`, `Stop!`, `Cambia red in green e riesegui.`, `Le parole tra virgolette devono essere identiche, maiuscole comprese.`],
+Come un semaforo: se il colore è rosso, fermati. Altrimenti, vai.`, `Fermo!`, `Cambia rosso in verde e riesegui.`, `Le parole tra virgolette devono essere identiche, maiuscole comprese.`],
         ['And, or, not', `A volte un solo controllo non basta. and vuole che entrambi i controlli siano veri. or ne vuole almeno uno. not trasforma vero in falso.
 
-In questo programma 9 è più di 5 e meno di 13, quindi il primo controllo passa. L'età non è dieci, quindi passa anche l'ultimo.`, `You are a kid.
-You are not ten.`, `Prova età 2, poi età 95. Quali righe compaiono?`, `Le parentesi rendono chiaro: not (age = 10). Senza funziona uguale, perché not legge tutto il confronto che segue.`]
+In questo programma 9 è più di 5 e meno di 13, quindi il primo controllo passa. L'età non è dieci, quindi passa anche l'ultimo.`, `Sei un bambino.
+Non hai dieci anni.`, `Prova età 2, poi età 95. Quali righe compaiono?`, `Le parentesi rendono chiaro: not (age = 10). Senza funziona uguale, perché not legge tutto il confronto che segue.`]
       ]],
       ['Ancora e ancora', 'I cicli ripetono il lavoro per te', [
         ['Ripeti qualche volta', `Un ciclo fa la stessa cosa ancora e ancora, così non devi scrivere la stessa riga tante volte. repeat 3 esegue tre volte le righe spostate a destra.
 
 L'ultimo print non è spostato a destra, quindi viene eseguito una volta sola, quando il ciclo è finito.`, `La la la! (tre volte)
-That was a song.`, `Fallo cantare 10 volte.`, `Le righe del ciclo devono essere spostate a destra. Altrimenti vengono eseguite una volta sola.`],
+Era una canzone.`, `Fallo cantare 10 volte.`, `Le righe del ciclo devono essere spostate a destra. Altrimenti vengono eseguite una volta sola.`],
         ['Continua finché', `until continua a ripetere finché qualcosa diventa vero. Prima di ogni giro chiede: è già vero? Se sì, si ferma. Se no, rifà le righe.
 
-Dentro, set n = n + 1 aggiunge uno a n a ogni giro. Senza, n non cambierebbe mai e il ciclo non finirebbe. In quel caso c'è il pulsante Ferma, e Kaviel ferma da solo i programmi che non finiscono.`, `n is 1
-n is 2
-... fino a n is 5
-Done`, `Cambia 5 in 10.`, `Dentro un ciclo until cambia sempre qualcosa, o non finisce mai.`],
+Dentro, set n = n + 1 aggiunge uno a n a ogni giro. Senza, n non cambierebbe mai e il ciclo non finirebbe. In quel caso c'è il pulsante Ferma, e Kaviel ferma da solo i programmi che non finiscono.`, `n vale 1
+n vale 2
+... fino a n vale 5
+Fatto`, `Cambia 5 in 10.`, `Dentro un ciclo until cambia sempre qualcosa, o non finisce mai.`],
         ['Conta con un ciclo', `Un ciclo e una scatola fanno un contatore. La scatola n parte da 1. A ogni giro stampa una riga della tabellina del sette e poi aggiunge 1 a n.
 
 Con poche righe ottieni dieci righe di risultato. Cambi un numero e cambia tutta la tabellina.`, `1 x 7 = 7
@@ -424,130 +424,130 @@ Con poche righe ottieni dieci righe di risultato. Cambi un numero e cambia tutta
 ... fino a 10 x 7 = 70`, `Cambia il 7 con il tuo numero preferito.`, ``],
         ['Esci prima', `break salta fuori dal ciclo subito. Serve quando hai già trovato quello che cercavi.
 
-Il ciclo potrebbe contare fino a 100, ma si ferma al primo numero il cui quadrato è maggiore di 50.`, `The first number whose square is above 50 is 8`, `Cambia 50 in 200.`, ``]
+Il ciclo potrebbe contare fino a 100, ma si ferma al primo numero il cui quadrato è maggiore di 50.`, `Il primo numero con il quadrato sopra 50 è 8`, `Cambia 50 in 200.`, ``]
       ]],
       ['Fortuna', 'Dadi, monete e sorprese', [
         ['Scegli una cosa', `pick sceglie una cosa dalla lista che scrivi, del tutto a caso. Ogni cosa ha la stessa probabilità. Essendo casuale, ogni Esegui può dare una risposta diversa.
 
-I giochi usano la fortuna di continuo: dadi, carte, forzieri del tesoro.`, `Today you are a cat
-(o dog, owl, fox: cambia)`, `Eseguilo cinque volte. Poi aggiungi il tuo animale preferito alla lista.`, `Separa le cose con le virgole.`],
+I giochi usano la fortuna di continuo: dadi, carte, forzieri del tesoro.`, `Oggi sei un gatto
+(o cane, gufo, volpe: cambia)`, `Eseguilo cinque volte. Poi aggiungi il tuo animale preferito alla lista.`, `Separa le cose con le virgole.`],
         ['Lancia una moneta', `Una moneta ha due facce, quindi scegli tra due cose. Nessuno può indovinare il risultato.
 
-Eseguilo tante volte: testa e croce dovrebbero uscire circa metà delle volte ciascuna.`, `The coin says heads
-(oppure tails)`, `Eseguilo dieci volte. È giusta?`, ``],
+Eseguilo tante volte: testa e croce dovrebbero uscire circa metà delle volte ciascuna.`, `La moneta dice testa
+(oppure croce)`, `Eseguilo dieci volte. È giusta?`, ``],
         ['Tira un dado', `Puoi scegliere anche numeri. Un dado normale ha sei facce, quindi scegliamo da 1 a 6.
 
-L'ultima riga è una scelta su una riga: se il dado è 6, stampa Lucky!`, `You rolled a 4
-(cambia, e Lucky! compare solo con il 6)`, `Cambialo in un dado a 20 facce.`, ``],
+L'ultima riga è una scelta su una riga: se il dado è 6, stampa Fortunato!`, `Hai fatto 4
+(cambia, e Fortunato! compare solo con il 6)`, `Cambialo in un dado a 20 facce.`, ``],
         ['Probabilità ingiuste', `A volte vuoi che certe cose siano rare. Un blocco random ha un numero: la sua probabilità su 100. Blocchi vicini sono una sola estrazione, e ne viene eseguito uno solo.
 
-Qui il sassolino esce 80 volte su 100, la moneta 19 volte, e il diamante solo una.`, `Rolling the magic box...
-Just a pebble. (quasi sempre)`, `Rendi il diamante più comune, ma tieni il totale a 100.`, `Le probabilità devono sommare 100. Se no Kaviel ti avvisa e sistema i numeri.`]
+Qui il sassolino esce 80 volte su 100, la moneta 19 volte, e il diamante solo una.`, `Apro la scatola magica...
+Solo un sassolino. (quasi sempre)`, `Rendi il diamante più comune, ma tieni il totale a 100.`, `Le probabilità devono sommare 100. Se no Kaviel ti avvisa e sistema i numeri.`]
       ]],
       ['I tuoi comandi', 'Dai un nome a qualche riga', [
         ['Crea un comando', `Un comando tuo è una piccola macchina che costruisci. Ha un nome, prende qualcosa dentro e restituisce qualcosa. Scrivi define, un nome e le parentesi con quello che prende.
 
-return rimanda indietro la risposta. Dopo, greet("Ada") funziona come un comando Kaviel nuovo di zecca, e puoi usarlo quante volte vuoi.`, `Hello Ada!
-Hello Luca!`, `Saluta il tuo migliore amico.`, `Le righe del comando devono essere spostate a destra sotto define.`],
+return rimanda indietro la risposta. Dopo, greet("Ada") funziona come un comando Kaviel nuovo di zecca, e puoi usarlo quante volte vuoi.`, `Ciao Ada!
+Ciao Luca!`, `Saluta il tuo migliore amico.`, `Le righe del comando devono essere spostate a destra sotto define.`],
         ['Più di un ingresso', `Un comando può prendere più cose. Mettile tra parentesi, separate da virgole. Questi nomi esistono solo dentro il comando, come gli attrezzi dentro una cassetta.
 
-Quando chiami area(3, 4), width diventa 3 e height diventa 4.`, `A 3 by 4 room is 12 square metres
-A 10 by 10 field is 100`, `Trova l'area di un giardino 25 per 8.`, `Dai il numero giusto di ingressi. Troppo pochi o troppi sono un errore.`],
+Quando chiami area(3, 4), width diventa 3 e height diventa 4.`, `Una stanza 3 per 4 misura 12 metri quadrati
+Un campo 10 per 10 misura 100`, `Trova l'area di un giardino 25 per 8.`, `Dai il numero giusto di ingressi. Troppo pochi o troppi sono un errore.`],
         ['Comandi che usano comandi', `Un comando può usarne un altro. Pezzi piccoli fanno programmi grandi.
 
 Qui quadruple usa double due volte: 5 diventa 10, e 10 diventa 20.`, `20`, `Crea un comando che triplica un numero.`, ``],
         ['Un comando che richiama se stesso', `Un comando può richiamare se stesso, un po' come stare tra due specchi.
 
-Funziona solo se ogni chiamata si avvicina a una fine. Qui factorial(5) è 5 per factorial(4), e così via fino a factorial(0), che fa semplicemente 1. Quella è la fine.`, `5! is 120`, `Prova factorial(10).`, `Metti sempre un caso finale. Senza, il comando si richiamerebbe per sempre. Kaviel lo ferma dopo 128 chiamate.`]
+Funziona solo se ogni chiamata si avvicina a una fine. Qui factorial(5) è 5 per factorial(4), e così via fino a factorial(0), che fa semplicemente 1. Quella è la fine.`, `5! fa 120`, `Prova factorial(10).`, `Metti sempre un caso finale. Senza, il comando si richiamerebbe per sempre. Kaviel lo ferma dopo 128 chiamate.`]
       ]],
       ['Liste', 'Tante cose in un posto', [
         ['Una lista di cose', `Una scatola può tenere una cosa. Una lista è una scatola con tanti posti, uno dopo l'altro. Si fa con le parentesi quadre e le virgole.
 
-Ogni posto ha un numero. Il primo posto è 1, il secondo è 2. Chiedi il primo con pets[1]. length conta quante cose ci sono.`, `First: cat
-Last: fox
-All: ["cat", "dog", "fox"]
-How many: 3`, `Stampa il secondo animale.`, `Qui i posti si contano da 1, non da 0.`],
-        ['Aggiungi e cambia', `append mette una cosa nuova alla fine della lista. set può cambiare un posto: set pets[1] = "lion" sostituisce il primo elemento.
+Ogni posto ha un numero. Il primo posto è 1, il secondo è 2. Chiedi il primo con pets[1]. length conta quante cose ci sono.`, `Primo: gatto
+Ultimo: volpe
+Tutti: ["gatto", "cane", "volpe"]
+Quanti: 3`, `Stampa il secondo animale.`, `Qui i posti si contano da 1, non da 0.`],
+        ['Aggiungi e cambia', `append mette una cosa nuova alla fine della lista. set può cambiare un posto: set pets[1] = "leone" sostituisce il primo elemento.
 
-La lista cresce con append. Con set mantiene la stessa lunghezza.`, `["lion", "dog", "owl"]`, `Aggiungi altri due animali.`, `Chiedere un posto che non esiste, come pets[10], è un errore. Ti dice la lunghezza vera.`],
+La lista cresce con append. Con set mantiene la stessa lunghezza.`, `["leone", "cane", "gufo"]`, `Aggiungi altri due animali.`, `Chiedere un posto che non esiste, come pets[10], è un errore. Ti dice la lunghezza vera.`],
         ['Visita ogni elemento', `Per fare qualcosa con ogni elemento di una lista usa un ciclo con un contatore. i parte da 1 e sale di uno a ogni giro, finché supera la lunghezza della lista.
 
-pets[i] vuol dire l'elemento al posto i, quindi il ciclo mostra ogni animale, uno dopo l'altro.`, `1 cat
-2 dog
-3 owl`, `Aggiungi un animale alla lista. Il ciclo funziona ancora?`, ``],
+pets[i] vuol dire l'elemento al posto i, quindi il ciclo mostra ogni animale, uno dopo l'altro.`, `1 gatto
+2 cane
+3 gufo`, `Aggiungi un animale alla lista. Il ciclo funziona ancora?`, ``],
         ['Somma una lista', `Una scatola può raccogliere un totale mentre il ciclo visita ogni numero. total parte da 0. A ogni giro gli viene aggiunto il prezzo corrente.
 
-È la stessa idea di una cassa del negozio che somma quello che compri.`, `Total: 20`, `Aggiungi un altro prezzo alla lista.`, ``]
+È la stessa idea di una cassa del negozio che somma quello che compri.`, `Totale: 20`, `Aggiungi un altro prezzo alla lista.`, ``]
       ]],
       ['Premi un tasto', 'Aspetta la tastiera', [
         ['Aspetta un tasto', `Finora la persona scriveva una risposta intera e premeva Invio. A volte vuoi solo la pressione di un tasto, come Premi un tasto per iniziare in un gioco.
 
-define keypress{1} = C sceglie il tasto C. La riga if aspetta che quel tasto venga premuto, poi fa la domanda. Gli altri tasti vengono ignorati.`, `Press C to continue.
+define keypress{1} = C sceglie il tasto C. La riga if aspetta che quel tasto venga premuto, poi fa la domanda. Gli altri tasti vengono ignorati.`, `Premi C per continuare.
 (non succede niente finché non premi C)
-What is your name?`, `Eseguilo. Prima premi un tasto sbagliato. Poi premi C.`, `Clicca prima sulla pagina, così i tasti arrivano a lei.`],
-        ['Altri tasti', `Oltre alle lettere puoi aspettare questi tasti: Enter, Space, Escape, Tab e le frecce ArrowUp, ArrowDown, ArrowLeft e ArrowRight.`, `Press Space to begin.
-Your favourite colour?`, `Cambia Space in Enter.`, `Scrivi il nome del tasto con le stesse maiuscole.`]
+Come ti chiami?`, `Eseguilo. Prima premi un tasto sbagliato. Poi premi C.`, `Clicca prima sulla pagina, così i tasti arrivano a lei.`],
+        ['Altri tasti', `Oltre alle lettere puoi aspettare questi tasti: Enter, Space, Escape, Tab e le frecce ArrowUp, ArrowDown, ArrowLeft e ArrowRight.`, `Premi Space per iniziare.
+Il tuo colore preferito?`, `Cambia Space in Enter.`, `Scrivi il nome del tasto con le stesse maiuscole.`]
       ]],
       ['Crea un gioco', 'Metti tutto insieme', [
         ['Indovina il numero', `Adesso mettiamo tutto insieme. Il computer sceglie un numero segreto con pick. Tu provi finché lo trovi. Il ciclo continua finché il tuo tentativo è uguale al segreto.
 
-Dentro il ciclo: fai la domanda, trasforma la risposta in numero, conta un tentativo in più e dai un indizio se il numero è troppo grande o troppo piccolo.`, `Guess a number from 1 to 10: 5
-Too small.
+Dentro il ciclo: fai la domanda, trasforma la risposta in numero, conta un tentativo in più e dai un indizio se il numero è troppo grande o troppo piccolo.`, `Indovina un numero da 1 a 10: 5
+Troppo piccolo.
 ... e così via, fino a
-You got it in 3 tries!`, `Fai arrivare il numero segreto fino a 20.`, `number(answer{1}) è importante. Senza, la risposta è testo, e il testo non si confronta come un numero.`],
+Ci sei riuscito in 3 tentativi!`, `Fai arrivare il numero segreto fino a 20.`, `number(answer{1}) è importante. Senza, la risposta è testo, e il testo non si confronta come un numero.`],
         ['Un quiz con i punti', `Una scatola chiamata points conta le risposte giuste. Parte da 0. Ogni risposta giusta aggiunge 1 con set points = points + 1.
 
-Alla fine print mostra il totale. Le righe vuote servono solo a rendere il programma più leggibile.`, `Correct!
-Correct!
-You got 2 out of 2.`, `Scrivi una terza domanda tua e dai punti anche per quella.`, `Le risposte si confrontano come testo, quindi scrivile esatte: "4" e "green".`],
+Alla fine print mostra il totale. Le righe vuote servono solo a rendere il programma più leggibile.`, `Giusto!
+Giusto!
+Hai preso 2 su 2.`, `Scrivi una terza domanda tua e dai punti anche per quella.`, `Le risposte si confrontano come testo, quindi scrivile esatte: "4" e "verde".`],
         ['Sasso, carta, forbici', `È un programma più grande, quindi leggilo piano, un blocco alla volta. Il computer sceglie con pick. Tu scrivi la tua scelta. Poi, per ogni cosa che potevi scegliere, c'è un blocco che decide chi ha vinto.
 
-I grandi blocchi if hanno righe if più piccole spostate a destra dentro. È permesso: scelte dentro le scelte.`, `I chose paper
-(cambia) poi You win!, I win! oppure A draw!`, `Alla fine aggiungi una riga che dice cosa succede se scrivi altro.`, `Scrivi le parole esatte: rock, paper o scissors, in minuscolo.`]
+I grandi blocchi if hanno righe if più piccole spostate a destra dentro. È permesso: scelte dentro le scelte.`, `Io ho scelto carta
+(cambia) poi Hai vinto!, Ho vinto io! oppure Pareggio!`, `Alla fine aggiungi una riga che dice cosa succede se scrivi altro.`, `Scrivi le parole esatte: sasso, carta o forbici, in minuscolo.`]
       ]],
       ['Errori', 'Capitano. Va bene così.', [
         ['Un errore di battitura', `Tutti sbagliano, anche chi programma per lavoro. Molti programmi si bloccano quando qualcosa non va. Kaviel no: salta la riga rotta, te lo dice e continua.
 
-Guarda il riquadro Problemi dopo aver eseguito. Mostra il numero della riga e dice cosa pensa che volevi scrivere.`, `Hello!
-But this one still works.
+Guarda il riquadro Problemi dopo aver eseguito. Mostra il numero della riga e dice cosa pensa che volevi scrivere.`, `Ciao!
+Ma questa funziona ancora.
 (e un problema alla riga 3)`, `Clicca il problema per saltare alla riga. Poi correggi l'errore.`, ``],
         ['Un nome che non esiste', `Una scatola va creata con define prima di usarla. Se scrivi un nome che non esiste, Kaviel cerca nomi simili e te ne suggerisce uno. Qui agee ha una lettera in più.
 
-Leggere i messaggi di errore è una vera abilità. Sono dalla tua parte.`, `Fixed: 8
+Leggere i messaggi di errore è una vera abilità. Sono dalla tua parte.`, `Corretto: 8
 (e un problema alla riga 3)`, `Correggi la riga togliendo la e in più.`, ``],
         ['Un conto impossibile', `Certe cose non si possono fare, come dividere per zero. Il programma te lo dice, salta quella riga e va alla successiva. Non si ferma niente.
 
 È l'idea grande di Kaviel: un errore non è la fine. Vedi sempre cosa è successo e dove.`, `5
-Still running!
+Sto ancora andando!
 (e un problema alla riga 3)`, `Cambia lo 0 in 5. Il problema sparisce.`, ``]
       ]],
       ['Il tuo grande progetto', 'Costruisci un gioco del tesoro, passo dopo passo', [
         ['Inizia la storia', `Ora costruirai un vero gioco, un pezzetto alla volta. È una caccia al tesoro su un'isola. Dopo ogni passo il gioco diventa più grande, e funziona sempre.
 
-Il primo pezzo è un benvenuto. Il gioco chiede il tuo nome e poi ti saluta. Sai già tutto quello che serve.`, `What is your name? Ada
-Welcome to the island, Ada
-Find as many coins as you can.`, `Premi Scrivilo tu, scrivi il programma ed eseguilo. Poi cambia la storia: usa un altro posto invece di un'isola.`, ``],
+Il primo pezzo è un benvenuto. Il gioco chiede il tuo nome e poi ti saluta. Sai già tutto quello che serve.`, `Come ti chiami? Ada
+Benvenuto sull'isola, Ada
+Trova più monete che puoi.`, `Premi Scrivilo tu, scrivi il programma ed eseguilo. Poi cambia la storia: usa un altro posto invece di un'isola.`, ``],
         ['Scegli una strada', `Un bel gioco fa scegliere chi gioca. Ora aggiungiamo una seconda domanda: sinistra o destra. Il gioco dice una cosa diversa per ogni risposta.
 
-Usa if ed else, come nella lezione sulle scelte.`, `Which way: left or right? left
-You walk into a cave.`, `Eseguilo due volte: una con left, una con right. Poi cambia la grotta in qualcos'altro.`, `Scrivi left in minuscolo, proprio come nel programma.`],
+Usa if ed else, come nella lezione sulle scelte.`, `Quale strada: sinistra o destra? sinistra
+Entri in una grotta.`, `Eseguilo due volte: una con sinistra, una con right. Poi cambia la grotta in qualcos'altro.`, `Scrivi sinistra in minuscolo, proprio come nel programma.`],
         ['Aggiungi fortuna e monete', `Ora il gioco diventa emozionante. Una scatola chiamata coins parte da 0. Poi un blocco random dà 70 possibilità su 100 di trovare 5 monete e 30 su 100 di incontrare un granchio.
 
-set coins = coins + 5 aggiunge 5 alla scatola. I due blocchi random sono vicini, quindi ne succede uno solo.`, `You find 5 coins!
+set coins = coins + 5 aggiunge 5 alla scatola. I due blocchi random sono vicini, quindi ne succede uno solo.`, `Trovi 5 monete!
 (oppure il granchio. Cambia ogni volta.)
-You have 5 coins.`, `Eseguilo tante volte. Cambia 5 monete in 10 monete. Tieni 70 e 30 che sommano 100.`, `Le due probabilità devono sommare 100.`],
+Hai 5 monete.`, `Eseguilo tante volte. Cambia 5 monete in 10 monete. Tieni 70 e 30 che sommano 100.`, `Le due probabilità devono sommare 100.`],
         ['Gioca tre giorni', `Un giorno è troppo poco. Ora il gioco dura tre giorni. Una scatola chiamata day conta 1, 2, 3. Quando è più grande di 3, il ciclo si ferma.
 
-La domanda ask{2} è dentro il ciclo, quindi il gioco chiede sinistra o destra ogni giorno. Tutte le righe spostate a destra sono del ciclo.`, `Day 1
+La domanda ask{2} è dentro il ciclo, quindi il gioco chiede sinistra o destra ogni giorno. Tutte le righe spostate a destra sono del ciclo.`, `Giorno 1
 (una strada e un po' di fortuna)
-Day 2
+Giorno 2
 (una strada e un po' di fortuna)
-Day 3
+Giorno 3
 (una strada e un po' di fortuna)`, `Cambia until day > 3 in until day > 5 e gioca cinque giorni.`, `Non dimenticare set day = day + 1, o il gioco non finisce mai.`],
         ['La fine del gioco', `Alla fine il gioco ti dice cosa è successo. Mostra quante monete hai trovato. Poi due piccole scelte dicono se sei ricco: più di 10 monete, oppure no.
 
-Questo è un gioco intero! Ha domande, scelte, fortuna, un ciclo e una scatola che conta. Hai usato quasi tutto delle lezioni.`, `Ada found 15 coins.
-You are rich!`, `Giocalo tre volte. Riesci a prendere più di 10 monete?`, ``],
+Questo è un gioco intero! Ha domande, scelte, fortuna, un ciclo e una scatola che conta. Hai usato quasi tutto delle lezioni.`, `Ada ha trovato 15 monete.
+Sei ricco!`, `Giocalo tre volte. Riesci a prendere più di 10 monete?`, ``],
         ['Fallo tuo', `I veri programmatori non si fermano alla prima versione. Ecco alcune idee per rendere il gioco tuo:
 
 Cambia la storia e le parole. Aggiungi una terza strada con una domanda in più. Rendi il premio più grande. Aggiungi un tesoro raro con un altro blocco random.
@@ -591,43 +591,43 @@ Quando sei contento, premi Salva per tenere il gioco come file .kv. Mostralo all
       ['Découvre l\'éditeur', 'Un tour avant de commencer', [
         ['Ton espace de travail', `C'est ici que tu écriras des programmes. Un programme est une liste d'instructions pour l'ordinateur, comme une recette est une liste d'instructions pour cuisiner.
 
-La grande boîte blanche est l'endroit où tu écris. La boîte noire à droite s'appelle Résultat : c'est comme l'écran de l'ordinateur et elle montre ce que dit ton programme. La boîte en dessous est Problèmes : elle te dit quand quelque chose ne va pas, et elle indique toujours la ligne.`, `Le mot Hello! apparaît dans la boîte noire Résultat.`, `Appuie sur le bouton vert Lancer en haut à droite.`, ``],
+La grande boîte blanche est l'endroit où tu écris. La boîte noire à droite s'appelle Résultat : c'est comme l'écran de l'ordinateur et elle montre ce que dit ton programme. La boîte en dessous est Problèmes : elle te dit quand quelque chose ne va pas, et elle indique toujours la ligne.`, `Le mot Salut! apparaît dans la boîte noire Résultat.`, `Appuie sur le bouton vert Lancer en haut à droite.`, ``],
         ['Lancer, Arrêter et Enregistrer', `Lancer démarre ton programme. Arrêter le coupe, s'il ne finit jamais. Enregistrer met ton programme sur ton ordinateur dans un fichier qui finit par .kv, pour le garder toujours. Ouvrir ramène un fichier enregistré. Nouveau te donne une page vide.
 
-La page se souvient aussi de ton travail toute seule, mais un fichier enregistré est plus sûr.`, `Hello again!`, `Appuie sur Enregistrer et trouve le fichier dans ton dossier Téléchargements. Puis appuie sur Nouveau, puis sur Ouvrir pour ramener ton programme.`, ``],
+La page se souvient aussi de ton travail toute seule, mais un fichier enregistré est plus sûr.`, `Salut encore!`, `Appuie sur Enregistrer et trouve le fichier dans ton dossier Téléchargements. Puis appuie sur Nouveau, puis sur Ouvrir pour ramener ton programme.`, ``],
         ['Comment marchent les leçons', `Chaque leçon est faite de petites étapes. À chaque étape, tu lis ce que veut dire une idée, tu vois le code avec une courte note à côté de chaque ligne, puis tu essaies.
 
 Il y a deux boutons. Écris-le toi-même te donne une page vide pour que tu tapes les lignes. Taper, c'est comme ça qu'on apprend vraiment. Mets-le dans l'éditeur met le code déjà prêt.
 
-Si tu es coincé, rien ne casse. Kaviel ne plante jamais : il te dit ce qui ne va pas et continue.`, `I can type code!`, `Appuie sur Écris-le toi-même, tape les trois lignes que tu vois à gauche et appuie sur Lancer.`, `Tape les lignes exactement. Les guillemets et les espaces comptent.`]
+Si tu es coincé, rien ne casse. Kaviel ne plante jamais : il te dit ce qui ne va pas et continue.`, `Je sais écrire du code!`, `Appuie sur Écris-le toi-même, tape les trois lignes que tu vois à gauche et appuie sur Lancer.`, `Tape les lignes exactement. Les guillemets et les espaces comptent.`]
       ]],
       ['Dire bonjour', 'Ton tout premier programme', [
         ['Fais parler l\'ordinateur', `Les ordinateurs font exactement ce que tu leur dis, une instruction après l'autre, de haut en bas. Chaque instruction est une ligne.
 
-Chaque programme Kaviel commence par le mot start et finit par le mot end, comme un sandwich avec du pain des deux côtés. Au milieu, le mot print dit à l'ordinateur de montrer quelque chose à l'écran.`, `Hello!`, `Lance-le. Puis change Hello! en un mot à toi et relance.`, `Écris bien print. Si tu écris prnt, Kaviel te le dit et saute cette ligne.`],
+Chaque programme Kaviel commence par le mot start et finit par le mot end, comme un sandwich avec du pain des deux côtés. Au milieu, le mot print dit à l'ordinateur de montrer quelque chose à l'écran.`, `Salut!`, `Lance-le. Puis change Salut! en un mot à toi et relance.`, `Écris bien print. Si tu écris prnt, Kaviel te le dit et saute cette ligne.`],
         ['Dis plusieurs choses', `Chaque ligne print montre une nouvelle ligne de texte. L'ordinateur les fait dans l'ordre, comme tu lis un livre de haut en bas.
 
-L'ordre compte. Si tu échanges deux lignes, les mots sortent aussi échangés.`, `Hello!
-My name is Kaviel.
-Nice to meet you.`, `Ajoute une ligne qui dit ton prénom. Puis échange deux lignes et regarde ce qui se passe.`, ``],
+L'ordre compte. Si tu échanges deux lignes, les mots sortent aussi échangés.`, `Salut!
+Je m'appelle Kaviel.
+Enchanté de te connaître.`, `Ajoute une ligne qui dit ton prénom. Puis échange deux lignes et regarde ce qui se passe.`, ``],
         ['Les mots vont entre guillemets', `Les mots s'appellent du texte, et le texte s'écrit toujours entre guillemets doubles, comme ça : "salut". Les guillemets disent à l'ordinateur : ces lettres sont juste des mots, pas une commande.
 
-Les nombres sont différents. Ils n'ont pas besoin de guillemets. Et l'ordinateur sait calculer : écris 2 + 3 et il montre 5.`, `I am learning to code.
+Les nombres sont différents. Ils n'ont pas besoin de guillemets. Et l'ordinateur sait calculer : écris 2 + 3 et il montre 5.`, `J'apprends à programmer.
 7
-5`, `Change le 7 en ton âge. Puis essaie print 100 - 1.`, `Si tu oublies les guillemets, comme dans print Hello, Kaviel pense que Hello est le nom d'une boîte et te dit d'utiliser des guillemets.`],
+5`, `Change le 7 en ton âge. Puis essaie print 100 - 1.`, `Si tu oublies les guillemets, comme dans print Salut, Kaviel pense que Salut est le nom d'une boîte et te dit d'utiliser des guillemets.`],
         ['Des notes pour les humains', `Parfois tu veux laisser un message dans le code, pour toi ou pour un ami, sans que l'ordinateur le lise. Commence la ligne par # et l'ordinateur la saute.
 
-Les bons programmeurs écrivent des notes tout le temps, pour se rappeler plus tard pourquoi ils ont écrit quelque chose.`, `The note above is invisible.`, `Écris ta propre note avec un # au début. Lance : le résultat ne change pas.`, ``]
+Les bons programmeurs écrivent des notes tout le temps, pour se rappeler plus tard pourquoi ils ont écrit quelque chose.`, `La note au-dessus est invisible.`, `Écris ta propre note avec un # au début. Lance : le résultat ne change pas.`, ``]
       ]],
       ['Noms et boîtes', 'Retenir des choses pour plus tard', [
         ['Une boîte avec un nom', `Imagine une boîte avec une étiquette. Tu peux mettre quelque chose dedans, et plus tard tu le demandes en lisant l'étiquette. Le mot define crée une nouvelle boîte.
 
 Ici l'étiquette est name, et dans la boîte il y a le mot Ada. Ensuite, chaque fois que tu écris name, l'ordinateur ouvre la boîte et utilise ce qu'il y a dedans.`, `Ada
-Hello Ada`, `Mets ton prénom dans la boîte.`, `Utilise define une seule fois pour chaque boîte. Pour la changer ensuite, utilise set (étape suivante).`],
+Salut Ada`, `Mets ton prénom dans la boîte.`, `Utilise define une seule fois pour chaque boîte. Pour la changer ensuite, utilise set (étape suivante).`],
         ['Change ce qu\'il y a dedans', `set met quelque chose de nouveau dans une boîte qui a déjà une étiquette. L'ancienne chose est jetée et la nouvelle prend sa place.
 
-Pense à un tableau des scores : quand quelqu'un marque, le nombre change, mais c'est toujours le même tableau.`, `Now: 7
-Next year: 8`, `Ajoute un autre set qui avance de dix ans.`, `Si tu utilises set sur une boîte qui n'existe pas, Kaviel la crée et te prévient. C'est souvent une faute de frappe.`],
+Pense à un tableau des scores : quand quelqu'un marque, le nombre change, mais c'est toujours le même tableau.`, `Maintenant: 7
+L'année prochaine: 8`, `Ajoute un autre set qui avance de dix ans.`, `Si tu utilises set sur une boîte qui n'existe pas, Kaviel la crée et te prévient. C'est souvent une faute de frappe.`],
         ['Fais des calculs', `L'ordinateur est très rapide en maths. + additionne, - soustrait, * multiplie et / divise. Le signe % donne ce qui reste après une division : 10 % 3 fait 1, parce que 3 rentre trois fois dans 10 et il reste 1.
 
 L'étoile * veut dire fois, parce que la lettre x ressemble à une lettre normale.`, `15
@@ -637,63 +637,63 @@ L'étoile * veut dire fois, parce que la lettre x ressemble à une lettre normal
 1`, `Essaie un gros calcul, comme 123 * 456.`, `Diviser par zéro est impossible. Kaviel te le dit et continue.`],
         ['Mélange mots et boîtes', `print peut montrer plusieurs choses sur une ligne, l'une après l'autre. Mots, nombres et boîtes peuvent se mélanger. L'ordinateur met un espace entre eux.
 
-Si tu veux coller les morceaux sans espace, utilise +, comme dans "Woof" + "!".`, `My pet is a dog
-It has 4 legs.
-Total legs for 3 pets: 12
-Woof!!`, `Change l'animal en oiseau et les pattes en 2.`, `Un + entre des mots les colle sans aucun espace.`]
+Si tu veux coller les morceaux sans espace, utilise +, comme dans "Ouaf" + "!".`, `Mon animal est un chien
+Il a 4 pattes.
+Pattes pour 3 animaux: 12
+Ouaf!!`, `Change l'animal en oiseau et les pattes en 2.`, `Un + entre des mots les colle sans aucun espace.`]
       ]],
       ['Pose des questions', 'Parle avec la personne qui utilise ton programme', [
         ['Prépare une question, puis pose-la', `Pour parler avec la personne qui utilise ton programme, il faut deux étapes. D'abord tu écris la question : define ask{1} écrit la question numéro 1 mais ne la pose pas encore. Ensuite ask{1} la pose vraiment et attend.
 
-Quand tu lances, une case apparaît dans le Résultat. Écris ta réponse et appuie sur Entrée. La réponse est gardée, et answer{1} sert à la relire.`, `What is your name? Ada
-Hello Ada`, `Lance-le et écris ton prénom.`, `Les accolades { } font partie du nom. Ce ne sont pas des parenthèses.`],
+Quand tu lances, une case apparaît dans le Résultat. Écris ta réponse et appuie sur Entrée. La réponse est gardée, et answer{1} sert à la relire.`, `Comment tu t'appelles ? Ada
+Salut Ada`, `Lance-le et écris ton prénom.`, `Les accolades { } font partie du nom. Ce ne sont pas des parenthèses.`],
         ['Deux questions', `Chaque question a son numéro, donc les réponses ne se mélangent jamais. La question 1 va avec answer{1}, la question 2 va avec answer{2}.
 
-Tu peux les poser dans n'importe quel ordre. Le numéro relie une question à sa réponse.`, `Your name? Ada
-Your city? Rome
-Ada lives in Rome`, `Ajoute une troisième question sur ton plat préféré.`, ``],
+Tu peux les poser dans n'importe quel ordre. Le numéro relie une question à sa réponse.`, `Ton prénom ? Ada
+Ta ville ? Rome
+Ada habite à Rome`, `Ajoute une troisième question sur ton plat préféré.`, ``],
         ['Moins de 18 ou plus de 18', `Kaviel a deux mots spéciaux pour comparer des nombres : under et over. under 18 veut dire plus petit que 18. over 18 veut dire 18 ou plus grand, donc 18 compte comme over.
 
-Les lignes ci-dessous sont la façon courte d'écrire un choix. Elles se lisent comme en anglais : si la réponse est under 18, affiche ceci.`, `Tape 10 : You are under 18.
-Tape 18 : You are 18 or older.`, `Lance-le deux fois. Une fois avec 10, une fois avec 18.`, `Si tu tapes un mot au lieu d'un nombre, Kaviel dit que ce n'est pas un nombre et continue.`],
+Les lignes ci-dessous sont la façon courte d'écrire un choix. Elles se lisent comme en anglais : si la réponse est under 18, affiche ceci.`, `Tape 10 : Tu as moins de 18 ans.
+Tape 18 : Tu as 18 ans ou plus.`, `Lance-le deux fois. Une fois avec 10, une fois avec 18.`, `Si tu tapes un mot au lieu d'un nombre, Kaviel dit que ce n'est pas un nombre et continue.`],
         ['Transforme une réponse en nombre', `Une réponse est toujours du texte, même si tu tapes des chiffres. Texte et nombres sont différents. Si tu ajoutes 1 au texte "5", tu obtiens 51, parce que l'ordinateur les colle.
 
 number() transforme le texte en vrai nombre. Ensuite les maths marchent bien.`, `Tape 4 :
-Double is 8
-Plus ten is 14`, `Fais afficher le nombre fois 100.`, `number() ne marche que si le texte est vraiment un nombre.`]
+Le double est 8
+Plus dix fait 14`, `Fais afficher le nombre fois 100.`, `number() ne marche que si le texte est vraiment un nombre.`]
       ]],
       ['Fais des choix', 'Laisse le programme décider', [
         ['Si ceci, alors cela', `Un programme peut choisir. if regarde quelque chose et n'exécute les lignes en dessous que si c'est vrai. Ces lignes sont poussées à droite vers la droite de deux espaces. La touche Tab le fait pour toi.
 
-Le dernier print n'est pas poussé à droite, donc il s'exécute toujours, quoi qu'il arrive au-dessus.`, `You win!
-Well done.
-The game is over.`, `Change le score en 3. Quelles lignes disparaissent ?`, `Si tu oublies de pousser les lignes à droite, Kaviel te prévient que le if n'a rien en dessous.`],
+Le dernier print n'est pas poussé à droite, donc il s'exécute toujours, quoi qu'il arrive au-dessus.`, `Tu as gagné!
+Bien joué.
+Le jeu est fini.`, `Change le score en 3. Quelles lignes disparaissent ?`, `Si tu oublies de pousser les lignes à droite, Kaviel te prévient que le if n'a rien en dessous.`],
         ['Sinon', `else est l'autre chemin. Quand le test est faux, les lignes sous else s'exécutent à la place. On ne prend qu'un seul chemin, jamais les deux.
 
-Pense à une fourche : va à gauche si le test est vrai, à droite s'il est faux.`, `Try again.`, `Trouve un score qui fait dire You win!`, `Écris else juste après les lignes du if, au même niveau que le if.`],
+Pense à une fourche : va à gauche si le test est vrai, à droite s'il est faux.`, `Réessaie.`, `Trouve un score qui fait dire Tu as gagné!`, `Écris else juste après les lignes du if, au même niveau que le if.`],
         ['Choisis sur une ligne', `Quand le travail est petit, tu peux tout écrire sur une ligne. Un deuxième = met l'action sur la même ligne que le test. Lis-le ainsi : si l'âge est 16, alors affiche.
 
-Le premier = dans la ligne veut dire égal. Le deuxième = sépare seulement le test de l'action.`, `Exactly sixteen
-Younger`, `Change l'âge en 25 et lance.`, ``],
-        ['Compare des mots', `On peut aussi comparer des mots. Un seul = demande : ces deux choses sont-elles exactement pareilles ? Majuscules et minuscules comptent, donc "Red" et "red" sont différents.
+Le premier = dans la ligne veut dire égal. Le deuxième = sépare seulement le test de l'action.`, `Exactement seize
+Plus jeune`, `Change l'âge en 25 et lance.`, ``],
+        ['Compare des mots', `On peut aussi comparer des mots. Un seul = demande : ces deux choses sont-elles exactement pareilles ? Majuscules et minuscules comptent, donc "Red" et "rouge" sont différents.
 
-Comme un feu : si la couleur est rouge, arrête-toi. Sinon, avance.`, `Stop!`, `Change red en green et relance.`, `Les mots entre guillemets doivent être identiques, majuscules comprises.`],
+Comme un feu : si la couleur est rouge, arrête-toi. Sinon, avance.`, `Stop!`, `Change rouge en vert et relance.`, `Les mots entre guillemets doivent être identiques, majuscules comprises.`],
         ['And, or, not', `Parfois un seul test ne suffit pas. and veut que les deux tests soient vrais. or en veut au moins un. not change vrai en faux.
 
-Dans ce programme, 9 est plus que 5 et moins que 13, donc le premier test passe. L'âge n'est pas dix, donc le dernier passe aussi.`, `You are a kid.
-You are not ten.`, `Essaie l'âge 2, puis l'âge 95. Quelles lignes apparaissent ?`, `Les parenthèses rendent ça clair : not (age = 10). Sans elles ça marche pareil, car not lit toute la comparaison qui suit.`]
+Dans ce programme, 9 est plus que 5 et moins que 13, donc le premier test passe. L'âge n'est pas dix, donc le dernier passe aussi.`, `Tu es un enfant.
+Tu n'as pas dix ans.`, `Essaie l'âge 2, puis l'âge 95. Quelles lignes apparaissent ?`, `Les parenthèses rendent ça clair : not (age = 10). Sans elles ça marche pareil, car not lit toute la comparaison qui suit.`]
       ]],
       ['Encore et encore', 'Les boucles répètent le travail pour toi', [
         ['Répète quelques fois', `Une boucle fait la même chose encore et encore, pour que tu n'aies pas à écrire la même ligne plusieurs fois. repeat 3 exécute trois fois les lignes poussées à droite.
 
 Le dernier print n'est pas poussé à droite, donc il ne s'exécute qu'une fois, quand la boucle est finie.`, `La la la! (trois fois)
-That was a song.`, `Fais-le chanter 10 fois.`, `Les lignes de la boucle doivent être poussées à droite. Sinon elles ne s'exécutent qu'une fois.`],
+C'était une chanson.`, `Fais-le chanter 10 fois.`, `Les lignes de la boucle doivent être poussées à droite. Sinon elles ne s'exécutent qu'une fois.`],
         ['Continue jusqu\'à ce que', `until continue à répéter jusqu'à ce que quelque chose devienne vrai. Avant chaque tour il demande : est-ce déjà vrai ? Si oui, il s'arrête. Si non, il refait les lignes.
 
-Dedans, set n = n + 1 ajoute un à n à chaque tour. Sans ça n ne changerait jamais et la boucle ne finirait pas. Dans ce cas il y a le bouton Arrêter, et Kaviel arrête aussi tout seul les programmes qui ne finissent pas.`, `n is 1
-n is 2
-... jusqu'à n is 5
-Done`, `Change 5 en 10.`, `Dans une boucle until, change toujours quelque chose, sinon elle ne finit jamais.`],
+Dedans, set n = n + 1 ajoute un à n à chaque tour. Sans ça n ne changerait jamais et la boucle ne finirait pas. Dans ce cas il y a le bouton Arrêter, et Kaviel arrête aussi tout seul les programmes qui ne finissent pas.`, `n vaut 1
+n vaut 2
+... jusqu'à n vaut 5
+Fini`, `Change 5 en 10.`, `Dans une boucle until, change toujours quelque chose, sinon elle ne finit jamais.`],
         ['Compte avec une boucle', `Une boucle et une boîte font un compteur. La boîte n commence à 1. À chaque tour elle affiche une ligne de la table de sept puis ajoute 1 à n.
 
 Avec peu de lignes tu obtiens dix lignes de résultat. Tu changes un nombre et toute la table change.`, `1 x 7 = 7
@@ -701,57 +701,57 @@ Avec peu de lignes tu obtiens dix lignes de résultat. Tu changes un nombre et t
 ... jusqu'à 10 x 7 = 70`, `Change le 7 en ton nombre préféré.`, ``],
         ['Sors plus tôt', `break sort de la boucle tout de suite. C'est utile quand tu as déjà trouvé ce que tu cherchais.
 
-La boucle pourrait compter jusqu'à 100, mais elle s'arrête au premier nombre dont le carré dépasse 50.`, `The first number whose square is above 50 is 8`, `Change 50 en 200.`, ``]
+La boucle pourrait compter jusqu'à 100, mais elle s'arrête au premier nombre dont le carré dépasse 50.`, `Le premier nombre dont le carré dépasse 50 est 8`, `Change 50 en 200.`, ``]
       ]],
       ['Chance', 'Dés, pièces et surprises', [
         ['Choisis une chose', `pick choisit une chose dans la liste que tu écris, complètement au hasard. Chaque chose a la même chance. Comme c'est au hasard, chaque Lancer peut donner une réponse différente.
 
-Les jeux utilisent la chance tout le temps : dés, cartes, coffres au trésor.`, `Today you are a cat
-(ou dog, owl, fox : ça change)`, `Lance-le cinq fois. Puis ajoute ton animal préféré à la liste.`, `Sépare les choses avec des virgules.`],
+Les jeux utilisent la chance tout le temps : dés, cartes, coffres au trésor.`, `Aujourd'hui tu es un chat
+(ou chien, hibou, renard : ça change)`, `Lance-le cinq fois. Puis ajoute ton animal préféré à la liste.`, `Sépare les choses avec des virgules.`],
         ['Lance une pièce', `Une pièce a deux faces, donc choisis entre deux choses. Personne ne peut deviner le résultat.
 
-Lance-le plein de fois : pile et face devraient sortir environ la moitié du temps chacun.`, `The coin says heads
-(ou tails)`, `Lance-le dix fois. Est-elle juste ?`, ``],
+Lance-le plein de fois : pile et face devraient sortir environ la moitié du temps chacun.`, `La pièce dit pile
+(ou face)`, `Lance-le dix fois. Est-elle juste ?`, ``],
         ['Lance un dé', `Tu peux aussi choisir des nombres. Un dé normal a six faces, donc on choisit de 1 à 6.
 
-La dernière ligne est un choix sur une ligne : si le dé fait 6, affiche Lucky!`, `You rolled a 4
-(ça change, et Lucky! n'apparaît que sur un 6)`, `Change-le en dé à 20 faces.`, ``],
+La dernière ligne est un choix sur une ligne : si le dé fait 6, affiche Chanceux!`, `Tu as fait 4
+(ça change, et Chanceux! n'apparaît que sur un 6)`, `Change-le en dé à 20 faces.`, ``],
         ['Des chances inégales', `Parfois tu veux que certaines choses soient rares. Un bloc random a un nombre : sa chance sur 100. Des blocs côte à côte forment un seul tirage, et un seul s'exécute.
 
-Ici le caillou sort 80 fois sur 100, la pièce 19 fois, et le diamant une seule fois.`, `Rolling the magic box...
-Just a pebble. (presque toujours)`, `Rends le diamant plus fréquent, mais garde le total à 100.`, `Les chances doivent faire 100 au total. Sinon Kaviel te prévient et corrige les nombres.`]
+Ici le caillou sort 80 fois sur 100, la pièce 19 fois, et le diamant une seule fois.`, `J'ouvre la boîte magique...
+Juste un caillou. (presque toujours)`, `Rends le diamant plus fréquent, mais garde le total à 100.`, `Les chances doivent faire 100 au total. Sinon Kaviel te prévient et corrige les nombres.`]
       ]],
       ['Tes propres commandes', 'Donne un nom à quelques lignes', [
         ['Crée une commande', `Une commande à toi est une petite machine que tu construis. Elle a un nom, elle prend quelque chose et elle renvoie quelque chose. Écris define, un nom, et des parenthèses avec ce qu'elle prend.
 
-return renvoie la réponse. Ensuite, greet("Ada") marche comme une toute nouvelle commande Kaviel, et tu peux l'utiliser autant de fois que tu veux.`, `Hello Ada!
-Hello Luca!`, `Dis bonjour à ton meilleur ami.`, `Les lignes de la commande doivent être poussées à droite sous define.`],
+return renvoie la réponse. Ensuite, greet("Ada") marche comme une toute nouvelle commande Kaviel, et tu peux l'utiliser autant de fois que tu veux.`, `Salut Ada!
+Salut Luca!`, `Dis bonjour à ton meilleur ami.`, `Les lignes de la commande doivent être poussées à droite sous define.`],
         ['Plus d\'une entrée', `Une commande peut prendre plusieurs choses. Mets-les entre parenthèses, séparées par des virgules. Ces noms n'existent que dans la commande, comme des outils dans une boîte à outils.
 
-Quand tu appelles area(3, 4), width devient 3 et height devient 4.`, `A 3 by 4 room is 12 square metres
-A 10 by 10 field is 100`, `Trouve l'aire d'un jardin de 25 sur 8.`, `Donne le bon nombre d'entrées. Trop ou pas assez, c'est une erreur.`],
+Quand tu appelles area(3, 4), width devient 3 et height devient 4.`, `Une pièce de 3 sur 4 mesure 12 mètres carrés
+Un champ de 10 sur 10 mesure 100`, `Trouve l'aire d'un jardin de 25 sur 8.`, `Donne le bon nombre d'entrées. Trop ou pas assez, c'est une erreur.`],
         ['Des commandes qui utilisent des commandes', `Une commande peut en utiliser une autre. De petits morceaux font de grands programmes.
 
 Ici quadruple utilise double deux fois : 5 devient 10, et 10 devient 20.`, `20`, `Crée une commande qui triple un nombre.`, ``],
         ['Une commande qui s\'appelle elle-même', `Une commande peut s'appeler elle-même, un peu comme être entre deux miroirs.
 
-Ça ne marche que si chaque appel se rapproche d'une fin. Ici factorial(5) est 5 fois factorial(4), et ainsi de suite jusqu'à factorial(0), qui fait simplement 1. C'est la fin.`, `5! is 120`, `Essaie factorial(10).`, `Mets toujours un cas de fin. Sans lui, la commande s'appellerait pour toujours. Kaviel l'arrête après 128 appels.`]
+Ça ne marche que si chaque appel se rapproche d'une fin. Ici factorial(5) est 5 fois factorial(4), et ainsi de suite jusqu'à factorial(0), qui fait simplement 1. C'est la fin.`, `5! fait 120`, `Essaie factorial(10).`, `Mets toujours un cas de fin. Sans lui, la commande s'appellerait pour toujours. Kaviel l'arrête après 128 appels.`]
       ]],
       ['Listes', 'Plein de choses au même endroit', [
         ['Une liste de choses', `Une boîte peut tenir une chose. Une liste est une boîte avec plein de places, l'une après l'autre. On la fait avec des crochets et des virgules.
 
-Chaque place a un numéro. La première place est 1, la deuxième est 2. Tu demandes la première avec pets[1]. length compte combien il y a de choses.`, `First: cat
-Last: fox
-All: ["cat", "dog", "fox"]
-How many: 3`, `Affiche le deuxième animal.`, `Ici les places se comptent à partir de 1, pas de 0.`],
+Chaque place a un numéro. La première place est 1, la deuxième est 2. Tu demandes la première avec pets[1]. length compte combien il y a de choses.`, `Premier: chat
+Dernier: renard
+Tous: ["chat", "chien", "renard"]
+Combien: 3`, `Affiche le deuxième animal.`, `Ici les places se comptent à partir de 1, pas de 0.`],
         ['Ajoute et change', `append met une nouvelle chose à la fin de la liste. set peut changer une place : set pets[1] = "lion" remplace le premier élément.
 
-La liste grandit avec append. Avec set elle garde la même taille.`, `["lion", "dog", "owl"]`, `Ajoute deux autres animaux.`, `Demander une place qui n'existe pas, comme pets[10], est une erreur. Elle te dit la vraie longueur.`],
+La liste grandit avec append. Avec set elle garde la même taille.`, `["lion", "chien", "hibou"]`, `Ajoute deux autres animaux.`, `Demander une place qui n'existe pas, comme pets[10], est une erreur. Elle te dit la vraie longueur.`],
         ['Visite chaque élément', `Pour faire quelque chose avec chaque élément d'une liste, utilise une boucle avec un compteur. i commence à 1 et monte de un à chaque tour, jusqu'à dépasser la longueur de la liste.
 
-pets[i] veut dire l'élément à la place i, donc la boucle montre chaque animal, l'un après l'autre.`, `1 cat
-2 dog
-3 owl`, `Ajoute un animal à la liste. La boucle marche-t-elle encore ?`, ``],
+pets[i] veut dire l'élément à la place i, donc la boucle montre chaque animal, l'un après l'autre.`, `1 chat
+2 chien
+3 hibou`, `Ajoute un animal à la liste. La boucle marche-t-elle encore ?`, ``],
         ['Additionne une liste', `Une boîte peut collecter un total pendant que la boucle visite chaque nombre. total commence à 0. À chaque tour, le prix courant lui est ajouté.
 
 C'est la même idée qu'une caisse de magasin qui additionne ce que tu achètes.`, `Total: 20`, `Ajoute un autre prix à la liste.`, ``]
@@ -759,72 +759,72 @@ C'est la même idée qu'une caisse de magasin qui additionne ce que tu achètes.
       ['Appuie sur une touche', 'Attendre le clavier', [
         ['Attends une touche', `Jusqu'ici, la personne tapait une réponse entière et appuyait sur Entrée. Parfois tu veux juste un appui sur une touche, comme Appuie sur une touche pour commencer dans un jeu.
 
-define keypress{1} = C choisit la touche C. La ligne if attend que cette touche soit pressée, puis pose la question. Les autres touches sont ignorées.`, `Press C to continue.
+define keypress{1} = C choisit la touche C. La ligne if attend que cette touche soit pressée, puis pose la question. Les autres touches sont ignorées.`, `Appuie sur C pour continuer.
 (rien ne se passe tant que tu n'appuies pas sur C)
-What is your name?`, `Lance-le. D'abord appuie sur une mauvaise touche. Puis appuie sur C.`, `Clique d'abord sur la page, pour que les touches lui arrivent.`],
-        ['D\'autres touches', `En plus des lettres, tu peux attendre ces touches : Enter, Space, Escape, Tab et les flèches ArrowUp, ArrowDown, ArrowLeft et ArrowRight.`, `Press Space to begin.
-Your favourite colour?`, `Change Space en Enter.`, `Écris le nom de la touche avec les mêmes majuscules.`]
+Comment tu t'appelles ?`, `Lance-le. D'abord appuie sur une mauvaise touche. Puis appuie sur C.`, `Clique d'abord sur la page, pour que les touches lui arrivent.`],
+        ['D\'autres touches', `En plus des lettres, tu peux attendre ces touches : Enter, Space, Escape, Tab et les flèches ArrowUp, ArrowDown, ArrowLeft et ArrowRight.`, `Appuie sur Space pour commencer.
+Ta couleur préférée ?`, `Change Space en Enter.`, `Écris le nom de la touche avec les mêmes majuscules.`]
       ]],
       ['Crée un jeu', 'Mets tout ensemble', [
         ['Devine le nombre', `Maintenant on met tout ensemble. L'ordinateur choisit un nombre secret avec pick. Tu essaies jusqu'à le trouver. La boucle continue jusqu'à ce que ton essai soit égal au secret.
 
-Dans la boucle : pose la question, transforme la réponse en nombre, compte un essai de plus et donne un indice si le nombre est trop grand ou trop petit.`, `Guess a number from 1 to 10: 5
-Too small.
+Dans la boucle : pose la question, transforme la réponse en nombre, compte un essai de plus et donne un indice si le nombre est trop grand ou trop petit.`, `Devine un nombre de 1 à 10 : 5
+Trop petit.
 ... et ainsi de suite, jusqu'à
-You got it in 3 tries!`, `Fais monter le nombre secret jusqu'à 20.`, `number(answer{1}) est important. Sans lui la réponse est du texte, et le texte ne se compare pas comme un nombre.`],
+Tu as réussi en 3 essais!`, `Fais monter le nombre secret jusqu'à 20.`, `number(answer{1}) est important. Sans lui la réponse est du texte, et le texte ne se compare pas comme un nombre.`],
         ['Un quiz avec des points', `Une boîte appelée points compte les bonnes réponses. Elle commence à 0. Chaque bonne réponse ajoute 1 avec set points = points + 1.
 
 À la fin, print montre le total. Les lignes vides sont là seulement pour rendre le programme plus lisible.`, `Correct!
 Correct!
-You got 2 out of 2.`, `Écris une troisième question à toi et donne aussi des points pour elle.`, `Les réponses se comparent comme du texte, donc écris-les exactement : "4" et "green".`],
+Tu as eu 2 sur 2.`, `Écris une troisième question à toi et donne aussi des points pour elle.`, `Les réponses se comparent comme du texte, donc écris-les exactement : "4" et "vert".`],
         ['Pierre, feuille, ciseaux', `C'est un plus gros programme, donc lis-le lentement, un bloc à la fois. L'ordinateur choisit avec pick. Tu écris ton choix. Ensuite, pour chaque chose que tu pouvais choisir, il y a un bloc qui décide qui a gagné.
 
-Les grands blocs if ont de plus petites lignes if poussées à droite dedans. C'est permis : des choix dans des choix.`, `I chose paper
-(ça change) puis You win!, I win! ou A draw!`, `À la fin, ajoute une ligne qui dit ce qui se passe si tu écris autre chose.`, `Écris les mots exacts : rock, paper ou scissors, en minuscules.`]
+Les grands blocs if ont de plus petites lignes if poussées à droite dedans. C'est permis : des choix dans des choix.`, `J'ai choisi feuille
+(ça change) puis Tu as gagné!, J'ai gagné! ou Égalité!`, `À la fin, ajoute une ligne qui dit ce qui se passe si tu écris autre chose.`, `Écris les mots exacts : pierre, feuille ou ciseaux, en minuscules.`]
       ]],
       ['Erreurs', 'Ça arrive. Ce n\'est pas grave.', [
         ['Une faute de frappe', `Tout le monde se trompe, même ceux qui programment pour leur métier. Beaucoup de programmes plantent quand quelque chose ne va pas. Pas Kaviel : il saute la ligne cassée, te le dit et continue.
 
-Regarde la boîte Problèmes après avoir lancé. Elle montre le numéro de ligne et dit ce qu'elle pense que tu voulais écrire.`, `Hello!
-But this one still works.
+Regarde la boîte Problèmes après avoir lancé. Elle montre le numéro de ligne et dit ce qu'elle pense que tu voulais écrire.`, `Salut!
+Mais celle-ci marche encore.
 (et un problème à la ligne 3)`, `Clique sur le problème pour aller à la ligne. Puis corrige la faute.`, ``],
         ['Un nom qui n\'existe pas', `Une boîte doit être créée avec define avant d'être utilisée. Si tu écris un nom qui n'existe pas, Kaviel cherche des noms proches et t'en suggère un. Ici agee a une lettre de trop.
 
-Lire les messages d'erreur est une vraie compétence. Ils sont de ton côté.`, `Fixed: 8
+Lire les messages d'erreur est une vraie compétence. Ils sont de ton côté.`, `Corrigé: 8
 (et un problème à la ligne 3)`, `Corrige la ligne en enlevant le e en trop.`, ``],
         ['Un calcul impossible', `Certaines choses sont impossibles, comme diviser par zéro. Le programme te le dit, saute cette ligne et passe à la suivante. Rien ne s'arrête.
 
 C'est la grande idée de Kaviel : une erreur n'est pas la fin. Tu vois toujours ce qui s'est passé et où.`, `5
-Still running!
+Ça tourne encore!
 (et un problème à la ligne 3)`, `Change le 0 en 5. Le problème disparaît.`, ``]
       ]],
       ['Ton grand projet', 'Construis un jeu du trésor, étape par étape', [
         ['Commence l\'histoire', `Maintenant tu vas construire un vrai jeu, un petit morceau à la fois. C'est une chasse au trésor sur une île. Après chaque étape le jeu devient plus grand, et il marche toujours.
 
-Le premier morceau est un message de bienvenue. Le jeu demande ton prénom puis te dit bonjour. Tu sais déjà tout ce qu'il faut.`, `What is your name? Ada
-Welcome to the island, Ada
-Find as many coins as you can.`, `Appuie sur Écris-le toi-même, écris le programme et lance-le. Puis change l'histoire : utilise un autre endroit qu'une île.`, ``],
+Le premier morceau est un message de bienvenue. Le jeu demande ton prénom puis te dit bonjour. Tu sais déjà tout ce qu'il faut.`, `Comment tu t'appelles ? Ada
+Bienvenue sur l'île, Ada
+Trouve le plus de pièces possible.`, `Appuie sur Écris-le toi-même, écris le programme et lance-le. Puis change l'histoire : utilise un autre endroit qu'une île.`, ``],
         ['Choisis un chemin', `Un bon jeu laisse le joueur choisir. Maintenant on ajoute une deuxième question : gauche ou droite. Le jeu dit quelque chose de différent pour chaque réponse.
 
-Il utilise if et else, comme dans la leçon sur les choix.`, `Which way: left or right? left
-You walk into a cave.`, `Lance-le deux fois : une fois avec left, une fois avec right. Puis change la grotte en autre chose.`, `Écris left en minuscules, exactement comme dans le programme.`],
+Il utilise if et else, comme dans la leçon sur les choix.`, `Quel chemin : gauche ou droite ? gauche
+Tu entres dans une grotte.`, `Lance-le deux fois : une fois avec gauche, une fois avec right. Puis change la grotte en autre chose.`, `Écris gauche en minuscules, exactement comme dans le programme.`],
         ['Ajoute de la chance et des pièces', `Maintenant le jeu devient passionnant. Une boîte appelée coins commence à 0. Ensuite un bloc random donne 70 chances sur 100 de trouver 5 pièces et 30 sur 100 de rencontrer un crabe.
 
-set coins = coins + 5 ajoute 5 à la boîte. Les deux blocs random sont côte à côte, donc un seul arrive.`, `You find 5 coins!
+set coins = coins + 5 ajoute 5 à la boîte. Les deux blocs random sont côte à côte, donc un seul arrive.`, `Tu trouves 5 pièces!
 (ou le crabe. Ça change à chaque fois.)
-You have 5 coins.`, `Lance-le plein de fois. Change 5 pièces en 10 pièces. Garde 70 et 30 pour faire 100.`, `Les deux chances doivent faire 100.`],
+Tu as 5 pièces.`, `Lance-le plein de fois. Change 5 pièces en 10 pièces. Garde 70 et 30 pour faire 100.`, `Les deux chances doivent faire 100.`],
         ['Joue trois jours', `Un jour, c'est trop court. Maintenant le jeu dure trois jours. Une boîte appelée day compte 1, 2, 3. Quand elle est plus grande que 3, la boucle s'arrête.
 
-La question ask{2} est dans la boucle, donc le jeu demande gauche ou droite chaque jour. Toutes les lignes poussées à droite sont dans la boucle.`, `Day 1
+La question ask{2} est dans la boucle, donc le jeu demande gauche ou droite chaque jour. Toutes les lignes poussées à droite sont dans la boucle.`, `Jour 1
 (un chemin et un peu de chance)
-Day 2
+Jour 2
 (un chemin et un peu de chance)
-Day 3
+Jour 3
 (un chemin et un peu de chance)`, `Change until day > 3 en until day > 5 et joue cinq jours.`, `N'oublie pas set day = day + 1, sinon le jeu ne finit jamais.`],
         ['La fin du jeu', `À la fin le jeu te dit ce qui s'est passé. Il montre combien de pièces tu as trouvées. Puis deux petits choix disent si tu es riche : plus de 10 pièces, ou pas.
 
-C'est un jeu entier ! Il a des questions, des choix, de la chance, une boucle et une boîte qui compte. Tu as utilisé presque tout des leçons.`, `Ada found 15 coins.
-You are rich!`, `Joue trois fois. Peux-tu avoir plus de 10 pièces ?`, ``],
+C'est un jeu entier ! Il a des questions, des choix, de la chance, une boucle et une boîte qui compte. Tu as utilisé presque tout des leçons.`, `Ada a trouvé 15 pièces.
+Tu es riche!`, `Joue trois fois. Peux-tu avoir plus de 10 pièces ?`, ``],
         ['Fais-le à toi', `Les vrais programmeurs ne s'arrêtent jamais à la première version. Voici des idées pour rendre le jeu à toi :
 
 Change l'histoire et les mots. Ajoute un troisième chemin avec une question de plus. Rends le prix plus gros. Ajoute un trésor rare avec un autre bloc random.

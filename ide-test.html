@@ -410,6 +410,54 @@
     doc.getElementById('smaller').click();
     check('Smaller text brings it back', win.getComputedStyle(code).fontSize === '15px');
 
+    // Italian and French: the text in quotes is translated, the code still works.
+    var literalPattern = /"((?:[^"\\\n]|\\.)*)"/g;
+    function literalsOf(source) { var found = []; source.replace(literalPattern, function (_, inner) { found.push(inner); return ''; }); return found; }
+    var keepAsIs = ['Ada', 'Luca', '!', '4', 'La la la!', 'x 7 =', 'Wow, ', 'Wow!', 'Hi', 'Count:'];
+    var dictionary = {};
+    win.KavielStrings.forEach(function (row) { dictionary[row[0]] = true; });
+    var everyLiteral = [];
+    T.forEach(function (lesson) { lesson.steps.forEach(function (step) { everyLiteral = everyLiteral.concat(literalsOf(step.code)); }); });
+    for (var fileName of ['hello', 'questions', 'age', 'dice', 'collatz', 'rock_paper_scissors', 'functions', 'lists', 'keypress', 'errors', 'guess', 'timestable', 'quiz', 'treasure_hunt']) {
+      everyLiteral = everyLiteral.concat(literalsOf(await (await fetch('examples/' + fileName + '.kv')).text()));
+    }
+    var untranslated = everyLiteral.filter(function (text) { return !dictionary[text] && keepAsIs.indexOf(text) < 0 && !/^\W*$/.test(text); });
+    check('Every quoted phrase in the lessons and examples has a translation', untranslated.length === 0);
+    if (untranslated.length) log.push('  missing: ' + JSON.stringify(Array.from(new Set(untranslated))));
+    for (var langCode of ['it', 'fr']) {
+      localStorage.setItem('kaviel.lang', langCode);
+      await load();
+      doc = frame.contentDocument; win = frame.contentWindow; code = doc.getElementById('code');
+      var TT = win.KavielTutorials;
+      check(langCode + ': the page language and selector follow the choice', doc.documentElement.lang === langCode && doc.getElementById('lang').value === langCode);
+      check(langCode + ': the interface is translated', doc.getElementById('run').textContent.trim() !== 'Run' && doc.getElementById('tutorials-toggle').textContent.trim() !== 'Lessons');
+      check(langCode + ': lesson code keeps English keywords and translates the quoted text', TT[1].steps[0].code.indexOf('print "') > 0 && TT[1].steps[0].code.indexOf('Hello') < 0);
+      check(langCode + ': every lesson step still runs as intended', TT.every(function (lesson) { return lesson.steps.every(function (step) {
+        var asked = 0;
+        var outcome = win.Kaviel.run(step.code, {input: function () { return String(asked++ % 10 + 1); }, keypress: function (wanted) { return wanted === 'Space' ? ' ' : wanted; }, rng: function () { return 0.5; }});
+        return step.expectErrors ? outcome.errors > 0 : outcome.errors === 0;
+      }); }));
+      var quizSource = TT[TT.length - 2].steps[1].code;
+      var answers = langCode === 'it' ? ['sinistra', 'destra', 'sinistra'] : ['gauche', 'droite', 'gauche'];
+      var played = win.Kaviel.run(TT[TT.length - 1].steps[4].code, {input: (function () { var i = -1, list = ['Ada'].concat(answers); return function () { return list[++i]; }; })(), rng: function () { return 0; }});
+      check(langCode + ': the treasure game works with translated answers', played.errors === 0 && played.output.join('\n').indexOf(langCode === 'it' ? 'Entri in una grotta' : 'Tu entres dans une grotte') >= 0 && /ricco|riche/.test(played.output.join('\n')));
+      var savedExamples = doc.getElementById('examples');
+      savedExamples.value = 'quiz';
+      savedExamples.dispatchEvent(new win.Event('change'));
+      var quizAnswers = langCode === 'it' ? ['4', 'verde'] : ['4', 'vert'];
+      var quizRun = win.Kaviel.run(code.value, {input: (function () { var i = -1; return function () { return quizAnswers[++i]; }; })()});
+      check(langCode + ': the quiz example accepts the translated right answers', quizRun.errors === 0 && quizRun.output.join(' ').indexOf(langCode === 'it' ? 'Hai preso 2 su 2' : 'Tu as eu 2 sur 2') >= 0);
+      doc.getElementById('guide-toggle').click();
+      check(langCode + ': the help examples are translated and still run', Array.from(doc.querySelectorAll('.guide-grid pre')).every(function (pre, i) {
+        var source = i === 0 ? pre.textContent : 'start\ndefine score = 5\n' + pre.textContent + '\nend';
+        return win.Kaviel.run(source, {input: function () { return 'test'; }, keypress: function (w) { return w; }, rng: function () { return 0.5; }}).errors === 0;
+      }) && doc.querySelector('.guide-grid pre').textContent.indexOf('Hello') < 0);
+      doc.getElementById('guide-close').click();
+    }
+    localStorage.setItem('kaviel.lang', 'en');
+    await load();
+    doc = frame.contentDocument; win = frame.contentWindow; code = doc.getElementById('code');
+
     var savedNameBeforeHash = localStorage.getItem('kaviel.filename');
     await load('#collatz');
     check('Hash loads the requested example', frame.contentDocument.getElementById('code').value.includes('define n = 27'));

@@ -201,9 +201,19 @@
     });
   }
 
-  window.KavielI18n = {lang: lang};
+  // Translate only the text between quotes in a piece of Kaviel code.
+  var literals = {};
+  if (index > 0) (window.KavielStrings || []).forEach(function (row) { literals[row[0]] = row[index]; });
+  function code(source) {
+    if (index === 0) return source;
+    return source.replace(/"((?:[^"\\\n]|\\.)*)"/g, function (whole, inner) {
+      return Object.prototype.hasOwnProperty.call(literals, inner) ? '"' + literals[inner] + '"' : whole;
+    });
+  }
+  window.KavielI18n = {lang: lang, code: code};
 
   if (index > 0) {
+    document.querySelectorAll('.guide-grid pre').forEach(function (pre) { pre.textContent = code(pre.textContent); });
     walk(document.body);
     new MutationObserver(function (records) {
       records.forEach(function (r) {

@@ -162,6 +162,8 @@ random 33
 
 <div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button id="toast-action" hidden></button></div>
 
+<script src="strings.js"></script>
+<script src="i18n.js"></script>
 <script src="runtime.js"></script>
 <script src="engine.js"></script>
 <script>
@@ -376,6 +378,9 @@ random 33
 'print "I made it all the way to the end"\n' +
 'end\n'
   };
+
+  // Examples follow the language of the site: only the text in quotes is translated.
+  if (window.KavielI18n) Object.keys(SAMPLES).forEach(function (key) { SAMPLES[key] = KavielI18n.code(SAMPLES[key]); });
 
   function lineCount(text) {
     return text.split('\n').length;
@@ -701,7 +706,6 @@ random 33
 })();
 </script>
 <script src="editor-ui.js"></script>
-<script src="i18n.js"></script>
 <script src="lessons.js"></script>
 <script src="tutorials.js"></script>
 </body>

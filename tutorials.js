@@ -362,6 +362,10 @@
     });
   });
 
+  if (window.KavielI18n) TUTORIALS.forEach(function (lesson) {
+    lesson.steps.forEach(function (step) { step.code = window.KavielI18n.code(step.code); });
+  });
+
   // One short sentence for each line of code, so the child knows what every line does.
   function explain(line) {
     var t = line.trim(), m, e = EXPLAIN;

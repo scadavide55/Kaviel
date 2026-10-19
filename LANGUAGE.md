@@ -339,7 +339,8 @@ Static files, no dependencies, no build step:
 | `v1-test.js` | 64 tests: thresholds, functions, lists, keys, async and cancellation |
 | `cli-test.js` | 19 tests of the `kaviel` command through pipes and signals |
 | `i18n.js` | Italian and French interface (the language itself stays English) |
-| `ide-test.html` | 112 browser checks: run, input, keys, Stop, lessons, files, drag and drop, layout |
+| `strings.js` | translations of the text inside quotes in lessons, examples and help; keywords never change |
+| `ide-test.html` | 127 browser checks: run, input, keys, Stop, lessons, files, drag and drop, layout |
 | `run.js` | the command: `kaviel run`, `kaviel help`, `kaviel version` |
 | `examples/` | runnable programs, one per idea |
 
@@ -383,7 +384,7 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 | `node test.js` | 80 passed |
 | `node v1-test.js` | 64 passed |
 | `node cli-test.js` | 19 passed |
-| `ide-test.html` in Brave (headless) | 112 passed |
+| `ide-test.html` in Brave (headless) | 127 passed |
 | The ten examples in `examples/` | all run without errors except `errors.kv`, which is meant to show them |
 | Interactive terminal through a real pty | answers, order and final line verified by hand |
 | Collatz of 27 | reaches 1; counted from 1 it reads 112 |

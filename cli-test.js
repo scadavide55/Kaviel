@@ -6,6 +6,9 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const engine = require('./engine.js');
+
+function queue(items) { let i = 0; return () => (i < items.length ? items[i++] : ''); }
 
 let passed = 0;
 function check(name, fn) {
@@ -186,6 +189,22 @@ check('stdin closing early does not hang the program', () => {
   check('Ctrl+C stops the program with exit 130', () => assert.equal(exitCode, 130, 'exit ' + exitCode + ' / ' + stopErr));
   check('Ctrl+C reports that the program was stopped', () => assert.match(stopErr, /Stopped by you\./, stopErr));
   fs.unlinkSync(stopFile);
+
+  // Every example must run through the real command, with an answer ready for its questions.
+  const answers = {age: '20\n', questions: 'Ada\n14\n', guess: '7\n8\n9\n10\n1\n', quiz: 'red\n4\n', citadel: 'Ada\n1\n', keypress: 'Ada\n', treasure_hunt: 'Ada\nleft\nleft\nleft\n'};
+  for (const file of fs.readdirSync(path.join(__dirname, 'examples')).filter(f => f.endsWith('.kv'))) {
+    const name = file.replace('.kv', '');
+    const source = fs.readFileSync(path.join(__dirname, 'examples', file), 'utf8');
+    const result = engine.run(source, {
+      input: queue(answers[name] ? answers[name].split('\n') : []),
+      keypress: () => 'C',
+      rng: () => 0.5
+    });
+    check('example ' + name + ' runs without errors', () => {
+      if (name === 'errors') return assert.ok(result.errors > 0);
+      assert.equal(result.errors, 0, JSON.stringify(result.problems.slice(0, 3)));
+    });
+  }
 
   console.log(passed + ' CLI tests passed');
 })().catch(e => {

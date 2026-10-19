@@ -999,7 +999,9 @@ random 33
   }
 
   document.addEventListener('keydown', function (ev) {
-    if (ev.key === 'Escape' && running) {
+    // A program that is waiting for Escape must receive it; otherwise Escape is Stop.
+    var waitingForEscape = keyWaiter && sameKey('Escape', keyWaiter.expected);
+    if (ev.key === 'Escape' && running && !waitingForEscape) {
       ev.preventDefault();
       stopRun();
       return;

@@ -1062,7 +1062,7 @@ random 33
         '<span class="msg" style="display:block"></span>' +
         (p.hint ? '<span class="hint" style="display:block"></span>' : '') + '</span>';
       row.querySelector('.where').textContent = 'Line ' + p.line;
-      row.querySelector('.msg').textContent = p.message;
+      row.querySelector('.msg').textContent = p.count > 1 ? p.message + ' (×' + p.count + ')' : p.message;
       if (p.hint) row.querySelector('.hint').textContent = p.hint;
       row.addEventListener('click', (function (line) {
         return function () { selectLine(line); };

@@ -204,7 +204,7 @@ function printProblems(result) {
   error.write('\n');
   for (const p of result.problems) {
     const label = p.kind === 'error' ? 'error' : p.kind === 'warning' ? 'warning' : 'hint';
-    error.write('line ' + p.line + ' · ' + label + ' · ' + p.message + '\n');
+    error.write('line ' + p.line + ' · ' + label + ' · ' + p.message + (p.count > 1 ? ' (×' + p.count + ')' : '') + '\n');
     if (p.hint) error.write('   ' + p.hint + '\n');
   }
   error.write('\n' + result.summary + '\n');

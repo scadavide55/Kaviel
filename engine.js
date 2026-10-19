@@ -20,7 +20,7 @@
     'true', 'false', 'nothing', 'and', 'or', 'not', 'under', 'over', 'is'];
   var KEYWORD_SET = new Set(KEYWORDS);
   var OPERATORS = ['and', 'or', 'not'];
-  var TWO_CHAR_OPS = ['==', '!=', '<=', '>='];
+  var TWO_CHAR_OPS = ['==', '!=', '<=', '>=', '//'];
   var ONE_CHAR_OPS = '=<>+-*/%(),{}[]';
   var CMP = ['=', '==', '!=', '<', '>', '<=', '>='];
   var MAX_STEPS = 1000000;
@@ -29,8 +29,9 @@
 
   function isErr(v) { return v === ERROR; }
   function isDigit(c) { return c >= '0' && c <= '9'; }
-  function isIdentStart(c) { return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c === '_'; }
-  function isIdentPart(c) { return isIdentStart(c) || isDigit(c); }
+  var LETTER = /[\p{L}_]/u, LETTER_OR_DIGIT = /[\p{L}\p{N}_]/u;
+  function isIdentStart(c) { return c !== undefined && LETTER.test(c); }
+  function isIdentPart(c) { return c !== undefined && LETTER_OR_DIGIT.test(c); }
 
   // ---------------------------------------------------------------- lexer
 
@@ -788,7 +789,7 @@
       var left = parseUnary();
       for (;;) {
         var t = peek();
-        if (t.type === 'op' && (t.value === '*' || t.value === '/' || t.value === '%')) {
+        if (t.type === 'op' && (t.value === '*' || t.value === '/' || t.value === '%' || t.value === '//')) {
           pos++;
           var right = parseUnary();
           left = { type: 'Binary', op: t.value, left: left, right: right, line: t.line };

@@ -25,8 +25,12 @@
   }
   function numeric(v) {
     if (typeof v === 'number') return Number.isFinite(v) ? v : ERROR;
-    if (typeof v !== 'string' || !/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(v.trim())) return ERROR;
-    const n = Number(v.trim());
+    if (typeof v !== 'string') return ERROR;
+    let text = v.trim();
+    // "1,5" is how half of Europe writes a half; accept it when the comma is the only separator.
+    if (/^[+-]?\d+,\d+$/.test(text)) text = text.replace(',', '.');
+    if (!/^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/.test(text)) return ERROR;
+    const n = Number(text);
     return Number.isFinite(n) ? n : ERROR;
   }
   function contains(value, target, seen = new Set()) {
@@ -51,11 +55,18 @@
       this.limit = Number.isSafeInteger(options.limit) && options.limit > 0 ? options.limit : language.MAX_STEPS;
       this.rng = options.rng || Math.random;
       this.vars = new Map(); this.locals = null; this.functions = new Map();
+      this.loopNames = [];
       this.questions = new Map(); this.answers = new Map(); this.keys = new Map();
       this.depth = 0;
     }
     key(name, slot) { return name + '\u0000' + (slot || 1); }
-    problem(kind, line, message, hint = '') { this.problems.push({kind, line, col: 1, message, hint}); }
+    problem(kind, line, message, hint = '') {
+      // The same mistake inside a loop would otherwise fill the panel with copies.
+      for (const p of this.problems) {
+        if (p.line === line && p.kind === kind && p.message === message) { p.count = (p.count || 1) + 1; return; }
+      }
+      this.problems.push({kind, line, col: 1, message, hint, count: 1});
+    }
     error(line, message, hint) { this.problem('error', line, message, hint); return ERROR; }
     warning(line, message, hint) { this.problem('warning', line, message, hint); }
     *step(line) {
@@ -68,6 +79,17 @@
       return !this.stopped;
     }
     scope(key) { return this.locals && this.locals.has(key) ? this.locals : this.vars; }
+    // Every name visible right now, used to tell "it was here before the loop"
+    // from "the previous turn of this loop created it".
+    visibleNames() {
+      const names = new Set(this.vars.keys());
+      if (this.locals) for (const k of this.locals.keys()) names.add(k);
+      return names;
+    }
+    madeInLoop(key) {
+      if (!this.loopNames.length) return false;
+      return !this.loopNames[this.loopNames.length - 1].has(key);
+    }
     *list(statements) {
       for (let i = 0; i < statements.length && !this.stopped; i++) {
         const st = statements[i];
@@ -115,7 +137,7 @@
     }
     validIndex(list, index, line) {
       if (!Array.isArray(list)) { this.error(line, 'This value is not a list.'); return false; }
-      if (!Number.isSafeInteger(index) || index < 1 || index > list.length) {
+      if (typeof index !== 'number' || !Number.isInteger(index) || index < 1 || index > list.length) {
         this.error(line, 'List positions start at 1; this list has ' + list.length + ' items.', 'Use a whole-number position inside the list.'); return false;
       }
       return true;
@@ -173,7 +195,7 @@
             }
             return;
           }
-          if (st.type === 'Define' && scope.has(key)) this.warning(st.line, '`' + st.name + '` already existed: the new value took over.', 'To change it on purpose, the command is `set`.');
+          if (st.type === 'Define' && scope.has(key) && !this.madeInLoop(key)) this.warning(st.line, '`' + st.name + '` already existed: the new value took over.', 'To change it on purpose, the command is `set`.');
           if (st.type === 'Set' && !scope.has(key)) {
             this.warning(st.line, '`' + st.name + '` did not exist: I created it just now.', 'To create it on purpose, use `define`.');
             (this.locals || this.vars).set(key, value);
@@ -195,13 +217,16 @@
             if (!Number.isInteger(turns)) this.warning(st.line, '`repeat ' + show(turns) + '`: I rounded it to ' + Math.floor(turns) + ' turns.');
             turns = Math.floor(turns);
           }
-          for (let turn = 0; st.type === 'Until' || turn < turns; turn++) {
-            if (!(yield* this.step(st.line))) return;
-            if (st.type === 'Until') { const done = yield* this.eval(st.expr); if (done === ERROR || truthy(done)) return; }
-            const control = yield* this.list(st.body.body);
-            if (control && control.kind === 'break') return;
-            if (control) return control;
-          }
+          this.loopNames.push(this.visibleNames());
+          try {
+            for (let turn = 0; st.type === 'Until' || turn < turns; turn++) {
+              if (!(yield* this.step(st.line))) return;
+              if (st.type === 'Until') { const done = yield* this.eval(st.expr); if (done === ERROR || truthy(done)) return; }
+              const control = yield* this.list(st.body.body);
+              if (control && control.kind === 'break') return;
+              if (control) return control;
+            }
+          } finally { this.loopNames.pop(); }
           return;
         }
         case 'Break': return {kind: 'break'};
@@ -335,6 +360,7 @@
         case '*': result = left * right; break;
         case '/': if (right === 0) return this.error(node.line, 'You cannot divide by zero.', 'The divisor must not be 0.'); result = left / right; break;
         case '%': if (right === 0) return this.error(node.line, 'You cannot divide by zero (the `%` divides to find the rest).'); result = left % right; break;
+        case '//': if (right === 0) return this.error(node.line, 'You cannot divide by zero.', 'The divisor must not be 0.'); result = Math.floor(left / right); break;
         case '<': return left < right;
         case '>': return left > right;
         case '<=': return left <= right;

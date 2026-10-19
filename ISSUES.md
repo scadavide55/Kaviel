@@ -12,6 +12,11 @@
 | n25 | `over 18` is now `> 18`, the same as `>`, and the example, the lessons in three languages, the tutorial and the specification follow |
 | n24, n26, A23 | `is` is the third threshold word: `answer{1} = is 18` is true for `18`, ` 18 ` and `18.0`, and the error message no longer talks about a "response" |
 | n26 | `=` reads a number out of text too: `"18" = 18` is true, `"rock" = 1` stays false with a warning, and the lessons say so |
+| A3 | `define` inside a loop no longer warns on every turn; a name that existed before the loop still warns |
+| A4 | `//` divides and keeps the whole part, and a position written `2.0` is accepted |
+| A12 | names carry accented letters: `città`, `perché` |
+| A13 | a decimal comma is read as a decimal point, in `number("1,5")` and in `is 2.5` |
+| A14 | the same mistake inside a loop is shown once, with `(×50)`, in the terminal and in the editor |
 
 This file is the list that was started on 19 October 2026 and then checked again, item by item, against the code.
 Every line below was **run or read**, not guessed. Where a claim could not be reproduced it says so.

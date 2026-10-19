@@ -732,6 +732,71 @@ else
 end`,
   { output: ['altro', 'due'], errors: 0, warnings: 0 });
 
+test('names can carry the letters of Italian and French',
+  `start
+define città = 5
+define perché = "yes"
+print città perché
+end`,
+  { output: ['5 yes'], errors: 0, warnings: 0 });
+
+test('a whole number written 2.0 is a valid position',
+  `start
+define items = [10, 20, 30]
+print items[(1 + 3) / 2]
+end`,
+  { output: ['20'], errors: 0, warnings: 0 });
+
+test('two slashes divide and keep the whole part',
+  `start
+print 7 // 2
+print (6 // 4) * 10
+print 7 // 2 * 2
+end`,
+  { output: ['3', '10', '6'], errors: 0, warnings: 0 });
+
+test('two slashes refuse a zero divisor',
+  `start
+print 7 // 0
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, contains: 'divide by zero' });
+
+test('a decimal comma is read as a decimal point',
+  `start
+define ask{1} = ("How much? ")
+ask{1}
+print number("1,5") + 1
+print answer{1} = is 2.5
+end`,
+  { input: ['2,5'], output: ['2.5', 'true'], errors: 0, warnings: 0 });
+
+test('define inside a loop does not warn on the next turn',
+  `start
+define i = 0
+repeat 3
+  define x = i * 10
+  print x
+  set i = i + 1
+end`,
+  { output: ['0', '10', '20'], errors: 0, warnings: 0 });
+
+test('define still warns when the name was there before the loop',
+  `start
+define x = 1
+repeat 2
+  define x = 5
+end`,
+  { output: [], errors: 0, warnings: 1, contains: ['already existed'] });
+
+
+{
+  const res = run('start\nrepeat 20\n  print sconosciuto\nend\n');
+  const p = res.problems[0];
+  if (res.problems.length === 1 && p.count === 20) passed++;
+  else { failed++; failures.push('a repeated problem is counted once: ' + JSON.stringify(res.problems)); }
+}
+
 /* ---------------------------------------------------------- result */
 
 console.log('');

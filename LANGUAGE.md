@@ -55,7 +55,7 @@ end
 | `break` | leaves the nearest loop | `break` |
 
 Literals: numbers, text in `"..."`, `true` / `false`, `nothing`, lists `[1, 2, 3]`.
-Operators: `+ - * / %`, comparisons `= != < > <= >=`, logic `and or not`, and the two threshold words `under` / `over` (§7).
+Operators: `+ - * / // %`, comparisons `= != < > <= >=`, logic `and or not`, and the three threshold words `is` / `under` / `over` (§6). `//` divides and keeps the whole part.
 
 `=` is **only** equality, never assignment. `define` and `set` assign. `==` is accepted as a synonym of `=` because people arrive from Python and C.
 
@@ -70,9 +70,9 @@ The braces are optional: `define age = 12` is `define age{1} = 12`.
 `age` and `age{1}` are the same thing. Braces are needed only for a second value under the same name (`points{1}`, `points{2}`), which is rare.
 
 - Reading a name never created → **error**, value `nothing`, run continues.
-- `define` of an existing name → **warning**, the new value wins.
+- `define` of an existing name → **warning**, the new value wins — unless that name was created inside the loop that is running, which is what a loop is for.
 - `set` of a name that never existed → **warning** ("it did not exist, I created it") and it is created.
-- Names: letters, digits, `_`, starting with a letter. Case counts.
+- Names: letters, digits, `_`, starting with a letter. Letters include the accented ones, so `città` and `perché` are names. Case counts.
 
 ---
 
@@ -221,10 +221,10 @@ print pets               # ["cat", "owl", "fox", "bee"]
 
 - `[a, b, c]` builds a list; lists nest (`[[1, 2], [3]]`).
 - `items[i]` reads; `set items[i] = v` changes one item; `set items[1][2] = v` reaches inside.
-- A position must be a whole number from 1 to the length; otherwise an error names the real length.
+- A position must be a whole number from 1 to the length; `2.0` counts as 2. Otherwise an error names the real length. To get a whole number from a division, use `//`.
 - `length(x)` counts items, or characters in text (Unicode-aware).
 - `append(list, value)` adds at the end; `list` is changed in place, so functions receive the same list.
-- `number(text)` converts text to a number, or errors if it is not one.
+- `number(text)` converts text to a number, or errors if it is not one. A comma works as the decimal mark: `number("1,5")` is 1.5, and so is `2,5 = is 2.5`.
 - Lists compare by their contents: `[1, [2]] = [1, [2]]` is true.
 - A list cannot contain itself (directly or through nesting): error, and the list is left as it was.
 - Limit: 100 000 items per list.
@@ -273,6 +273,7 @@ The message is a sentence, never a traceback. "Did you mean" compares the word w
 - A broken **block header** (`if`, `repeat`, `random`, `define ...`) skips its block and says so: "I skipped lines 8–10 of the `if` block too."
 - A broken **expression** skips that line's action only.
 - Every error is collected before execution starts; then the program runs anyway.
+- The same mistake repeated inside a loop is shown once, with a counter: `(×50)`. A program cannot bury its own first error under copies of itself.
 - The only thing that stops a program is the step limit (§11) or Stop in the editor.
 
 ### Where you see them

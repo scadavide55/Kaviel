@@ -158,7 +158,7 @@ if answer{1} = over 18 = print "You are over 18."
 - All three read numbers out of text and refuse text that is not a number. (Decided by Davide on 20 October 2026.)
 - They read numbers out of the answer, including `" 18 "`, `"17.5"`, `"1e3"`. Text that is not a number → **error** on that line, run continues.
 - They work on both sides: `if 18 = over answer{1}` is the same test.
-- Ordinary comparisons stay strict: `"18" = 18` is `false` with a warning, because one is text and one is a number.
+- A number and a text holding a number are compared as numbers: `"18" = 18` is `true`, and `" 18 " = 18` too. Text that is not a number stays unequal, with a warning.
 
 ### A key that opens a question
 
@@ -242,7 +242,7 @@ Four kinds of value: number, text, `true`/`false`, `nothing`, plus lists.
 | `5 + "5"` | `55` (glues, does not add) |
 | `"a" - 1` | **error**, `nothing`, run continues |
 | `1 / 0` | **error**, `nothing`, run continues |
-| `"rock" = 1` | `false` + **warning** (different types are almost always a bug) |
+| `"rock" = 1` | `false` + **warning** (a text that is not a number stays unequal) |
 | `print "a " b` | one space between values, and none where one is already written |
 
 To glue text exactly, use `+`: `print "Hi " + name + "!"`.
@@ -423,7 +423,7 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 | list positions | start at 1 | **Davide's decision** |
 | `define ask{1}` with no text | error | **Davide's decision** |
 | `under 18` / `over 18` | `< 18` / `> 18` | **Davide's decision**, changed on 20 October 2026 so that they match `<` and `>` |
-| `is 18` | `= 18` on numbers, and it reads a number out of text | **Davide's decision**, 20 October 2026: the third word beside under and over |
+| `is 18` | `= 18`, and both read a number out of text | **Davide's decision**, 20 October 2026: `is` and `=` now agree on numbers |
 | builtins | `length`, `append`, `number` | the three every first program needs; more would be words to learn |
 | `not` | covers the whole comparison after it: `not age = 9` is `not (age = 9)` | Davide asked for it, 19 Oct 2026 |
 | unknown word in an expression | the hint also says: put it in quotes to show it as text | a first program often forgets the quotes |

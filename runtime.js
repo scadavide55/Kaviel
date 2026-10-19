@@ -309,9 +309,21 @@
         return a === b;
       }
       if (op === '=' || op === '!=') {
-        const comparable = typeName(left) === typeName(right);
-        if (!comparable) this.warning(node.line, 'You are comparing ' + typeName(left) + ' with ' + typeName(right) + ': they can never be equal.', 'Maybe one side is a text and the other a number?');
-        const result = comparable && same(left, right);
+        // A number and a text that holds a number are compared as numbers,
+        // so that an answer ("18") equals the number 18.
+        let comparable = typeName(left) === typeName(right);
+        let result;
+        if (comparable) {
+          result = same(left, right);
+        } else {
+          const nl = typeof left === 'string' ? numeric(left) : left;
+          const nr = typeof right === 'string' ? numeric(right) : right;
+          if (typeof nl === 'number' && typeof nr === 'number') result = nl === nr;
+          else {
+            this.warning(node.line, 'You are comparing ' + typeName(left) + ' with ' + typeName(right) + ': they can never be equal.', 'Maybe one side is a text and the other a number?');
+            result = false;
+          }
+        }
         return op === '=' ? result : !result;
       }
       if (op === '+' && (typeof left === 'string' || typeof right === 'string')) return show(left) + show(right);

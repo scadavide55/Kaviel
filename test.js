@@ -334,7 +334,7 @@ if x = "5"
 else
   print "different"
 end`,
-  { output: ['different'], errors: 0, warnings: 1, contains: ['can never be equal'] });
+  { output: ['equal'], errors: 0, warnings: 0 });
 
 test('random that does not add up to 100: warning and continue',
   `start

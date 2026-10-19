@@ -105,7 +105,9 @@ The lines below are the short way to write a choice. They read like English: if 
 Type 18: You are exactly 18.`, `Run it twice. Once with 10, once with 18.`, `If you type a word instead of a number, Kaviel says it is not a number and carries on.`],
         ['Turn an answer into a number', `An answer is always text, even when you type digits. Text and numbers are different things. Add 1 to the text "5" and you get 51, because the computer glues them together.
 
-number() turns text into a real number. After that the maths works properly.`, `Type 4:
+number() turns text into a real number. After that the maths works properly.
+
+For comparing you do not need it: = reads the number out of the text, so answer{1} = 18 works.`, `Type 4:
 Double is 8
 Plus ten is 14`, `Make it print the number times 100.`, `number() only works when the text really is a number.`]
       ]],
@@ -383,7 +385,9 @@ Le righe qui sotto sono il modo corto di scrivere una scelta. Si leggono come in
 Scrivi 18: Hai 18 anni o più.`, `Eseguilo due volte. Una con 10, una con 18.`, `Se scrivi una parola invece di un numero, Kaviel dice che non è un numero e continua.`],
         ['Trasforma una risposta in numero', `Una risposta è sempre testo, anche se scrivi cifre. Testo e numeri sono cose diverse. Se aggiungi 1 al testo "5" ottieni 51, perché il computer li attacca.
 
-number() trasforma il testo in un vero numero. Dopo, la matematica funziona bene.`, `Scrivi 4:
+number() trasforma il testo in un vero numero. Dopo, la matematica funziona bene.
+
+Per confrontare non serve: = legge il numero dentro il testo, quindi answer{1} = 18 funziona.`, `Scrivi 4:
 Il doppio è 8
 Più dieci fa 14`, `Fai stampare il numero per 100.`, `number() funziona solo se il testo è davvero un numero.`]
       ]],
@@ -661,7 +665,9 @@ Les lignes ci-dessous sont la façon courte d'écrire un choix. Elles se lisent 
 Tape 18 : Tu as 18 ans ou plus.`, `Lance-le deux fois. Une fois avec 10, une fois avec 18.`, `Si tu tapes un mot au lieu d'un nombre, Kaviel dit que ce n'est pas un nombre et continue.`],
         ['Transforme une réponse en nombre', `Une réponse est toujours du texte, même si tu tapes des chiffres. Texte et nombres sont différents. Si tu ajoutes 1 au texte "5", tu obtiens 51, parce que l'ordinateur les colle.
 
-number() transforme le texte en vrai nombre. Ensuite les maths marchent bien.`, `Tape 4 :
+number() transforme le texte en vrai nombre. Ensuite les maths marchent bien.
+
+Pour comparer, ce n'est pas la peine : = lit le nombre dans le texte, donc answer{1} = 18 marche.`, `Tape 4 :
 Le double est 8
 Plus dix fait 14`, `Fais afficher le nombre fois 100.`, `number() ne marche que si le texte est vraiment un nombre.`]
       ]],

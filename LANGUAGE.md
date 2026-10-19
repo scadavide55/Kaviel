@@ -406,6 +406,8 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 | `define ask{1}` with no text | error | **Davide's decision** |
 | `under 18` / `over 18` | `< 18` / `>= 18` | **Davide's decision** |
 | builtins | `length`, `append`, `number` | the three every first program needs; more would be words to learn |
+| `not` | covers the whole comparison after it: `not age = 9` is `not (age = 9)` | Davide asked for it, 19 Oct 2026 |
+| unknown word in an expression | the hint also says: put it in quotes to show it as text | a first program often forgets the quotes |
 
 ---
 
@@ -429,6 +431,3 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 1. A shorter way to walk a list (`for each`) — v1.1?
 2. `import` with real modules — v1.1 or v2?
 3. Whether `nothing` should print as an empty string instead of the word `nothing`.
-
-| `not` | covers the whole comparison after it: `not age = 9` means `not (age = 9)` | **Davide's decision**, 19 Oct 2026 |
-| unknown word in an expression | the hint adds: put it in quotes to show it as text | a first program often forgets the quotes |

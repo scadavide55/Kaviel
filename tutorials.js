@@ -267,6 +267,84 @@
       ]
     },
     {
+      title: 'Words and letters',
+      subtitle: 'Play with text',
+      steps: [
+        {
+          title: 'Big letters, small letters',
+          text: 'The computer can change the size of letters. upper makes every letter big, lower makes every letter small.\n\nBoth do not change the old text: they give you back a new one, so the word you started from is still there.',
+          code: 'start\nprint upper("Kaviel")\nprint lower("KAVIEL")\nend',
+          turn: 'Print your own name in small letters.'
+        },
+        {
+          title: 'Cut the spaces',
+          text: 'When a person types an answer, spaces often sneak in at the beginning or at the end. You cannot see them, but the computer can, and two texts that look the same stop being equal.\n\ntrim takes those spaces away. It is the first thing to do with an answer you want to compare.',
+          code: 'start\ndefine name = "  Ada  "\nprint "[" trim(name) "]"\nend',
+          turn: 'Remove trim, run again, and look at the brackets.'
+        },
+        {
+          title: 'Take one piece',
+          text: 'part cuts a piece out of a text. You give it the text, the position where the piece starts and where it ends, and both positions count.\n\nPositions start at 1, exactly as in a list, so the first letter is at 1 and not at 0.',
+          code: 'start\ndefine word = "Kaviel"\nprint part(word, 1, 6)\nprint part(word, 4, 6)\nend',
+          turn: 'Print the first four letters of the word.'
+        },
+        {
+          title: 'Split it, join it',
+          text: 'split breaks a text wherever it finds a separator, and gives you a list. join does the opposite: it takes a list and a piece of text, and glues the pieces with that text in between.\n\nTwo words, one idea: pieces and whole. It is how a chat turns a sentence into words.',
+          code: 'start\ndefine letters = "a,b,c"\ndefine pieces = split(letters, ",")\nprint pieces\nprint join(pieces, "-")\nprint length(pieces)\nend',
+          turn: 'Split your own sentence on the space and join it with a plus sign.'
+        }
+      ]
+    },
+    {
+      title: 'Numbers that stay whole',
+      subtitle: 'Without a comma',
+      steps: [
+        {
+          title: 'Two slashes',
+          text: 'A division with one slash gives the exact answer, and it can have a part after the point: 7 / 2 is 3.5.\n\nWith two slashes you keep only the whole part: 7 // 2 is 3. It is called whole division, and it is what you need to count things: you cannot have half a chair.',
+          code: 'start\nprint 7 / 2\nprint 7 // 2\nend',
+          turn: 'Try 9 // 3 and 10 // 3.'
+        },
+        {
+          title: 'What is left over',
+          text: 'The per cent sign gives what is left after a whole division. 7 % 2 is 1, because 2 fits three times in 7 and 1 is left.\n\nIt is the quickest way to ask "is this number even?": if it is even, the rest of the division by 2 is 0.',
+          code: 'start\nprint 7 % 2\nprint 8 % 2\nend',
+          turn: 'Print the rest of 10 divided by 3.'
+        },
+        {
+          title: 'A whole average',
+          text: 'Now you can do what a shop does: add up the prices, divide by how many there are, and keep whole numbers.\n\ntotal // count gives the average without anything after the point, which is what you want when the answer must be a whole coin.',
+          code: 'start\ndefine total = 17\ndefine count = 5\nprint total // count\nend',
+          turn: 'Change total to 20 and run it again. Then try 17 / 5 to see the difference.'
+        }
+      ]
+    },
+    {
+      title: 'Draw with letters',
+      subtitle: 'Patterns',
+      steps: [
+        {
+          title: 'A row of stars',
+          text: 'A text can grow. Start from an empty text, "", and add one star at every turn: after five turns you have a row of five stars.\n\nThis is how a computer draws when there is no drawing program: with letters, one after the other.',
+          code: 'start\ndefine line = ""\nrepeat 5\n  set line = line + "*"\nprint line\nend',
+          turn: 'Make a row of twenty stars.'
+        },
+        {
+          title: 'A triangle',
+          text: 'Put the growing text inside a loop that runs one more time each turn, and print it every turn: you get a triangle.\n\nIt is the same two ideas as before, a text that grows and a loop that goes on, and the picture comes out by itself.',
+          code: 'start\ndefine stars = ""\ndefine n = 1\nuntil n > 5\n  set stars = stars + "*"\n  print stars\n  set n = n + 1\nend',
+          turn: 'Make the triangle grow by two stars at a time.'
+        },
+        {
+          title: 'A frame around a name',
+          text: 'join repeats something: three pieces of three dashes, glued with nothing between them, give a bar of nine dashes.\n\nWith a bar above and a bar below you have a sign. A computer draws every picture this way: small pieces, repeated in the right order.',
+          code: 'start\ndefine bar = join(["---", "---", "---"], "")\nprint bar\nprint "Ada"\nprint bar\nend',
+          turn: 'Make the frame wider, and put your own name inside.'
+        }
+      ]
+    },
+    {
       title: 'Press a key',
       subtitle: 'Wait for the keyboard',
       steps: [
@@ -381,6 +459,11 @@
     if (t[0] === '#') return e.note;
     if (t === 'else') return e.else;
     if (t === 'break') return e.breakIt;
+    // A text command inside a line explains the line better than print does.
+    if ((m = t.match(/\b(upper|lower|trim|part|split|join)\(/)) && e[m[1]]) return e[m[1]];
+    if (/\/\//.test(t) && e.whole) return e.whole;
+    if (/\s%\s/.test(t) && e.rest) return e.rest;
+    if (/^for\s+each\b/.test(t)) return e.forEach;
     if (/^print\s*$/.test(t)) return e.printEmpty;
     if (/^print\b/.test(t)) return e.print;
     if ((m = t.match(/^define\s+ask\{(\d+)\}/))) return e.askDef.replace('{n}', m[1]);

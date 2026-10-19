@@ -32,7 +32,16 @@ window.KavielLessons = {
       breakIt: 'Leaves the loop right now.',
       random: 'One chance in the draw, out of 100. Only one of the blocks next to each other runs.',
       returnIt: 'Sends this value back to the place that used the command.',
-      append: 'Adds a value at the end of the list.'
+      append: 'Adds a value at the end of the list.',
+      forEach: 'Goes through the list, one item at a time. The pushed-in lines run once for every item, and the name holds the item.',
+      upper: 'Makes every letter big.',
+      lower: 'Makes every letter small.',
+      trim: 'Takes away the spaces at the two ends.',
+      part: 'Takes a piece of the text, from one position to another.',
+      split: 'Breaks the text where the separator is, and gives a list.',
+      join: 'Glues the pieces of a list, with this text in between.',
+      whole: 'Divides and keeps only the whole part, without what comes after the point.',
+      rest: 'Gives what is left after a whole division.'
     },
     lessons: [
       ['Meet the editor', 'A tour before you start', [
@@ -208,6 +217,54 @@ owl`, `Add a fourth animal. Notice that nothing else has to change.`, ``],
 
 It is the same idea as a shop till adding up what you buy.`, `Total: 20`, `Add another price to the list.`, ``]
       ]],
+      ['Words and letters', 'Play with text', [
+        ['Big letters, small letters', `The computer can change the size of letters. upper makes every letter big, lower makes every letter small.
+
+Both do not change the old text: they give you back a new one, so the word you started from is still there.`, `KAVIEL
+kaviel`, 'Print your own name in small letters.', `upper and lower want a text. upper(5) is an error.`],
+        ['Cut the spaces', `When a person types an answer, spaces often sneak in at the beginning or at the end. You cannot see them, but the computer can, and two texts that look the same stop being equal.
+
+trim takes those spaces away. It is the first thing to do with an answer you want to compare.`, `[Ada]`, 'Remove trim, run again, and look at the brackets.', `trim removes spaces only at the two ends, never the ones in the middle.`],
+        ['Take one piece', `part cuts a piece out of a text. You give it the text, the position where the piece starts and where it ends, and both positions count.
+
+Positions start at 1, exactly as in a list, so the first letter is at 1 and not at 0.`, `Kaviel
+iel`, 'Print the first four letters of the word.', `If you ask for a position bigger than the text, Kaviel tells you how many letters there are.`],
+        ['Split it, join it', `split breaks a text wherever it finds a separator, and gives you a list. join does the opposite: it takes a list and a piece of text, and glues the pieces with that text in between.
+
+Two words, one idea: pieces and whole. It is how a chat turns a sentence into words.`, `["a", "b", "c"]
+a-b-c
+3`, 'Split your own sentence on the space and join it with a plus sign.', `The separator must be at least one character, so split(text, "") is an error.`]
+      ]],
+      ['Numbers that stay whole', 'Without a comma', [
+        ['Two slashes', `A division with one slash gives the exact answer, and it can have a part after the point: 7 / 2 is 3.5.
+
+With two slashes you keep only the whole part: 7 // 2 is 3. It is called whole division, and it is what you need to count things: you cannot have half a chair.`, `3.5
+3`, 'Try 9 // 3 and 10 // 3.', `Do not write // when you want the exact answer.`],
+        ['What is left over', `The per cent sign gives what is left after a whole division. 7 % 2 is 1, because 2 fits three times in 7 and 1 is left.
+
+It is the quickest way to ask "is this number even?": if it is even, the rest of the division by 2 is 0.`, `1
+0`, 'Print the rest of 10 divided by 3.', `The sign follows the left side: -7 % 2 is -1, not 1.`],
+        ['A whole average', `Now you can do what a shop does: add up the prices, divide by how many there are, and keep whole numbers.
+
+total // count gives the average without anything after the point, which is what you want when the answer must be a whole coin.`, `3`, 'Change total to 20 and run it again. Then try 17 / 5 to see the difference.', `If count is 0, Kaviel refuses to divide and tells you why.`]
+      ]],
+      ['Draw with letters', 'Patterns', [
+        ['A row of stars', `A text can grow. Start from an empty text, "", and add one star at every turn: after five turns you have a row of five stars.
+
+This is how a computer draws when there is no drawing program: with letters, one after the other.`, `*****`, 'Make a row of twenty stars.', `An empty text is "" — two quotes with nothing between them.`],
+        ['A triangle', `Put the growing text inside a loop that runs one more time each turn, and print it every turn: you get a triangle.
+
+It is the same two ideas as before, a text that grows and a loop that goes on, and the picture comes out by itself.`, `*
+**
+***
+****
+*****`, 'Make the triangle grow by two stars at a time.', `If a loop never ends, press Escape to stop it. Kaviel stops it for you after a while.`],
+        ['A frame around a name', `join repeats something: three pieces of three dashes, glued with nothing between them, give a bar of nine dashes.
+
+With a bar above and a bar below you have a sign. A computer draws every picture this way: small pieces, repeated in the right order.`, `---------
+Ada
+---------`, 'Make the frame wider, and put your own name inside.', `join wants a list of texts. Numbers in the list are turned into text for you.`]
+      ]],
       ['Press a key', 'Wait for the keyboard', [
         ['Wait for one key', `So far, the person typed a whole answer and pressed Enter. Sometimes you want just one key press, like Press any key to start in a game.
 
@@ -315,7 +372,16 @@ When you are happy, press Save to keep your game as a .kv file. Show it to your 
       breakIt: 'Esce subito dal ciclo.',
       random: 'Una possibilità nell\'estrazione, su 100. Solo uno dei blocchi vicini viene eseguito.',
       returnIt: 'Rimanda questo valore al punto in cui è stato usato il comando.',
-      append: 'Aggiunge un valore alla fine della lista.'
+      append: 'Aggiunge un valore alla fine della lista.',
+      forEach: 'Passa la lista, un elemento alla volta. Le righe rientrate girano una volta per ogni elemento, e il nome contiene l’elemento.',
+      upper: 'Rende grandi tutte le lettere.',
+      lower: 'Rende piccole tutte le lettere.',
+      trim: 'Toglie gli spazi ai due estremi.',
+      part: 'Prende un pezzo del testo, da una posizione all’altra.',
+      split: 'Spezza il testo dove c’è il separatore e dà una lista.',
+      join: 'Incolla i pezzi di una lista, mettendo questo testo in mezzo.',
+      whole: 'Divide e tiene solo la parte intera, senza quello che viene dopo la virgola.',
+      rest: 'Dà quello che avanza dopo una divisione intera.'
     },
     lessons: [
       ['Conosci l\'editor', 'Un giro prima di iniziare', [
@@ -491,6 +557,54 @@ owl`, `Aggiungi un quarto animale. Nota che non cambia nient'altro.`, ``],
 
 È la stessa idea di una cassa del negozio che somma quello che compri.`, `Totale: 20`, `Aggiungi un altro prezzo alla lista.`, ``]
       ]],
+      ['Parole e lettere', 'Gioca con il testo', [
+        ['Lettere grandi, lettere piccole', `Il computer può cambiare la dimensione delle lettere. upper rende ogni lettera grande, lower la rende piccola.
+
+Nessuno dei due cambia il testo di partenza: ti danno un testo nuovo, e la parola da cui sei partito resta com'era.`, `KAVIEL
+kaviel`, 'Stampa il tuo nome in lettere piccole.', `upper e lower vogliono un testo. upper(5) è un errore.`],
+        ['Taglia gli spazi', `Quando una persona scrive una risposta, spesso entrano degli spazi all’inizio o alla fine. Tu non li vedi, il computer sì, e due testi che sembrano uguali smettono di esserlo.
+
+trim toglie quegli spazi. È la prima cosa da fare con una risposta che vuoi confrontare.`, `[Ada]`, 'Togli trim, esegui di nuovo e guarda le parentesi.', `trim toglie gli spazi solo ai due estremi, mai quelli in mezzo.`],
+        ['Prendi un pezzo', `part taglia un pezzo da un testo. Gli dai il testo, la posizione dove comincia il pezzo e quella dove finisce, e contano tutte e due.
+
+Le posizioni partono da 1, come nelle liste, quindi la prima lettera è alla posizione 1 e non 0.`, `Kaviel
+iel`, 'Stampa le prime quattro lettere della parola.', `Se chiedi una posizione più grande del testo, Kaviel ti dice quante lettere ci sono.`],
+        ['Dividi e riunisci', `split spezza un testo dove trova un separatore e ti dà una lista. join fa il contrario: prende una lista e un pezzo di testo, e incolla i pezzi mettendo quel testo in mezzo.
+
+Due parole, un’idea sola: i pezzi e il tutto. È così che una chat trasforma una frase in parole.`, `["a", "b", "c"]
+a-b-c
+3`, 'Dividi una tua frase sullo spazio e riuniscila con un segno più.', `Il separatore deve essere almeno un carattere, quindi split(text, "") è un errore.`]
+      ]],
+      ['Numeri interi', 'Senza virgola', [
+        ['Due barre', `Una divisione con una barra dà la risposta esatta, e può avere una parte dopo la virgola: 7 / 2 fa 3,5.
+
+Con due barre tieni solo la parte intera: 7 // 2 fa 3. Si chiama divisione intera, ed è quella che serve per contare le cose: mezza sedia non esiste.`, `3.5
+3`, 'Prova 9 // 3 e 10 // 3.', `Non scrivere // quando vuoi la risposta esatta.`],
+        ['Quello che avanza', `Il segno di percento dà quello che resta dopo una divisione intera. 7 % 2 fa 1, perché il 2 sta tre volte nel 7 e avanza 1.
+
+È il modo più rapido per chiedere "questo numero è pari?": se è pari, il resto della divisione per 2 è 0.`, `1
+0`, 'Stampa il resto di 10 diviso 3.', `Il segno segue il lato sinistro: -7 % 2 fa -1, non 1.`],
+        ['Una media intera', `Ora puoi fare quello che fa un negozio: sommare i prezzi, dividere per quanti sono, e tenere numeri interi.
+
+total // count dà la media senza niente dopo la virgola, che è quello che vuoi quando la risposta deve essere una moneta intera.`, `3`, 'Cambia total in 20 e riesegui. Poi prova 17 / 5 per vedere la differenza.', `Se count è 0, Kaviel rifiuta di dividere e ti dice perché.`]
+      ]],
+      ['Disegna con le lettere', 'Forme', [
+        ['Una fila di stelle', `Un testo può crescere. Parti da un testo vuoto, "", e aggiungi una stella a ogni giro: dopo cinque giri hai una fila di cinque stelle.
+
+È così che un computer disegna quando non c’è un programma per disegnare: con le lettere, una dopo l’altra.`, `*****`, 'Fai una fila di venti stelle.', `Un testo vuoto è "" — due virgolette con niente in mezzo.`],
+        ['Un triangolo', `Metti il testo che cresce dentro un ciclo che gira una volta in più a ogni giro, e stampalo ogni volta: ottieni un triangolo.
+
+Sono le stesse due idee di prima, un testo che cresce e un ciclo che continua, e il disegno viene da sé.`, `*
+**
+***
+****
+*****`, 'Fai crescere il triangolo di due stelle alla volta.', `Se un ciclo non finisce, premi Esc per fermarlo. Kaviel lo ferma da solo dopo un po’.`],
+        ['Una cornice intorno a un nome', `join ripete una cosa: tre pezzi di tre trattini, incollati senza niente in mezzo, danno una barra di nove trattini.
+
+Con una barra sopra e una sotto hai un cartello. Un computer disegna ogni figura così: pezzi piccoli, ripetuti nell’ordine giusto.`, `---------
+Ada
+---------`, 'Fai la cornice più larga e mettici dentro il tuo nome.', `join vuole una lista di testi. I numeri nella lista diventano testo da soli.`]
+      ]],
       ['Premi un tasto', 'Aspetta la tastiera', [
         ['Aspetta un tasto', `Finora la persona scriveva una risposta intera e premeva Invio. A volte vuoi solo la pressione di un tasto, come Premi un tasto per iniziare in un gioco.
 
@@ -598,7 +712,16 @@ Quando sei contento, premi Salva per tenere il gioco come file .kv. Mostralo all
       breakIt: 'Sort de la boucle tout de suite.',
       random: 'Une chance dans le tirage, sur 100. Un seul des blocs côte à côte s\'exécute.',
       returnIt: 'Renvoie cette valeur à l\'endroit où la commande a été utilisée.',
-      append: 'Ajoute une valeur à la fin de la liste.'
+      append: 'Ajoute une valeur à la fin de la liste.',
+      forEach: 'Parcourt la liste, un élément à la fois. Les lignes en retrait tournent une fois par élément, et le nom contient l’élément.',
+      upper: 'Rend toutes les lettres grandes.',
+      lower: 'Rend toutes les lettres petites.',
+      trim: 'Enlève les espaces aux deux bouts.',
+      part: 'Prend un morceau du texte, d’une position à l’autre.',
+      split: 'Casse le texte là où est le séparateur et donne une liste.',
+      join: 'Colle les morceaux d’une liste, avec ce texte entre eux.',
+      whole: 'Divise et garde seulement la partie entière, sans ce qui vient après la virgule.',
+      rest: 'Donne ce qui reste après une division entière.'
     },
     lessons: [
       ['Découvre l\'éditeur', 'Un tour avant de commencer', [
@@ -773,6 +896,54 @@ owl`, `Ajoute un quatrième animal. Remarque que rien d'autre ne change.`, ``],
         ['Additionne une liste', `Une boîte peut collecter un total pendant que la boucle visite chaque nombre. total commence à 0. À chaque tour, le prix courant lui est ajouté.
 
 C'est la même idée qu'une caisse de magasin qui additionne ce que tu achètes.`, `Total: 20`, `Ajoute un autre prix à la liste.`, ``]
+      ]],
+      ['Mots et lettres', 'Joue avec le texte', [
+        ['Grandes lettres, petites lettres', `L’ordinateur peut changer la taille des lettres. upper rend chaque lettre grande, lower la rend petite.
+
+Aucun des deux ne change le texte de départ : ils te donnent un nouveau texte, et le mot d’origine reste là.`, `KAVIEL
+kaviel`, 'Affiche ton prénom en petites lettres.', `upper et lower veulent un texte. upper(5) est une erreur.`],
+        ['Coupe les espaces', `Quand une personne tape une réponse, des espaces se glissent souvent au début ou à la fin. Tu ne les vois pas, l’ordinateur si, et deux textes qui se ressemblent ne sont plus égaux.
+
+trim enlève ces espaces. C’est la première chose à faire avec une réponse que tu veux comparer.`, `[Ada]`, 'Enlève trim, relance, et regarde les parenthèses.', `trim enlève les espaces seulement aux deux bouts, jamais ceux du milieu.`],
+        ['Prends un morceau', `part coupe un morceau dans un texte. Tu lui donnes le texte, la position où le morceau commence et celle où il finit, et les deux comptent.
+
+Les positions commencent à 1, comme dans une liste, donc la première lettre est à 1 et pas à 0.`, `Kaviel
+iel`, 'Affiche les quatre premières lettres du mot.', `Si tu demandes une position plus grande que le texte, Kaviel dit combien de lettres il y a.`],
+        ['Sépare et réunir', `split casse un texte là où il trouve un séparateur, et te donne une liste. join fait le contraire : il prend une liste et un morceau de texte, et colle les morceaux avec ce texte entre eux.
+
+Deux mots, une seule idée : les morceaux et le tout. C’est ainsi qu’un chat transforme une phrase en mots.`, `["a", "b", "c"]
+a-b-c
+3`, 'Sépare une de tes phrases sur l’espace et réunis-la avec un signe plus.', `Le séparateur doit faire au moins un caractère, donc split(text, "") est une erreur.`]
+      ]],
+      ['Nombres entiers', 'Sans virgule', [
+        ['Deux barres', `Une division avec une barre donne la réponse exacte, et elle peut avoir une partie après la virgule : 7 / 2 fait 3,5.
+
+Avec deux barres tu gardes seulement la partie entière : 7 // 2 fait 3. On l’appelle division entière, et c’est celle qu’il faut pour compter des choses : une demi-chaise n’existe pas.`, `3.5
+3`, 'Essaie 9 // 3 et 10 // 3.', `N’écris pas // quand tu veux la réponse exacte.`],
+        ['Ce qui reste', `Le signe pour cent donne ce qui reste après une division entière. 7 % 2 fait 1, parce que 2 tient trois fois dans 7 et il reste 1.
+
+C’est le moyen le plus rapide de demander « ce nombre est-il pair ? » : s’il est pair, le reste de la division par 2 est 0.`, `1
+0`, 'Affiche le reste de 10 divisé par 3.', `Le signe suit le côté gauche : -7 % 2 fait -1, pas 1.`],
+        ['Une moyenne entière', `Maintenant tu peux faire ce que fait un magasin : additionner les prix, diviser par le nombre d’articles, et garder des nombres entiers.
+
+total // count donne la moyenne sans rien après la virgule, ce qu’il te faut quand la réponse doit être une pièce entière.`, `3`, 'Change total en 20 et relance. Puis essaie 17 / 5 pour voir la différence.', `Si count vaut 0, Kaviel refuse de diviser et dit pourquoi.`]
+      ]],
+      ['Dessine avec des lettres', 'Formes', [
+        ['Une rangée d’étoiles', `Un texte peut grandir. Pars d’un texte vide, "", et ajoute une étoile à chaque tour : après cinq tours tu as une rangée de cinq étoiles.
+
+C’est ainsi qu’un ordinateur dessine quand il n’y a pas de programme pour dessiner : avec des lettres, l’une après l’autre.`, `*****`, 'Fais une rangée de vingt étoiles.', `Un texte vide, c’est "" — deux guillemets avec rien entre eux.`],
+        ['Un triangle', `Mets le texte qui grandit dans une boucle qui tourne une fois de plus à chaque tour, et affiche-le à chaque tour : tu obtiens un triangle.
+
+Ce sont les deux mêmes idées qu’avant, un texte qui grandit et une boucle qui continue, et le dessin vient tout seul.`, `*
+**
+***
+****
+*****`, 'Fais grandir le triangle de deux étoiles à la fois.', `Si une boucle ne finit pas, appuie sur Esc pour l’arrêter. Kaviel l’arrête seul au bout d’un moment.`],
+        ['Un cadre autour d’un nom', `join répète une chose : trois morceaux de trois tirets, collés avec rien entre eux, donnent une barre de neuf tirets.
+
+Avec une barre au-dessus et une en dessous tu as un panneau. Un ordinateur dessine chaque image ainsi : de petits morceaux, répétés dans le bon ordre.`, `---------
+Ada
+---------`, 'Élargis le cadre et mets ton propre nom dedans.', `join veut une liste de textes. Les nombres de la liste deviennent du texte tout seuls.`]
       ]],
       ['Appuie sur une touche', 'Attendre le clavier', [
         ['Attends une touche', `Jusqu'ici, la personne tapait une réponse entière et appuyait sur Entrée. Parfois tu veux juste un appui sur une touche, comme Appuie sur une touche pour commencer dans un jeu.

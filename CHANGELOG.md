@@ -29,6 +29,12 @@ The version where the language stopped surprising the person using it.
 - The same mistake repeated inside a loop is shown once, with `(×50)`, in the terminal and in the editor.
 - The step limit says the program used its steps, instead of blaming a loop that was fine.
 
+### Lessons
+
+- Three new lessons: **Words and letters** (`upper`, `lower`, `trim`, `part`, `split`, `join`), **Numbers that stay whole** (`//` and `%`) and **Draw with letters** (patterns built from text).
+- 16 lessons and 61 steps now, in English, Italian and French.
+- Every new instruction has a note under its line: `for each`, the six text commands, `//` and `%`.
+
 ### Cleanup
 
 - 405 lines of the old interpreter removed from `engine.js`.

@@ -3,6 +3,11 @@
    Words that a program compares (left, red, rock, green...) are translated everywhere at once,
    so an example still works after translation. [English, Italiano, Français] */
 window.KavielStrings = [
+  // Proper names and single letters stay themselves in every language.
+  ['Kaviel', 'Kaviel', 'Kaviel'],
+  ['KAVIEL', 'KAVIEL', 'KAVIEL'],
+  ['  Ada  ', '  Ada  ', '  Ada  '],
+  ['a,b,c', 'a,b,c', 'a,b,c'],
   ['Hello!', 'Ciao!', 'Salut!'],
   ['Hello again!', 'Ciao di nuovo!', 'Salut encore!'],
   ['I can type code!', 'So scrivere codice!', 'Je sais écrire du code!'],

@@ -41,7 +41,13 @@ window.KavielLessons = {
       split: 'Breaks the text where the separator is, and gives a list.',
       join: 'Glues the pieces of a list, with this text in between.',
       whole: 'Divides and keeps only the whole part, without what comes after the point.',
-      rest: 'Gives what is left after a whole division.'
+      rest: 'Gives what is left after a whole division.',
+      value: 'Shows one of the three plain values of the language: true, false or nothing.',
+      compare: 'Works out the check first, and print shows the answer: true or false.',
+      nothingValue: 'Puts the empty value in the box: nothing has been given to it yet.',
+      nestedList: 'A list of lists: every row is a list of its own.',
+      appendRow: 'Adds a whole row at the end of the table.',
+      twice: 'Reads the row first, then the item inside that row.'
     },
     lessons: [
       ['Meet the editor', 'A tour before you start', [
@@ -141,6 +147,18 @@ Like a traffic light: if the colour is red, stop. Otherwise, go.`, `Stop!`, `Cha
 In this program, 9 is more than 5 and less than 13, so the first check passes. The age is not ten, so the last check passes too.`, `You are a kid.
 You are not ten.`, `Try age 2, then age 95. Which lines appear?`, `Brackets make it clear: not (age = 10). Without them it works the same, because not reads the whole comparison after it.`]
       ]],
+      ['True, false and nothing', 'Yes, no, and empty', [
+        ['Yes and no', `A check is not only something you read on the page: the computer answers it with true or false. 5 > 3 is true, and 5 < 3 is false.
+
+These two words are values, like numbers and texts. You can put one in a box, print it, or compare it with something else.`, `true
+false
+true`, 'Print the answer to 10 > 2, then the answer to 2 > 10.', `true and false are written without quotes and without capital letters.`],
+        ['The value that is not there', `Sometimes a box exists but nothing has been put in it yet. That value is called nothing, and it means "no value".
+
+Printing it gives an empty line, and you can ask whether a box still holds it. It is how a program says "I have nothing here".`, `
+true
+Ada`, 'Make a second box with nothing in it, and print it.', `nothing is not the text "nothing": inside quotes it becomes a word you can see.`]
+      ]],
       ['Again and again', 'Loops repeat work for you', [
         ['Repeat a few times', `A loop does the same thing again and again, so you do not have to write the same line many times. repeat 3 runs the pushed-in lines three times.
 
@@ -217,6 +235,16 @@ owl`, `Add a fourth animal. Notice that nothing else has to change.`, ``],
 
 It is the same idea as a shop till adding up what you buy.`, `Total: 20`, `Add another price to the list.`, ``]
       ]],
+      ['Lists inside lists', 'A table in a list', [
+        ['A list of lists', `A list can hold anything, even other lists. Two brackets make a row, and a list of rows makes a table.
+
+You read it with two positions: the row first, then the item inside that row. grid[2][1] means the second row, first item in it.`, `[[1, 2], [3, 4]]
+3`, 'Change the 4 to 9 with set, then print the whole grid.', `grid[2][1] is 3, not 2: rows come first.`],
+        ['A table of players', `This is how a score table is made: one list, and a small list for every player. append adds a row to the outer list, and for each walks the rows.
+
+Inside every row you read the name and the points. One idea, used twice, and you have a table.`, `Ada 10
+Luca 7`, 'Add a third player with 12 points.', `append adds a row to the outer list. To change a point inside a row, use set row[2] = 12.`]
+      ]],
       ['Words and letters', 'Play with text', [
         ['Big letters, small letters', `The computer can change the size of letters. upper makes every letter big, lower makes every letter small.
 
@@ -247,6 +275,18 @@ It is the quickest way to ask "is this number even?": if it is even, the rest of
         ['A whole average', `Now you can do what a shop does: add up the prices, divide by how many there are, and keep whole numbers.
 
 total // count gives the average without anything after the point, which is what you want when the answer must be a whole coin.`, `3`, 'Change total to 20 and run it again. Then try 17 / 5 to see the difference.', `If count is 0, Kaviel refuses to divide and tells you why.`]
+      ]],
+      ['Numbers with a point', 'Not only whole', [
+        ['A part after the point', `Not every answer is whole. With one slash a division can give a part after the point: 10 / 4 is 2.5.
+
+Kaviel writes that part with a point and not with a comma, so that the same program runs the same way on every computer. You may type a comma, and it will be understood.`, `4.5
+2.5
+0.3`, 'Print 7 / 2 and 7 // 2 together, and look at the difference.', `Two slashes give a whole number; one slash gives the exact answer.`],
+        ['Below zero', `A number can be smaller than zero. Write a minus in front of it: -5 is five below zero, like a temperature in winter.
+
+Two minuses make a plus: -3 * -2 is 6. It is the same rule as a debt that is cancelled twice ending up as money.`, `-3
+-7
+6`, 'Print a temperature that starts at 3 and falls by 8.', `The rest follows the sign of the left side: -7 % 2 is -1, not 1.`]
       ]],
       ['Draw with letters', 'Patterns', [
         ['A row of stars', `A text can grow. Start from an empty text, "", and add one star at every turn: after five turns you have a row of five stars.
@@ -381,7 +421,13 @@ When you are happy, press Save to keep your game as a .kv file. Show it to your 
       split: 'Spezza il testo dove c’è il separatore e dà una lista.',
       join: 'Incolla i pezzi di una lista, mettendo questo testo in mezzo.',
       whole: 'Divide e tiene solo la parte intera, senza quello che viene dopo la virgola.',
-      rest: 'Dà quello che avanza dopo una divisione intera.'
+      rest: 'Dà quello che avanza dopo una divisione intera.',
+      value: 'Stampa uno dei tre valori semplici del linguaggio: true, false o nothing.',
+      compare: 'Calcola prima il controllo, e print mostra la risposta: true o false.',
+      nothingValue: 'Mette il valore vuoto nella scatola: non le è ancora stato dato niente.',
+      nestedList: 'Una lista di liste: ogni riga è una lista per conto suo.',
+      appendRow: 'Aggiunge una riga intera in fondo alla tabella.',
+      twice: 'Legge prima la riga, poi l’elemento dentro quella riga.'
     },
     lessons: [
       ['Conosci l\'editor', 'Un giro prima di iniziare', [
@@ -481,6 +527,18 @@ Come un semaforo: se il colore è rosso, fermati. Altrimenti, vai.`, `Fermo!`, `
 In questo programma 9 è più di 5 e meno di 13, quindi il primo controllo passa. L'età non è dieci, quindi passa anche l'ultimo.`, `Sei un bambino.
 Non hai dieci anni.`, `Prova età 2, poi età 95. Quali righe compaiono?`, `Le parentesi rendono chiaro: not (age = 10). Senza funziona uguale, perché not legge tutto il confronto che segue.`]
       ]],
+      ['Vero, falso e niente', 'Sì, no e vuoto', [
+        ['Sì e no', `Un controllo non è solo qualcosa che leggi: il computer risponde con true o false. 5 > 3 è true, e 5 < 3 è false.
+
+Queste due parole sono valori, come i numeri e i testi. Puoi metterle in una scatola, stamparle o confrontarle con qualcos’altro.`, `true
+false
+true`, 'Stampa la risposta a 10 > 2, poi quella a 2 > 10.', `true e false si scrivono senza virgolette e senza maiuscola.`],
+        ['Il valore che non c’è', `A volte una scatola esiste ma non ci hai ancora messo niente. Quel valore si chiama nothing e vuol dire "nessun valore".
+
+Stamparlo dà una riga vuota, e puoi chiedere se una scatola lo contiene ancora. È così che un programma dice "qui non ho niente".`, `
+true
+Ada`, 'Crea una seconda scatola con nothing dentro e stampala.', `nothing non è il testo "nothing": tra virgolette diventa una parola che si vede.`]
+      ]],
       ['Ancora e ancora', 'I cicli ripetono il lavoro per te', [
         ['Ripeti qualche volta', `Un ciclo fa la stessa cosa ancora e ancora, così non devi scrivere la stessa riga tante volte. repeat 3 esegue tre volte le righe spostate a destra.
 
@@ -557,6 +615,16 @@ owl`, `Aggiungi un quarto animale. Nota che non cambia nient'altro.`, ``],
 
 È la stessa idea di una cassa del negozio che somma quello che compri.`, `Totale: 20`, `Aggiungi un altro prezzo alla lista.`, ``]
       ]],
+      ['Liste dentro le liste', 'Una tabella in una lista', [
+        ['Una lista di liste', `Una lista può contenere qualsiasi cosa, anche altre liste. Due parentesi fanno una riga, e una lista di righe fa una tabella.
+
+La leggi con due posizioni: prima la riga, poi l’elemento dentro quella riga. grid[2][1] vuol dire seconda riga, primo elemento.`, `[[1, 2], [3, 4]]
+3`, 'Cambia il 4 in 9 con set, poi stampa tutta la griglia.', `grid[2][1] è 3, non 2: prima viene la riga.`],
+        ['Una tabella di giocatori', `Ecco come si fa una classifica: una lista, e una lista piccola per ogni giocatore. append aggiunge una riga alla lista esterna, e for each passa le righe una per una.
+
+Dentro ogni riga leggi il nome e i punti. Un’idea sola, usata due volte, e hai una tabella.`, `Ada 10
+Luca 7`, 'Aggiungi un terzo giocatore con 12 punti.', `append aggiunge una riga alla lista esterna. Per cambiare un punto dentro una riga, usa set row[2] = 12.`]
+      ]],
       ['Parole e lettere', 'Gioca con il testo', [
         ['Lettere grandi, lettere piccole', `Il computer può cambiare la dimensione delle lettere. upper rende ogni lettera grande, lower la rende piccola.
 
@@ -587,6 +655,18 @@ Con due barre tieni solo la parte intera: 7 // 2 fa 3. Si chiama divisione inter
         ['Una media intera', `Ora puoi fare quello che fa un negozio: sommare i prezzi, dividere per quanti sono, e tenere numeri interi.
 
 total // count dà la media senza niente dopo la virgola, che è quello che vuoi quando la risposta deve essere una moneta intera.`, `3`, 'Cambia total in 20 e riesegui. Poi prova 17 / 5 per vedere la differenza.', `Se count è 0, Kaviel rifiuta di dividere e ti dice perché.`]
+      ]],
+      ['Numeri con la virgola', 'Non solo interi', [
+        ['Una parte dopo la virgola', `Non tutte le risposte sono intere. Con una sola barra una divisione può dare una parte dopo la virgola: 10 / 4 fa 2,5.
+
+Kaviel scrive quella parte con il punto e non con la virgola, così lo stesso programma gira uguale su ogni computer. Tu puoi scrivere la virgola: viene capita.`, `4.5
+2.5
+0.3`, 'Stampa 7 / 2 e 7 // 2 insieme, e guarda la differenza.', `Due barre danno un numero intero; una barra dà la risposta esatta.`],
+        ['Sotto lo zero', `Un numero può essere più piccolo di zero. Scrivi un meno davanti: -5 è cinque sotto zero, come una temperatura d’inverno.
+
+Due meno fanno un più: -3 * -2 fa 6. È la stessa regola di un debito cancellato due volte che diventa denaro.`, `-3
+-7
+6`, 'Stampa una temperatura che parte da 3 e scende di 8.', `Il resto segue il segno del lato sinistro: -7 % 2 fa -1, non 1.`]
       ]],
       ['Disegna con le lettere', 'Forme', [
         ['Una fila di stelle', `Un testo può crescere. Parti da un testo vuoto, "", e aggiungi una stella a ogni giro: dopo cinque giri hai una fila di cinque stelle.
@@ -656,7 +736,7 @@ Trova più monete che puoi.`, `Premi Scrivilo tu, scrivi il programma ed eseguil
         ['Scegli una strada', `Un bel gioco fa scegliere chi gioca. Ora aggiungiamo una seconda domanda: sinistra o destra. Il gioco dice una cosa diversa per ogni risposta.
 
 Usa if ed else, come nella lezione sulle scelte.`, `Quale strada: sinistra o destra? sinistra
-Entri in una grotta.`, `Eseguilo due volte: una con sinistra, una con right. Poi cambia la grotta in qualcos'altro.`, `Scrivi sinistra in minuscolo, proprio come nel programma.`],
+Entri in una grotta.`, `Eseguilo due volte: una con sinistra, una con destra. Poi cambia la grotta in qualcos'altro.`, `Scrivi sinistra in minuscolo, proprio come nel programma.`],
         ['Aggiungi fortuna e monete', `Ora il gioco diventa emozionante. Una scatola chiamata coins parte da 0. Poi un blocco random dà 70 possibilità su 100 di trovare 5 monete e 30 su 100 di incontrare un granchio.
 
 set coins = coins + 5 aggiunge 5 alla scatola. I due blocchi random sono vicini, quindi ne succede uno solo.`, `Trovi 5 monete!
@@ -678,7 +758,7 @@ Sei ricco!`, `Giocalo tre volte. Riesci a prendere più di 10 monete?`, ``],
 
 Cambia la storia e le parole. Aggiungi una terza strada con una domanda in più. Rendi il premio più grande. Aggiungi un tesoro raro con un altro blocco random.
 
-Quando sei contento, premi Salva per tenere il gioco come file .kv. Mostralo alla tua famiglia e ai tuoi amici!`, `Your own game!`, `Cambia almeno tre cose nel gioco. Poi premi Salva.`, `Se qualcosa si rompe, guarda il riquadro Problemi. Ti dice la riga.`]
+Quando sei contento, premi Salva per tenere il gioco come file .kv. Mostralo alla tua famiglia e ai tuoi amici!`, `Il tuo gioco!`, `Cambia almeno tre cose nel gioco. Poi premi Salva.`, `Se qualcosa si rompe, guarda il riquadro Problemi. Ti dice la riga.`]
       ]]
     ]
   },
@@ -721,7 +801,13 @@ Quando sei contento, premi Salva per tenere il gioco come file .kv. Mostralo all
       split: 'Casse le texte là où est le séparateur et donne une liste.',
       join: 'Colle les morceaux d’une liste, avec ce texte entre eux.',
       whole: 'Divise et garde seulement la partie entière, sans ce qui vient après la virgule.',
-      rest: 'Donne ce qui reste après une division entière.'
+      rest: 'Donne ce qui reste après une division entière.',
+      value: 'Affiche une des trois valeurs simples du langage : true, false ou nothing.',
+      compare: 'Calcule d’abord le test, et print montre la réponse : true ou false.',
+      nothingValue: 'Met la valeur vide dans la boîte : on ne lui a encore rien donné.',
+      nestedList: 'Une liste de listes : chaque ligne est une liste à part.',
+      appendRow: 'Ajoute une ligne entière au bout du tableau.',
+      twice: 'Lit la ligne d’abord, puis l’élément dans cette ligne.'
     },
     lessons: [
       ['Découvre l\'éditeur', 'Un tour avant de commencer', [
@@ -821,6 +907,18 @@ Comme un feu : si la couleur est rouge, arrête-toi. Sinon, avance.`, `Stop!`, `
 Dans ce programme, 9 est plus que 5 et moins que 13, donc le premier test passe. L'âge n'est pas dix, donc le dernier passe aussi.`, `Tu es un enfant.
 Tu n'as pas dix ans.`, `Essaie l'âge 2, puis l'âge 95. Quelles lignes apparaissent ?`, `Les parenthèses rendent ça clair : not (age = 10). Sans elles ça marche pareil, car not lit toute la comparaison qui suit.`]
       ]],
+      ['Vrai, faux et rien', 'Oui, non et vide', [
+        ['Oui et non', `Un test n’est pas seulement quelque chose que tu lis : l’ordinateur y répond avec true ou false. 5 > 3 est true, et 5 < 3 est false.
+
+Ces deux mots sont des valeurs, comme les nombres et les textes. Tu peux en mettre un dans une boîte, l’afficher, ou le comparer à autre chose.`, `true
+false
+true`, 'Affiche la réponse à 10 > 2, puis celle à 2 > 10.', `true et false s’écrivent sans guillemets et sans majuscule.`],
+        ['La valeur qui n’est pas là', `Parfois une boîte existe mais tu n’as encore rien mis dedans. Cette valeur s’appelle nothing, et elle veut dire « aucune valeur ».
+
+L’afficher donne une ligne vide, et tu peux demander si une boîte la contient encore. C’est ainsi qu’un programme dit « je n’ai rien ici ».`, `
+true
+Ada`, 'Crée une deuxième boîte avec nothing dedans et affiche-la.', `nothing n’est pas le texte "nothing" : entre guillemets, ça devient un mot visible.`]
+      ]],
       ['Encore et encore', 'Les boucles répètent le travail pour toi', [
         ['Répète quelques fois', `Une boucle fait la même chose encore et encore, pour que tu n'aies pas à écrire la même ligne plusieurs fois. repeat 3 exécute trois fois les lignes poussées à droite.
 
@@ -897,6 +995,16 @@ owl`, `Ajoute un quatrième animal. Remarque que rien d'autre ne change.`, ``],
 
 C'est la même idée qu'une caisse de magasin qui additionne ce que tu achètes.`, `Total: 20`, `Ajoute un autre prix à la liste.`, ``]
       ]],
+      ['Des listes dans des listes', 'Un tableau dans une liste', [
+        ['Une liste de listes', `Une liste peut contenir n’importe quoi, même d’autres listes. Deux crochets font une ligne, et une liste de lignes fait un tableau.
+
+Tu la lis avec deux positions : la ligne d’abord, puis l’élément dans cette ligne. grid[2][1] veut dire deuxième ligne, premier élément.`, `[[1, 2], [3, 4]]
+3`, 'Change le 4 en 9 avec set, puis affiche toute la grille.', `grid[2][1] vaut 3, pas 2 : la ligne vient d’abord.`],
+        ['Un tableau de joueurs', `Voilà comment on fait un classement : une liste, et une petite liste pour chaque joueur. append ajoute une ligne à la liste extérieure, et for each parcourt les lignes une par une.
+
+Dans chaque ligne tu lis le nom et les points. Une seule idée, utilisée deux fois, et tu as un tableau.`, `Ada 10
+Luca 7`, 'Ajoute un troisième joueur avec 12 points.', `append ajoute une ligne à la liste extérieure. Pour changer un point dans une ligne, utilise set row[2] = 12.`]
+      ]],
       ['Mots et lettres', 'Joue avec le texte', [
         ['Grandes lettres, petites lettres', `L’ordinateur peut changer la taille des lettres. upper rend chaque lettre grande, lower la rend petite.
 
@@ -927,6 +1035,18 @@ C’est le moyen le plus rapide de demander « ce nombre est-il pair ? » : s’
         ['Une moyenne entière', `Maintenant tu peux faire ce que fait un magasin : additionner les prix, diviser par le nombre d’articles, et garder des nombres entiers.
 
 total // count donne la moyenne sans rien après la virgule, ce qu’il te faut quand la réponse doit être une pièce entière.`, `3`, 'Change total en 20 et relance. Puis essaie 17 / 5 pour voir la différence.', `Si count vaut 0, Kaviel refuse de diviser et dit pourquoi.`]
+      ]],
+      ['Nombres à virgule', 'Pas seulement entiers', [
+        ['Une partie après la virgule', `Toutes les réponses ne sont pas entières. Avec une seule barre, une division peut donner une partie après la virgule : 10 / 4 fait 2,5.
+
+Kaviel écrit cette partie avec un point et non avec une virgule, pour que le même programme tourne pareil sur chaque ordinateur. Tu peux taper une virgule : elle est comprise.`, `4.5
+2.5
+0.3`, 'Affiche 7 / 2 et 7 // 2 ensemble, et regarde la différence.', `Deux barres donnent un nombre entier ; une barre donne la réponse exacte.`],
+        ['Sous zéro', `Un nombre peut être plus petit que zéro. Écris un moins devant : -5, c’est cinq sous zéro, comme une température d’hiver.
+
+Deux moins font un plus : -3 * -2 fait 6. C’est la même règle qu’une dette annulée deux fois qui devient de l’argent.`, `-3
+-7
+6`, 'Affiche une température qui part de 3 et descend de 8.', `Le reste suit le signe du côté gauche : -7 % 2 fait -1, pas 1.`]
       ]],
       ['Dessine avec des lettres', 'Formes', [
         ['Une rangée d’étoiles', `Un texte peut grandir. Pars d’un texte vide, "", et ajoute une étoile à chaque tour : après cinq tours tu as une rangée de cinq étoiles.
@@ -996,7 +1116,7 @@ Trouve le plus de pièces possible.`, `Appuie sur Écris-le toi-même, écris le
         ['Choisis un chemin', `Un bon jeu laisse le joueur choisir. Maintenant on ajoute une deuxième question : gauche ou droite. Le jeu dit quelque chose de différent pour chaque réponse.
 
 Il utilise if et else, comme dans la leçon sur les choix.`, `Quel chemin : gauche ou droite ? gauche
-Tu entres dans une grotte.`, `Lance-le deux fois : une fois avec gauche, une fois avec right. Puis change la grotte en autre chose.`, `Écris gauche en minuscules, exactement comme dans le programme.`],
+Tu entres dans une grotte.`, `Lance-le deux fois : une fois avec gauche, une fois avec droite. Puis change la grotte en autre chose.`, `Écris gauche en minuscules, exactement comme dans le programme.`],
         ['Ajoute de la chance et des pièces', `Maintenant le jeu devient passionnant. Une boîte appelée coins commence à 0. Ensuite un bloc random donne 70 chances sur 100 de trouver 5 pièces et 30 sur 100 de rencontrer un crabe.
 
 set coins = coins + 5 ajoute 5 à la boîte. Les deux blocs random sont côte à côte, donc un seul arrive.`, `Tu trouves 5 pièces!
@@ -1018,7 +1138,7 @@ Tu es riche!`, `Joue trois fois. Peux-tu avoir plus de 10 pièces ?`, ``],
 
 Change l'histoire et les mots. Ajoute un troisième chemin avec une question de plus. Rends le prix plus gros. Ajoute un trésor rare avec un autre bloc random.
 
-Quand tu es content, appuie sur Enregistrer pour garder ton jeu en fichier .kv. Montre-le à ta famille et à tes amis !`, `Your own game!`, `Change au moins trois choses dans le jeu. Puis appuie sur Enregistrer.`, `Si quelque chose casse, regarde la boîte Problèmes. Elle te dit la ligne.`]
+Quand tu es content, appuie sur Enregistrer pour garder ton jeu en fichier .kv. Montre-le à ta famille et à tes amis !`, `Ton propre jeu !`, `Change au moins trois choses dans le jeu. Puis appuie sur Enregistrer.`, `Si quelque chose casse, regarde la boîte Problèmes. Elle te dit la ligne.`]
       ]]
     ]
   }

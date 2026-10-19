@@ -141,6 +141,24 @@
       ]
     },
     {
+      title: 'True, false and nothing',
+      subtitle: 'Yes, no, and empty',
+      steps: [
+        {
+          title: 'Yes and no',
+          text: 'A check is not only something you read on the page: the computer answers it with true or false. 5 > 3 is true, and 5 < 3 is false.\n\nThese two words are values, like numbers and texts. You can put one in a box, print it, or compare it with something else.',
+          code: 'start\nprint true\nprint false\nprint 5 > 3\nend',
+          turn: 'Print the answer to 10 > 2, then the answer to 2 > 10.'
+        },
+        {
+          title: 'The value that is not there',
+          text: 'Sometimes a box exists but nothing has been put in it yet. That value is called nothing, and it means "no value".\n\nPrinting it gives an empty line, and you can ask whether a box still holds it. It is how a program says "I have nothing here".',
+          code: 'start\ndefine box = nothing\nprint box\nprint box = nothing\nset box = "Ada"\nprint box\nend',
+          turn: 'Make a second box with nothing in it, and print it.'
+        }
+      ]
+    },
+    {
       title: 'Again and again',
       subtitle: 'Loops repeat work for you',
       steps: [
@@ -267,6 +285,24 @@
       ]
     },
     {
+      title: 'Lists inside lists',
+      subtitle: 'A table in a list',
+      steps: [
+        {
+          title: 'A list of lists',
+          text: 'A list can hold anything, even other lists. Two brackets make a row, and a list of rows makes a table.\n\nYou read it with two positions: the row first, then the item inside that row. grid[2][1] means the second row, first item in it.',
+          code: 'start\ndefine grid = [[1, 2], [3, 4]]\nprint grid\nprint grid[2][1]\nend',
+          turn: 'Change the 4 to 9 with set, then print the whole grid.'
+        },
+        {
+          title: 'A table of players',
+          text: 'This is how a score table is made: one list, and a small list for every player. append adds a row to the outer list, and for each walks the rows.\n\nInside every row you read the name and the points. One idea, used twice, and you have a table.',
+          code: 'start\ndefine rows = []\nappend(rows, ["Ada", 10])\nappend(rows, ["Luca", 7])\nfor each row in rows\n  print row[1] row[2]\nend',
+          turn: 'Add a third player with 12 points.'
+        }
+      ]
+    },
+    {
       title: 'Words and letters',
       subtitle: 'Play with text',
       steps: [
@@ -317,6 +353,24 @@
           text: 'Now you can do what a shop does: add up the prices, divide by how many there are, and keep whole numbers.\n\ntotal // count gives the average without anything after the point, which is what you want when the answer must be a whole coin.',
           code: 'start\ndefine total = 17\ndefine count = 5\nprint total // count\nend',
           turn: 'Change total to 20 and run it again. Then try 17 / 5 to see the difference.'
+        }
+      ]
+    },
+    {
+      title: 'Numbers with a point',
+      subtitle: 'Not only whole',
+      steps: [
+        {
+          title: 'A part after the point',
+          text: 'Not every answer is whole. With one slash a division can give a part after the point: 10 / 4 is 2.5.\n\nKaviel writes that part with a point and not with a comma, so that the same program runs the same way on every computer. You may type a comma, and it will be understood.',
+          code: 'start\nprint 3.5 + 1\nprint 10 / 4\nprint 0.1 + 0.2\nend',
+          turn: 'Print 7 / 2 and 7 // 2 together, and look at the difference.'
+        },
+        {
+          title: 'Below zero',
+          text: 'A number can be smaller than zero. Write a minus in front of it: -5 is five below zero, like a temperature in winter.\n\nTwo minuses make a plus: -3 * -2 is 6. It is the same rule as a debt that is cancelled twice ending up as money.',
+          code: 'start\nprint -5 + 2\nprint 0 - 7\nprint -3 * -2\nend',
+          turn: 'Print a temperature that starts at 3 and falls by 8.'
         }
       ]
     },
@@ -464,6 +518,12 @@
     if (/\/\//.test(t) && e.whole) return e.whole;
     if (/\s%\s/.test(t) && e.rest) return e.rest;
     if (/^for\s+each\b/.test(t)) return e.forEach;
+    if (/^print\s+(true|false|nothing)\s*$/.test(t) && e.value) return e.value;
+    if (/^print\b.*[<>]=?/.test(t) && e.compare) return e.compare;
+    if (/^define\s+\w+\s*=\s*nothing\s*$/.test(t) && e.nothingValue) return e.nothingValue;
+    if (/^define\s+\w+\s*=\s*\[\[/.test(t) && e.nestedList) return e.nestedList;
+    if (/^append\([^,]+,\s*\[/.test(t) && e.appendRow) return e.appendRow;
+    if (/\w+\[\d+\]\[\d+\]/.test(t) && e.twice) return e.twice;
     if (/^print\s*$/.test(t)) return e.printEmpty;
     if (/^print\b/.test(t)) return e.print;
     if ((m = t.match(/^define\s+ask\{(\d+)\}/))) return e.askDef.replace('{n}', m[1]);

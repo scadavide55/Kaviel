@@ -31,8 +31,8 @@ The version where the language stopped surprising the person using it.
 
 ### Lessons
 
-- Three new lessons: **Words and letters** (`upper`, `lower`, `trim`, `part`, `split`, `join`), **Numbers that stay whole** (`//` and `%`) and **Draw with letters** (patterns built from text).
-- 16 lessons and 61 steps now, in English, Italian and French.
+- Six new lessons: **Words and letters** (`upper`, `lower`, `trim`, `part`, `split`, `join`), **Numbers that stay whole** (`//` and `%`), **Draw with letters** (patterns built from text), **True, false and nothing**, **Numbers with a point** (decimals and negatives) and **Lists inside lists** (tables).
+- 19 lessons and 67 steps now, in English, Italian and French, and every word of the language appears in one of them.
 - Every new instruction has a note under its line: `for each`, the six text commands, `//` and `%`.
 
 ### Cleanup

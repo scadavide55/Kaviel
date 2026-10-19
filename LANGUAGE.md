@@ -346,7 +346,7 @@ Static files, no dependencies, no build step:
 | `kaviel.html` | editor window, layout and run integration |
 | `editor.css` | responsive workspace theme |
 | `editor-ui.js` | highlighting, find, local files, guide, status |
-| `tutorials.js` | 16 lessons (61 steps) in a side panel next to the editor, texts in `lessons.js` (en, it, fr) |
+| `tutorials.js` | 19 lessons (67 steps) in a side panel next to the editor, texts in `lessons.js` (en, it, fr) |
 | `test.js` | 112 language tests, including the §14 examples |
 | `v1-test.js` | 72 tests: thresholds, functions, lists, keys, async and cancellation |
 | `cli-test.js` | 20 tests of the `kaviel` command through pipes and signals |
@@ -393,7 +393,7 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 - Output streams as it is printed, including before an answer or a key.
 - Problems are buttons; click one to select its source line. Editing clears old marks and marks the output as belonging to the previous run.
 - `Tab` two spaces, `Shift+Tab` up to two back, Enter keeps indentation and opens a block after `if`, `else`, `repeat`, `until`, `random`, `define name(...)`.
-- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Lessons** opens a side panel with 16 lessons (61 steps, ending in a guided treasure game) and 16 examples; each step loads into the editor, and the previous code is kept for restoring.
+- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Lessons** opens a side panel with 19 lessons (67 steps, ending in a guided treasure game) and 16 examples; each step loads into the editor, and the previous code is kept for restoring.
 - The symbol bar above the code puts `"` `(` `)` `{` `}` `[` `]` `=` `#` `,` where the cursor is: on a French keyboard the curly and square brackets need AltGr, and on a tablet they are missing. A symbol replaces the selected text and marks the file as edited.
 - Every lesson step has **Listen**: the browser's own voice reads the title and the text in the language of the site, and the same button stops it. Steps and closing the panel stop the reading. Without a voice on the system the button is not there.
 - **Download** in the top bar points at the installer for the system you are on (macOS, Windows, Linux) and names it in its title; on a phone, and inside the desktop app, it is not there. The file names live in one place, `window.KAVIEL_APP` in the head of `kaviel.html`, so moving the installers elsewhere is one line.

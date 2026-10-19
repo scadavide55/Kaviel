@@ -33,9 +33,9 @@
       })();
     });
   }
-  function check(name, condition) {
+  function check(name, condition, detail) {
     if (condition) passed++; else failed++;
-    log.push((condition ? 'PASS ' : 'FAIL ') + name);
+    log.push((condition ? 'PASS ' : 'FAIL ') + name + (condition || !detail ? '' : '\n   ' + detail));
   }
   var loads = 0;
   function load(hash) {
@@ -246,7 +246,16 @@
     doc.getElementById('tutorials-toggle').click();
     check('The Lessons button opens the panel beside the editor', !doc.getElementById('tutorial').hidden && doc.getElementById('code').clientHeight > 0);
     check('Every lesson is listed', T.length >= 10 && doc.querySelectorAll('.tutorial-lesson').length === T.length);
-    doc.querySelectorAll('.tutorial-lesson')[7].click();
+    // Find the lesson by its title, so adding lessons never breaks this test.
+    var commandLesson = T.findIndex(function (l) { return l.title === 'Your own commands'; });
+    doc.querySelectorAll('.tutorial-lesson')[commandLesson].click();
+    // Every line of a step must carry its own note: a silent line teaches nothing.
+    var valuesLesson = T.findIndex(function (l) { return l.title === 'True, false and nothing'; });
+    doc.querySelectorAll('.tutorial-lesson')[valuesLesson].click();
+    var valueRows = Array.prototype.slice.call(doc.querySelectorAll('.tutorial-code .code-row'));
+    check('Every line of the true/false lesson has a note', valueRows.length === 5 && valueRows.every(function (r) { return !!r.querySelector('.note'); }), JSON.stringify(valueRows.map(function (r) { return [r.querySelector('.src').textContent, (r.querySelector('.note') || {}).textContent || '']; })));
+    var plainLesson = T.findIndex(function (l) { return l.title === 'Your own commands'; });
+    doc.querySelectorAll('.tutorial-lesson')[plainLesson].click();
     check('Choosing a lesson shows its first step', doc.querySelector('.tutorial-step h3').textContent === 'Make a command' && doc.querySelector('.tutorial-code').textContent.includes('define greet(name)') && !!doc.querySelector('.code-row .note') && !!doc.querySelector('.see-box'));
     doc.querySelectorAll('.nav-row .btn')[1].click();
     check('Next step moves forward inside the lesson', doc.querySelector('.tutorial-step .step-count').textContent.includes('step 2 of 4'));
@@ -255,7 +264,7 @@
     doc.querySelector('.step-actions .put-code').click();
     check('Putting a step in the editor loads its code and keeps the panel open', !doc.getElementById('tutorial').hidden && code.value.includes('define area(width, height)'));
     check('The previous code is kept for restoring', localStorage.getItem('kaviel.tutorial.backup') === sourceBeforeTutorial);
-    check('Tutorial progress is remembered', JSON.parse(localStorage.getItem('kaviel.tutorial.position')).lesson === 7);
+    check('Tutorial progress is remembered', JSON.parse(localStorage.getItem('kaviel.tutorial.position')).lesson === commandLesson);
     doc.querySelector('.restore-code').click();
     check('Restore brings the previous code back', code.value === sourceBeforeTutorial);
     doc.getElementById('tab-examples').click();

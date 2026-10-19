@@ -201,6 +201,9 @@ The list grows when you append. It keeps its size when you set.`, `["lion", "dog
 pets[i] means the item at place i, so the loop shows each pet, one after the other.`, `1 cat
 2 dog
 3 owl`, `Add an animal to the list. Does the loop still work?`, ``],
+        ['One at a time', `for each gives you one item at a time, with a name you choose. No counter, no position, no length. It reads like the sentence you would say out loud, and break leaves it early.`, `cat
+dog
+owl`, `Add a fourth animal. Notice that nothing else has to change.`, ``],
         ['Add up a list', `A box can collect a total while the loop visits every number. total starts at 0. Each turn, the current price is added to it.
 
 It is the same idea as a shop till adding up what you buy.`, `Total: 20`, `Add another price to the list.`, ``]
@@ -481,6 +484,9 @@ La lista cresce con append. Con set mantiene la stessa lunghezza.`, `["leone", "
 pets[i] vuol dire l'elemento al posto i, quindi il ciclo mostra ogni animale, uno dopo l'altro.`, `1 gatto
 2 cane
 3 gufo`, `Aggiungi un animale alla lista. Il ciclo funziona ancora?`, ``],
+        ['Uno alla volta', `for each ti dà un elemento alla volta, con il nome che scegli tu. Niente contatore, niente posizione, niente length. Si legge come la frase che diresti ad alta voce, e break esce prima.`, `cat
+dog
+owl`, `Aggiungi un quarto animale. Nota che non cambia nient'altro.`, ``],
         ['Somma una lista', `Una scatola può raccogliere un totale mentre il ciclo visita ogni numero. total parte da 0. A ogni giro gli viene aggiunto il prezzo corrente.
 
 È la stessa idea di una cassa del negozio che somma quello che compri.`, `Totale: 20`, `Aggiungi un altro prezzo alla lista.`, ``]
@@ -761,6 +767,9 @@ La liste grandit avec append. Avec set elle garde la même taille.`, `["lion", "
 pets[i] veut dire l'élément à la place i, donc la boucle montre chaque animal, l'un après l'autre.`, `1 chat
 2 chien
 3 hibou`, `Ajoute un animal à la liste. La boucle marche-t-elle encore ?`, ``],
+        ['Un à la fois', `for each te donne un élément à la fois, avec le nom que tu choisis. Pas de compteur, pas de position, pas de length. Ça se lit comme la phrase que tu dirais à voix haute, et break sort plus tôt.`, `cat
+dog
+owl`, `Ajoute un quatrième animal. Remarque que rien d'autre ne change.`, ``],
         ['Additionne une liste', `Une boîte peut collecter un total pendant que la boucle visite chaque nombre. total commence à 0. À chaque tour, le prix courant lui est ajouté.
 
 C'est la même idée qu'une caisse de magasin qui additionne ce que tu achètes.`, `Total: 20`, `Ajoute un autre prix à la liste.`, ``]

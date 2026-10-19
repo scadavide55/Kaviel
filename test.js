@@ -797,6 +797,68 @@ end`,
   else { failed++; failures.push('a repeated problem is counted once: ' + JSON.stringify(res.problems)); }
 }
 
+test('for each walks a list and gives one item at a time',
+  `start
+define pets = ["cat", "dog", "fox"]
+for each pet in pets
+  print "a" pet
+end`,
+  { output: ['a cat', 'a dog', 'a fox'], errors: 0, warnings: 0 });
+
+test('for each walks a text one letter at a time',
+  `start
+for each letter in "abc"
+  print letter
+end`,
+  { output: ['a', 'b', 'c'], errors: 0, warnings: 0 });
+
+test('for each stops with break',
+  `start
+for each n in [3, 6, 9, 12]
+  if n > 6 = break
+  print n
+end`,
+  { output: ['3', '6'], errors: 0, warnings: 0 });
+
+test('for each over an empty list runs no turn',
+  `start
+for each x in []
+  print "never"
+print "after"
+end`,
+  { output: ['after'], errors: 0, warnings: 0 });
+
+test('for each keeps the last item after the loop',
+  `start
+for each x in ["a", "b"]
+  print x
+print "last" x
+end`,
+  { output: ['a', 'b', 'last b'], errors: 0, warnings: 0 });
+
+test('for each refuses something that is not a list or a text',
+  `start
+for each x in 5
+  print x
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, contains: 'walks a list or a text' });
+
+test('for each nests and does not warn about its own name',
+  `start
+for each a in [1, 2]
+  for each b in [1, 2]
+    print a * 10 + b
+end`,
+  { output: ['11', '12', '21', '22'], errors: 0, warnings: 0 });
+
+test('for each without the word each is a clear error',
+  `start
+for pet in ["cat"]
+  print pet
+end`,
+  { output: [], errors: 1, contains: 'followed by `each`' });
+
 /* ---------------------------------------------------------- result */
 
 console.log('');

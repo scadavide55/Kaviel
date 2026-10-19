@@ -60,6 +60,8 @@
     ['Quiz', 'Quiz', 'Quiz'], ['Ask, check, count points', 'Chiedi, controlla, conta i punti', 'Demander, vérifier, compter les points'],
     ['Rock, paper, scissors', 'Sasso, carta, forbici', 'Pierre, feuille, ciseaux'], ['Play against the computer', 'Gioca contro il computer', 'Jouer contre l\'ordinateur'],
     ['Collatz', 'Collatz', 'Collatz'], ['A famous number puzzle', 'Un famoso rompicapo di numeri', 'Un célèbre casse-tête de nombres'],
+    ['One item at a time', 'Un elemento alla volta', 'Un élément à la fois'], ['for each', 'for each', 'for each'],
+    ['One item at a time', 'Un elemento alla volta', 'Un élément à la fois'], ['for each', 'for each', 'for each'],
     ['Your own commands', 'I tuoi comandi', 'Tes propres commandes'], ['Functions', 'Funzioni', 'Fonctions'],
     ['A list of pets', 'Una lista di animali', 'Une liste d\'animaux'], ['Many things in one', 'Tante cose in una', 'Plusieurs choses en une'],
     ['Wait for a key', 'Aspetta un tasto', 'Attendre une touche'], ['Press C to go on', 'Premi C per continuare', 'Appuie sur C pour continuer'],

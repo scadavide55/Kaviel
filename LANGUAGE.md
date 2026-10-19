@@ -47,6 +47,7 @@ end
 | `set` | changes a variable or one list item | `set age = age + 1` |
 | `if` / `else` | choose a block | `if age > 10` |
 | `repeat` | repeats a block N times | `repeat 3` |
+| `for` | walks a list or a text, one item at a time | `for each pet in pets` |
 | `until` | repeats while a condition is false | `until n = 1` |
 | `ask` | asks a question and gives back text | `define name = ask("Your name? ")` |
 | `random` | runs one of the following blocks | `random 67` |
@@ -89,6 +90,7 @@ else
 - Wrong indentation → **error**, and it snaps to the nearest open level: it forgives, but it says so.
 - `else` **exists**: without it, "otherwise" means writing the opposite condition by hand, and a mistake in that negation silently does the wrong thing.
 - `repeat 3` runs its block 3 times. `until cond` checks before each turn and stops when `cond` holds.
+- `for each pet in pets` runs its block once for every item of a list, with `pet` holding that item. It works on a text too, one letter at a time. `break` leaves it early. After the loop the name keeps the last item.
 - `break` leaves the nearest loop; inside a function it cannot leave the caller's loop.
 
 **One line, one action.** When the action is short, `if cond = action` puts it on the same line:
@@ -304,9 +306,9 @@ The step limit is the only automatic stop, and it is mandatory: a wrong `set` in
 | `else if` | `else` plus an indented `if` does the same |
 | `while` | `repeat` and `until` cover it |
 | declared types | the value decides the type |
-| `for each` | a counter with `until` is enough for now |
+| ~~`for each`~~ | added on 20 October 2026: `for each pet in pets` |
 
-**OPEN:** whether a shorter way to walk a list (`for each item in items`) belongs in v1.1, and whether `import` comes next.
+**OPEN:** whether `import` comes next.
 
 ---
 
@@ -425,6 +427,7 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 | `define ask{1}` with no text | error | **Davide's decision** |
 | `under 18` / `over 18` | `< 18` / `> 18` | **Davide's decision**, changed on 20 October 2026 so that they match `<` and `>` |
 | `is 18` | `= 18`, and both read a number out of text | **Davide's decision**, 20 October 2026: `is` and `=` now agree on numbers |
+| `for each x in list` | three words, one block, no counter | **Davide's decision**, 20 October 2026: the shortest way to walk a list that still reads like English |
 | builtins | `length`, `append`, `number` | the three every first program needs; more would be words to learn |
 | `not` | covers the whole comparison after it: `not age = 9` is `not (age = 9)` | Davide asked for it, 19 Oct 2026 |
 | unknown word in an expression | the hint also says: put it in quotes to show it as text | a first program often forgets the quotes |
@@ -448,6 +451,5 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 
 ## 19. OPEN
 
-1. A shorter way to walk a list (`for each`) — v1.1?
-2. `import` with real modules — v1.1 or v2?
+1. `import` with real modules — v1.1 or v2?
 3. Whether `nothing` should print as an empty string instead of the word `nothing`.

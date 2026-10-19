@@ -16,7 +16,7 @@
   // ---------------------------------------------------------------- constants
 
   var KEYWORDS = ['start', 'end', 'print', 'define', 'set', 'if', 'else', 'repeat',
-    'until', 'ask', 'random', 'pick', 'return', 'break',
+    'until', 'ask', 'random', 'pick', 'return', 'break', 'for',
     'true', 'false', 'nothing', 'and', 'or', 'not', 'under', 'over', 'is'];
   var KEYWORD_SET = new Set(KEYWORDS);
   var OPERATORS = ['and', 'or', 'not'];
@@ -659,6 +659,44 @@
             var loopBody = parseBlock(t.value, t.line);
             loopDepth--;
             return { type: t.value === 'repeat' ? 'Repeat' : 'Until', expr: head, body: loopBody, line: t.line };
+          }
+
+          case 'for': {
+            pos++;
+            var eachTok = peek();
+            if (!(eachTok.type === 'ident' && eachTok.value === 'each')) {
+              error(eachTok, '`for` is followed by `each`.', 'For example: for each pet in pets');
+              skipBrokenBlock(t, 'for');
+              return null;
+            }
+            pos++;
+            var itemTok = peek();
+            if (itemTok.type !== 'ident') {
+              error(itemTok, 'After `for each` comes a name for one item.', 'For example: for each pet in pets');
+              skipBrokenBlock(t, 'for');
+              return null;
+            }
+            pos++;
+            var inTok = peek();
+            if (!(inTok.type === 'ident' && inTok.value === 'in')) {
+              error(inTok, 'After the item name comes `in`.', 'For example: for each pet in pets');
+              skipBrokenBlock(t, 'for');
+              return null;
+            }
+            pos++;
+            var beforeList = problems.length;
+            var listExpr = parseExpression();
+            if (problems.length > beforeList || !atEnd()) {
+              if (!atEnd() && problems.length === beforeList) {
+                error(peek(), 'Nothing goes after the list of `for each`.', 'For example: for each pet in pets');
+              }
+              skipBrokenBlock(t, 'for');
+              return null;
+            }
+            loopDepth++;
+            var eachBody = parseBlock('for', t.line);
+            loopDepth--;
+            return { type: 'ForEach', name: itemTok.value, list: listExpr, body: eachBody, line: t.line };
           }
 
           case 'random': {

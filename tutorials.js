@@ -253,6 +253,12 @@
           turn: 'Add an animal to the list. Does the loop still work?'
         },
         {
+          title: 'One at a time',
+          text: 'for each gives you one item at a time, with a name of your choice. No counter, no position, no length. It reads like the sentence you would say out loud, and break leaves it early.',
+          code: 'start\ndefine pets = ["cat", "dog", "owl"]\nfor each pet in pets\n  print pet\nend',
+          turn: 'Add a fourth animal. Notice that nothing else has to change.'
+        },
+        {
           title: 'Add up a list',
           text: 'A box can collect a total while the loop visits every number.',
           code: 'start\ndefine prices = [3, 5, 2, 10]\ndefine total = 0\ndefine i = 1\nuntil i > length(prices)\n  set total = total + prices[i]\n  set i = i + 1\nprint "Total:" total\nend',

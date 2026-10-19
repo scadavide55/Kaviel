@@ -17,6 +17,7 @@
 | A12 | names carry accented letters: `città`, `perché` |
 | A13 | a decimal comma is read as a decimal point, in `number("1,5")` and in `is 2.5` |
 | A14 | the same mistake inside a loop is shown once, with `(×50)`, in the terminal and in the editor |
+| B `for each` | `for each pet in pets` walks a list or a text, with `break`; a new example, a lesson step in three languages and the specification came with it |
 
 This file is the list that was started on 19 October 2026 and then checked again, item by item, against the code.
 Every line below was **run or read**, not guessed. Where a claim could not be reproduced it says so.

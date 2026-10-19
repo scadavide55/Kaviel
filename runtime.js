@@ -229,8 +229,26 @@
           } finally { this.loopNames.pop(); }
           return;
         }
-        case 'Break': return {kind: 'break'};
-        case 'Return': {
+        case 'ForEach': {
+          let items = yield* this.eval(st.list); if (items === ERROR) return;
+          // A text is walked one character at a time, a list one item at a time.
+          if (typeof items === 'string') items = Array.from(items);
+          if (!Array.isArray(items)) { this.error(st.line, '`for each` walks a list or a text, and this is ' + typeName(items) + '.', 'For example: for each pet in pets'); return; }
+          const key = this.key(st.name, 1);
+          this.loopNames.push(this.visibleNames());
+          try {
+            for (let i = 0; i < items.length; i++) {
+              if (!(yield* this.step(st.line))) return;
+              const scope = this.locals && this.locals.has(key) ? this.locals : (this.locals || this.vars);
+              scope.set(key, items[i]);
+              const control = yield* this.list(st.body.body);
+              if (control && control.kind === 'break') return;
+              if (control) return control;
+            }
+          } finally { this.loopNames.pop(); }
+          return;
+        }
+        case 'Break': return {kind: 'break'};        case 'Return': {
           const value = yield* this.eval(st.expr);
           return {kind: 'return', value};
         }

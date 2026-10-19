@@ -26,7 +26,7 @@
 <header class="topbar">
   <a class="brand" href="./" aria-label="Kaviel, start page">
     <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="9" class="logo-bg"/><path d="M11 8v16M11 17l9-9M14.5 14l6.5 10" class="logo-k"/></svg>
-    <span>Kaviel</span>
+    <span class="brand-name">Kaviel</span><span class="brand-beta">beta</span>
   </a>
 
   <div class="filebox">
@@ -137,7 +137,7 @@
       </section>
     </main>
 
-    <footer class="workspace-footer"><span>Your code stays on this computer.</span><span class="spacer"></span><button id="shortcuts-toggle">Keyboard shortcuts</button></footer>
+    <footer class="workspace-footer"><span>Your code stays on this computer.</span><span class="engine" id="engine">Running on the Kaviel 1.5 beta engine</span><span class="spacer"></span><button id="shortcuts-toggle">Keyboard shortcuts</button></footer>
   </div>
 </div>
 
@@ -354,7 +354,8 @@ random 33
 'define ask{1} = ("How old are you? ")\n' +
 'ask{1}\n' +
 'if answer{1} = under 18 = print ("You are under 18.")\n' +
-'if answer{1} = over 18 = print ("You are 18 or older.")\n' +
+'if number(answer{1}) = 18 = print ("You are exactly 18.")\n' +
+'if answer{1} = over 18 = print ("You are over 18.")\n' +
 'end\n',
 
     functions:
@@ -390,6 +391,423 @@ random 33
 'define ask{1} = ("What\'s your name? ")\n' +
 'if keypress{1} = ask{1}\n' +
 'print ("Hello ") answer{1}\n' +
+'end\n',
+
+    citadel:
+'start\n' +
+'# ============================================================\n' +
+'#   THE CITADEL OF KAVIEL\n' +
+'#   a complete game in a single file: three floors, a map that\n' +
+'#   is drawn, monsters, gold, potions and a final score.\n' +
+'#   Every word of the language appears at least once.\n' +
+'# ============================================================\n' +
+'\n' +
+'# ---------- chapter 0: the tools ----------\n' +
+'\n' +
+'define int(x)\n' +
+'  return x - x % 1\n' +
+'\n' +
+'define abs(n)\n' +
+'  if n < 0 = return -n\n' +
+'  return n\n' +
+'\n' +
+'define sign(n)\n' +
+'  if n > 0 = return 1\n' +
+'  if n < 0 = return -1\n' +
+'  return 0\n' +
+'\n' +
+'# recursion: base to the power n, used for the final score\n' +
+'define power(base, n)\n' +
+'  if n = 0 = return 1\n' +
+'  return base * power(base, n - 1)\n' +
+'\n' +
+'define range(n)\n' +
+'  define out = []\n' +
+'  define i = 1\n' +
+'  until i > n\n' +
+'    append(out, i)\n' +
+'    set i = i + 1\n' +
+'  return out\n' +
+'\n' +
+'define makeGrid(size, fill)\n' +
+'  define g = []\n' +
+'  define r = 1\n' +
+'  define row = []\n' +
+'  define c = 1\n' +
+'  until r > size\n' +
+'    set row = []\n' +
+'    set c = 1\n' +
+'    until c > size\n' +
+'      append(row, fill)\n' +
+'      set c = c + 1\n' +
+'    append(g, row)\n' +
+'    set r = r + 1\n' +
+'  return g\n' +
+'\n' +
+'define carve(g, t, l, b, r)\n' +
+'  define y = t\n' +
+'  define x = l\n' +
+'  until y > b\n' +
+'    set x = l\n' +
+'    until x > r\n' +
+'      set g[y][x] = 1\n' +
+'      set x = x + 1\n' +
+'    set y = y + 1\n' +
+'\n' +
+'define hallH(g, row, a, b)\n' +
+'  define x = a\n' +
+'  until x > b\n' +
+'    set g[row][x] = 1\n' +
+'    set x = x + 1\n' +
+'\n' +
+'define hallV(g, col, a, b)\n' +
+'  define y = a\n' +
+'  until y > b\n' +
+'    set g[y][col] = 1\n' +
+'    set y = y + 1\n' +
+'\n' +
+'define scatter(g, size, what, count, cells)\n' +
+'  define placed = 0\n' +
+'  define tries = 0\n' +
+'  define y = 1\n' +
+'  define x = 1\n' +
+'  until placed >= count or tries > 300\n' +
+'    set y = pick cells\n' +
+'    set x = pick cells\n' +
+'    if g[y][x] = 1\n' +
+'      set g[y][x] = what\n' +
+'      set placed = placed + 1\n' +
+'    set tries = tries + 1\n' +
+'  return placed\n' +
+'\n' +
+'# the map seen as numbers, then as letters on the screen\n' +
+'define show(g, size, pr, pc)\n' +
+'  define y = 1\n' +
+'  define x = 1\n' +
+'  define line = ""\n' +
+'  define tile = 0\n' +
+'  until y > size\n' +
+'    set line = ""\n' +
+'    set x = 1\n' +
+'    until x > size\n' +
+'      set tile = g[y][x]\n' +
+'      if y = pr and x = pc\n' +
+'        set line = line + "@"\n' +
+'      else\n' +
+'        if tile = 0\n' +
+'          set line = line + "#"\n' +
+'        else\n' +
+'          if tile = 1\n' +
+'            set line = line + "."\n' +
+'          else\n' +
+'            if tile = 2\n' +
+'              set line = line + "$"\n' +
+'            else\n' +
+'              if tile = 3\n' +
+'                set line = line + "M"\n' +
+'              else\n' +
+'                if tile = 4\n' +
+'                  set line = line + ">"\n' +
+'                else\n' +
+'                  set line = line + "!"\n' +
+'      set x = x + 1\n' +
+'    print line\n' +
+'    set y = y + 1\n' +
+'\n' +
+'# a monster standing right next to the player, or [0, 0]\n' +
+'define monsterNext(g, py, px)\n' +
+'  if g[py + 1][px] = 3 = return [py + 1, px]\n' +
+'  if g[py - 1][px] = 3 = return [py - 1, px]\n' +
+'  if g[py][px + 1] = 3 = return [py, px + 1]\n' +
+'  if g[py][px - 1] = 3 = return [py, px - 1]\n' +
+'  return [0, 0]\n' +
+'\n' +
+'# the nearest tile of one kind, as [row, column]; [0, 0] when there is none\n' +
+'define nearestTile(g, size, what)\n' +
+'  define best = 9999\n' +
+'  define by = 0\n' +
+'  define bx = 0\n' +
+'  define d = 0\n' +
+'  define y = 1\n' +
+'  define x = 1\n' +
+'  until y > size\n' +
+'    set x = 1\n' +
+'    until x > size\n' +
+'      if g[y][x] = what\n' +
+'        set d = abs(y - py) + abs(x - px)\n' +
+'        if d < best\n' +
+'          set best = d\n' +
+'          set by = y\n' +
+'          set bx = x\n' +
+'      set x = x + 1\n' +
+'    set y = y + 1\n' +
+'  return [by, bx]\n' +
+'\n' +
+'# breadth first search: the distance from every cell to the target.\n' +
+'# It returns a whole grid of numbers, and -1 means "cannot be reached".\n' +
+'define distances(g, size, tr, tc)\n' +
+'  define dist = makeGrid(size, -1)\n' +
+'  define qr = []\n' +
+'  define qc = []\n' +
+'  define drs = [-1, 1, 0, 0]\n' +
+'  define dcs = [0, 0, -1, 1]\n' +
+'  define head = 1\n' +
+'  define r = 0\n' +
+'  define c = 0\n' +
+'  define k = 1\n' +
+'  define nr = 0\n' +
+'  define nc = 0\n' +
+'  append(qr, tr)\n' +
+'  append(qc, tc)\n' +
+'  set dist[tr][tc] = 0\n' +
+'  until head > length(qr)\n' +
+'    set r = qr[head]\n' +
+'    set c = qc[head]\n' +
+'    set k = 1\n' +
+'    until k > 4\n' +
+'      set nr = r + drs[k]\n' +
+'      set nc = c + dcs[k]\n' +
+'      if nr > 0 and nr <= size and nc > 0 and nc <= size\n' +
+'        if g[nr][nc] != 0 and dist[nr][nc] = -1\n' +
+'          set dist[nr][nc] = dist[r][c] + 1\n' +
+'          append(qr, nr)\n' +
+'          append(qc, nc)\n' +
+'      set k = k + 1\n' +
+'    set head = head + 1\n' +
+'  return dist\n' +
+'\n' +
+'# the first step along the shortest road, read from the distances\n' +
+'define nextStep(g, size, py, px, dist)\n' +
+'  define drs = [-1, 1, 0, 0]\n' +
+'  define dcs = [0, 0, -1, 1]\n' +
+'  define k = 1\n' +
+'  define nr = 0\n' +
+'  define nc = 0\n' +
+'  define best = 9999\n' +
+'  define by = py\n' +
+'  define bx = px\n' +
+'  until k > 4\n' +
+'    set nr = py + drs[k]\n' +
+'    set nc = px + dcs[k]\n' +
+'    if nr > 0 and nr <= size and nc > 0 and nc <= size\n' +
+'      if g[nr][nc] != 0 and dist[nr][nc] >= 0\n' +
+'        if dist[nr][nc] < best\n' +
+'          set best = dist[nr][nc]\n' +
+'          set by = nr\n' +
+'          set bx = nc\n' +
+'    set k = k + 1\n' +
+'  return [by, bx]\n' +
+'\n' +
+'# ---------- chapter 1: the fight ----------\n' +
+'\n' +
+'define fight(name, mhp, matk, weak)\n' +
+'  define damage = 0\n' +
+'  define round = 0\n' +
+'  define roll = 0\n' +
+'  print ""\n' +
+'  print "A" name "blocks the way!"\n' +
+'  until mhp <= 0 or hp <= 0\n' +
+'    set round = round + 1\n' +
+'    random 50\n' +
+'      set damage = 5\n' +
+'    random 30\n' +
+'      set damage = 8\n' +
+'    random 20\n' +
+'      set damage = 13\n' +
+'    set damage = damage + weak\n' +
+'    set roll = pick odds\n' +
+'    if roll = 5\n' +
+'      set damage = damage * 2\n' +
+'      print "  critical hit!"\n' +
+'    set mhp = mhp - damage\n' +
+'    print "  round" round ": you hit the" name "for" damage\n' +
+'    if mhp > 0\n' +
+'      set roll = pick jitter\n' +
+'      set damage = matk + roll\n' +
+'      set hp = hp - damage\n' +
+'      print "  the" name "hits you for" damage\n' +
+'  if hp <= 0 = return 0\n' +
+'  set kills = kills + 1\n' +
+'  print "  the" name "falls!"\n' +
+'  return 1\n' +
+'\n' +
+'# ---------- chapter 2: the story begins ----------\n' +
+'\n' +
+'print "============================================"\n' +
+'print "        T H E   C I T A D E L"\n' +
+'print "============================================"\n' +
+'print ""\n' +
+'\n' +
+'define keypress{1} = C\n' +
+'define ask{1} = ("What is your name, traveller? ")\n' +
+'define ask{2} = ("Type 1 for an easy walk, 2 for a real fight: ")\n' +
+'\n' +
+'print "Press C to enter the citadel."\n' +
+'if keypress{1} = ask{1}\n' +
+'define hero = answer{1}\n' +
+'print ""\n' +
+'print "Welcome, " + hero + ". Three floors stand between you and the crown."\n' +
+'\n' +
+'ask{2}\n' +
+'define hardness = 1\n' +
+'if number(answer{2}) = 2 = set hardness = 2\n' +
+'if hardness = 1 = print "You chose the easy walk."\n' +
+'if hardness = 2 = print "You chose the real fight."\n' +
+'\n' +
+'# ---------- chapter 3: the three floors ----------\n' +
+'\n' +
+'define size = 11\n' +
+'define cells = range(size)\n' +
+'define odds = [1, 2, 3, 4, 5]\n' +
+'define jitter = [0, 1, 2]\n' +
+'define loot = [5, 8, 12, 20]\n' +
+'define coins = [5, 10, 15]\n' +
+'define names = ["goblin", "skeleton", "wraith", "stone golem"]\n' +
+'define hp = 45\n' +
+'define maxhp = 45\n' +
+'define gold = 0\n' +
+'define potions = 2\n' +
+'define kills = 0\n' +
+'define alive = 1\n' +
+'define finished = 0\n' +
+'define floorNum = 1\n' +
+'define done = 0\n' +
+'define turns = 0\n' +
+'define g = []\n' +
+'define dist = []\n' +
+'define py = 3\n' +
+'define px = 3\n' +
+'define ty = 0\n' +
+'define tx = 0\n' +
+'define target = [0, 0]\n' +
+'define foe = [0, 0]\n' +
+'define tile = 0\n' +
+'define monsterHp = 0\n' +
+'define monsterAtk = 0\n' +
+'define monsterName = ""\n' +
+'define gained = 0\n' +
+'define score = 0\n' +
+'\n' +
+'repeat 3\n' +
+'  if alive = 1\n' +
+'    set done = 0\n' +
+'    set turns = 0\n' +
+'    set ty = 0\n' +
+'    set tx = 0\n' +
+'    set g = makeGrid(size, 0)\n' +
+'    carve(g, 2, 2, 4, 4)\n' +
+'    carve(g, 2, 7, 3, 9)\n' +
+'    carve(g, 7, 2, 9, 3)\n' +
+'    carve(g, 7, 6, 9, 9)\n' +
+'    hallH(g, 3, 4, 7)\n' +
+'    hallV(g, 2, 4, 7)\n' +
+'    hallH(g, 8, 3, 6)\n' +
+'    set g[8][8] = 4\n' +
+'    set py = 3\n' +
+'    set px = 3\n' +
+'    set gained = scatter(g, size, 2, 4 + floorNum, cells)\n' +
+'    set gained = scatter(g, size, 5, 3 - hardness, cells)\n' +
+'    set gained = scatter(g, size, 3, 2 + floorNum + (hardness - 1) * 2, cells)\n' +
+'    print ""\n' +
+'    print "--------------------------------------------"\n' +
+'    print "FLOOR" floorNum "of 3   hp" hp "/" maxhp "  gold" gold "  potions" potions\n' +
+'    print "--------------------------------------------"\n' +
+'    show(g, size, py, px)\n' +
+'\n' +
+'    until done = 1 or alive = 0 or turns > 120\n' +
+'      set turns = turns + 1\n' +
+'      set monsterAtk = 3 + floorNum + hardness\n' +
+'      if hp = under 16 and potions > 0\n' +
+'        set potions = potions - 1\n' +
+'        set hp = hp + 12\n' +
+'        if hp > maxhp = set hp = maxhp\n' +
+'        print "You drink a potion. hp" hp\n' +
+'      set foe = monsterNext(g, py, px)\n' +
+'      if foe[1] > 0\n' +
+'        set g[foe[1]][foe[2]] = 1\n' +
+'        set monsterHp = 4 + floorNum * 2 + hardness * 3\n' +
+'        set monsterName = pick names\n' +
+'        if fight(monsterName, monsterHp, monsterAtk, floorNum - 1) = 0\n' +
+'          set alive = 0\n' +
+'        else\n' +
+'          set gained = pick loot\n' +
+'          set gold = gold + gained\n' +
+'          print "  you loot" gained "gold"\n' +
+'      else\n' +
+'        if ty = 0 or g[ty][tx] = 1 or g[ty][tx] = 3\n' +
+'          set ty = 0\n' +
+'          set tx = 0\n' +
+'          set target = [0, 0]\n' +
+'          if ty = 0\n' +
+'            set target = nearestTile(g, size, 2)\n' +
+'            if target[1] = 0\n' +
+'              set target = nearestTile(g, size, 5)\n' +
+'            if target[1] = 0\n' +
+'              set target = nearestTile(g, size, 4)\n' +
+'          set ty = target[1]\n' +
+'          set tx = target[2]\n' +
+'          if ty > 0\n' +
+'            set dist = distances(g, size, ty, tx)\n' +
+'        if ty > 0\n' +
+'          set target = nextStep(g, size, py, px, dist)\n' +
+'          set py = target[1]\n' +
+'          set px = target[2]\n' +
+'        set tile = g[py][px]\n' +
+'        if tile = 2\n' +
+'          set gained = pick coins\n' +
+'          set gold = gold + gained\n' +
+'          print "You pick up" gained "gold. Total" gold\n' +
+'          set g[py][px] = 1\n' +
+'        else\n' +
+'          if tile = 5\n' +
+'            set potions = potions + 1\n' +
+'            print "You find a potion. You now carry" potions\n' +
+'            set g[py][px] = 1\n' +
+'          else\n' +
+'            if tile = 4\n' +
+'              set done = 1\n' +
+'      if turns % 40 = 0 and alive = 1 and done = 0\n' +
+'        show(g, size, py, px)\n' +
+'        print "hp" hp "gold" gold "turns" turns\n' +
+'\n' +
+'    if alive = 0 and done = 0\n' +
+'      print ""\n' +
+'      print "You fall on floor " + floorNum + "."\n' +
+'    if done = 0 and alive = 1\n' +
+'      print ""\n' +
+'      print "The night falls on floor " + floorNum + " before you reach the stairs."\n' +
+'      set alive = 0\n' +
+'    if done = 1\n' +
+'      print ""\n' +
+'      print "Floor" floorNum "cleared in" turns "turns."\n' +
+'      print "hp" hp "/" maxhp "  gold" gold "  monsters" kills\n' +
+'      if floorNum = 3\n' +
+'        set finished = 1\n' +
+'      else\n' +
+'        set hp = hp + 10\n' +
+'        if hp > maxhp = set hp = maxhp\n' +
+'        print "You rest before the stairs and recover to" hp "hp."\n' +
+'    set floorNum = floorNum + 1\n' +
+'\n' +
+'# ---------- chapter 4: the end ----------\n' +
+'\n' +
+'print ""\n' +
+'print "============================================"\n' +
+'if finished = 1 and alive = 1\n' +
+'  print "THE CROWN IS YOURS," hero\n' +
+'  set score = gold + kills * 10 + hp * 2\n' +
+'  set score = score * power(2, 3)\n' +
+'  print "gold" gold "  monsters" kills "  hp left" hp\n' +
+'  print "FINAL SCORE:" score\n' +
+'  if score > 2000\n' +
+'    print "A legend of the citadel."\n' +
+'  else\n' +
+'    print "A good walk, and a good story."\n' +
+'else\n' +
+'  print "GAME OVER"\n' +
+'  print hero "fell in the citadel with" gold "gold."\n' +
+'  print "Monsters killed:" kills\n' +
+'print "============================================"\n' +
 'end\n',
 
     errors:
@@ -733,7 +1151,7 @@ random 33
   });
 })();
 </script>
-<script src="editor-ui.js?v=1.0.0"></script>
+<script src="editor-ui.js?v=1.5.0"></script>
 <script src="lessons.js"></script>
 <script src="tutorials.js"></script>
 </body>

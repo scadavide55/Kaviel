@@ -1,5 +1,16 @@
 # Kaviel — what still has to be fixed
 
+## Fixed in 1.5 (20 October 2026)
+
+| Item | What changed |
+|---|---|
+| A1, A2 | `pick` no longer swallows a comparison or an arithmetic operator: each choice is parsed one level below the comparison |
+| A10 | `"and"`, `"or"`, `"not"`, `"under"`, `"over"` written as text stay text; the five words are now reserved, so they are highlighted and cannot be used as names |
+| A15 | `else` now follows an `if` written on one line |
+| n22 | the footer says which engine is running |
+| n23 | a `beta` badge sits beside the name |
+| n25 | `over 18` is now `> 18`, the same as `>`, and the example, the lessons in three languages, the tutorial and the specification follow |
+
 This file is the list that was started on 19 October 2026 and then checked again, item by item, against the code.
 Every line below was **run or read**, not guessed. Where a claim could not be reproduced it says so.
 

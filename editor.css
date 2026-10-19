@@ -74,6 +74,8 @@ code { font: .92em ui-monospace, "SF Mono", Menlo, monospace; background: var(--
 
 /* Top bar */
 .topbar { flex-shrink: 0; display: flex; align-items: center; gap: 10px; padding: 10px 18px; background: var(--card); border-bottom: 2px solid var(--edge); }
+.brand-beta { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 999px; background: var(--accent-soft, #e7f0e4); color: var(--accent-ink, #2f5b34); align-self: center; }
+.engine { font-size: 11px; color: var(--muted, #7a7469); }
 .brand { display: flex; align-items: center; gap: 9px; color: var(--ink); font-size: 21px; font-weight: 800; text-decoration: none; margin-right: 6px; }
 .logo { width: 34px; height: 34px; stroke-width: 3; }
 .logo-bg { fill: var(--accent); stroke: var(--edge); stroke-width: 2; }
@@ -290,7 +292,7 @@ dialog::backdrop { background: #2b242088; }
   .pane.output { flex: none; height: 240px; }
   .pane.problems { flex: none; height: 200px; }
   .mobile-examples { display: flex; }
-  .brand span:last-child { display: none; }
+  .brand .brand-name { display: none; }
   .topbar { gap: 4px; padding: 8px 10px; }
   .file-tools { padding-left: 4px; border-left: 0; margin-left: 0; }
   #file-name { width: 120px; }

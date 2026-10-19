@@ -1364,7 +1364,7 @@
   function runAsync(src, options) { return getRuntime().runAsync(src, options); }
 
   return {
-    VERSION: '1.0.0',
+    VERSION: '1.5.0-beta',
     run: run,
     runAsync: runAsync,
     tokenize: tokenize,

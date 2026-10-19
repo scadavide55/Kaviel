@@ -310,7 +310,7 @@
     check('Reading a step aloud starts and stops without errors', listeningWorks);
 
     doc = frame.contentDocument; win = frame.contentWindow; code = doc.getElementById('code'); examples = doc.getElementById('examples');
-    var pairs = [['hello', 'hello.kv'], ['questions', 'questions.kv'], ['age', 'age.kv'], ['dice', 'dice.kv'], ['collatz', 'collatz.kv'], ['rps', 'rock_paper_scissors.kv'], ['functions', 'functions.kv'], ['lists', 'lists.kv'], ['keypress', 'keypress.kv'], ['errors', 'errors.kv'], ['guess', 'guess.kv'], ['timestable', 'timestable.kv'], ['quiz', 'quiz.kv'], ['treasure', 'treasure_hunt.kv']];
+    var pairs = [['hello', 'hello.kv'], ['questions', 'questions.kv'], ['age', 'age.kv'], ['dice', 'dice.kv'], ['collatz', 'collatz.kv'], ['rps', 'rock_paper_scissors.kv'], ['functions', 'functions.kv'], ['lists', 'lists.kv'], ['keypress', 'keypress.kv'], ['errors', 'errors.kv'], ['guess', 'guess.kv'], ['timestable', 'timestable.kv'], ['quiz', 'quiz.kv'], ['treasure', 'treasure_hunt.kv'], ['citadel', 'citadel.kv']];
     var inSync = true, examplesRun = true;
     for (var pair = 0; pair < pairs.length; pair++) {
       examples.value = pairs[pair][0];

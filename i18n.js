@@ -38,6 +38,8 @@
     ['Lessons and examples', 'Lezioni ed esempi', 'Leçons et exemples'],
     ['Help', 'Aiuto', 'Aide'],
     ['Quick help · press ?', 'Aiuto veloce · premi ?', 'Aide rapide · appuie sur ?'],
+    ['Running on the Kaviel 1.5 beta engine', 'Gira sul motore Kaviel 1.5 beta', 'Tourne sur le moteur Kaviel 1.5 beta'],
+    ['beta', 'beta', 'bêta'],
     ['Switch between light and dark', 'Passa da chiaro a scuro', 'Passer du clair au sombre'],
     ['Stop', 'Ferma', 'Arrêter'],
     ['Treasure hunt', 'Caccia al tesoro', 'Chasse au trésor'], ['Your biggest program', 'Il tuo programma più grande', 'Ton plus gros programme'],

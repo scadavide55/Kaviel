@@ -6,6 +6,15 @@
 
   var TUTORIALS = [
     {
+      title: 'Meet the editor',
+      subtitle: '',
+      steps: [
+        {title: 'Your workspace', text: '', code: 'start\nprint "Hello!"\nend', turn: ''},
+        {title: 'Run, Stop and Save', text: '', code: 'start\nprint "Hello again!"\nend', turn: ''},
+        {title: 'How these lessons work', text: '', code: 'start\nprint "I can type code!"\nend', turn: ''}
+      ]
+    },
+    {
       title: 'Say hello',
       subtitle: 'Your very first program',
       steps: [
@@ -319,10 +328,71 @@
           expectErrors: true
         }
       ]
+    },
+    {
+      title: 'Your big project',
+      subtitle: '',
+      steps: [
+        {title: 'Start your story', text: '', code: 'start\ndefine ask{1} = ("What is your name? ")\nask{1}\nprint "Welcome to the island," answer{1}\nprint "Find as many coins as you can."\nend', turn: ''},
+        {title: 'Choose a way', text: '', code: 'start\ndefine ask{1} = ("What is your name? ")\ndefine ask{2} = ("Which way: left or right? ")\nask{1}\nprint "Welcome to the island," answer{1}\nask{2}\nif answer{2} = "left"\n  print "You walk into a cave."\nelse\n  print "You walk to a river."\nend', turn: ''},
+        {title: 'Add luck and coins', text: '', code: 'start\ndefine coins = 0\ndefine ask{1} = ("What is your name? ")\ndefine ask{2} = ("Which way: left or right? ")\nask{1}\nprint "Welcome to the island," answer{1}\nask{2}\nif answer{2} = "left"\n  print "You walk into a cave."\nelse\n  print "You walk to a river."\nrandom 70\n  print "You find 5 coins!"\n  set coins = coins + 5\nrandom 30\n  print "A crab pinches you. No coins today."\nprint "You have" coins "coins."\nend', turn: ''},
+        {title: 'Play three days', text: '', code: 'start\ndefine coins = 0\ndefine ask{1} = ("What is your name? ")\ndefine ask{2} = ("Which way: left or right? ")\nask{1}\nprint "Welcome to the island," answer{1}\nprint "Find as many coins as you can in 3 days."\n\ndefine day = 1\nuntil day > 3\n  print "Day" day\n  ask{2}\n  if answer{2} = "left"\n    print "You walk into a cave."\n  else\n    print "You walk to a river."\n  random 70\n    print "You find 5 coins!"\n    set coins = coins + 5\n  random 30\n    print "A crab pinches you. No coins today."\n  set day = day + 1\n\nprint "The game is over. You have" coins "coins."\nend', turn: ''},
+        {title: 'The end of the game', text: '', code: 'start\ndefine coins = 0\ndefine ask{1} = ("What is your name? ")\ndefine ask{2} = ("Which way: left or right? ")\nask{1}\nprint "Welcome to the island," answer{1}\nprint "Find as many coins as you can in 3 days."\n\ndefine day = 1\nuntil day > 3\n  print "Day" day\n  ask{2}\n  if answer{2} = "left"\n    print "You walk into a cave."\n  else\n    print "You walk to a river."\n  random 70\n    print "You find 5 coins!"\n    set coins = coins + 5\n  random 30\n    print "A crab pinches you. No coins today."\n  set day = day + 1\n\nprint answer{1} "found" coins "coins."\nif coins > 10 = print "You are rich!"\nif coins < 11 = print "Nice try. Play again!"\nend', turn: ''},
+        {title: 'Make it your own', text: '', code: 'start\ndefine coins = 0\ndefine ask{1} = ("What is your name? ")\ndefine ask{2} = ("Which way: left or right? ")\nask{1}\nprint "Welcome to the island," answer{1}\nprint "Find as many coins as you can in 3 days."\n\ndefine day = 1\nuntil day > 3\n  print "Day" day\n  ask{2}\n  if answer{2} = "left"\n    print "You walk into a cave."\n  else\n    print "You walk to a river."\n  random 70\n    print "You find 5 coins!"\n    set coins = coins + 5\n  random 30\n    print "A crab pinches you. No coins today."\n  set day = day + 1\n\nprint answer{1} "found" coins "coins."\nif coins > 10 = print "You are rich!"\nif coins < 11 = print "Nice try. Play again!"\nend', turn: ''}
+      ]
     }
   ];
 
-  if (window.KavielI18n) window.KavielI18n.lessons(TUTORIALS);
+  // Texts come from lessons.js in the chosen language (English when a lesson is missing).
+  var LANG = document.documentElement.lang || 'en';
+  var PACKS = window.KavielLessons || {};
+  var UI = (PACKS[LANG] || PACKS.en || {ui: {}}).ui;
+  var EXPLAIN = (PACKS[LANG] || PACKS.en || {explain: {}}).explain;
+  TUTORIALS.forEach(function (lesson, i) {
+    var row = null;
+    [PACKS[LANG], PACKS.en].forEach(function (pack) {
+      if (!row && pack && pack.lessons[i] && pack.lessons[i][2].length === lesson.steps.length) row = pack.lessons[i];
+    });
+    if (!row) return;
+    lesson.title = row[0];
+    lesson.subtitle = row[1];
+    lesson.steps.forEach(function (step, j) {
+      var data = row[2][j];
+      step.title = data[0]; step.text = data[1]; step.see = data[2]; step.turn = data[3]; step.slip = data[4];
+    });
+  });
+
+  // One short sentence for each line of code, so the child knows what every line does.
+  function explain(line) {
+    var t = line.trim(), m, e = EXPLAIN;
+    if (!t || !e.start) return '';
+    if (t === 'start') return e.start;
+    if (t === 'end') return e.end;
+    if (t[0] === '#') return e.note;
+    if (t === 'else') return e.else;
+    if (t === 'break') return e.breakIt;
+    if (/^print\s*$/.test(t)) return e.printEmpty;
+    if (/^print\b/.test(t)) return e.print;
+    if ((m = t.match(/^define\s+ask\{(\d+)\}/))) return e.askDef.replace('{n}', m[1]);
+    if (/^define\s+keypress\{/.test(t)) return e.keyDef;
+    if ((m = t.match(/^define\s+([A-Za-z_]\w*)\s*\(/))) return e.fnDef.replace('{name}', m[1]);
+    if ((m = t.match(/^define\s+([A-Za-z_]\w*)\s*=\s*pick\b/))) return e.pick.replace('{name}', m[1]);
+    if ((m = t.match(/^define\s+([A-Za-z_]\w*)/))) return e.define.replace('{name}', m[1]);
+    if (/^set\b/.test(t)) return e.set;
+    if ((m = t.match(/^ask\{(\d+)\}$/))) return e.ask.replace('{n}', m[1]);
+    if (/^if\s+keypress\{/.test(t)) return e.keyIf;
+    if (/^if\b/.test(t)) {
+      var parts = t.split(' = ');
+      var inline = parts.length >= 3 || (parts.length === 2 && /[<>]/.test(parts[0]));
+      return inline ? e.ifInline : e.ifBlock;
+    }
+    if (/^repeat\b/.test(t)) return e.repeat;
+    if (/^until\b/.test(t)) return e.until;
+    if (/^random\b/.test(t)) return e.random;
+    if (/^return\b/.test(t)) return e.returnIt;
+    if (/^append\(/.test(t)) return e.append;
+    return '';
+  }
   window.KavielTutorials = TUTORIALS;
 
   var panel = document.getElementById('tutorial');
@@ -395,7 +465,7 @@
       text.appendChild(element('span', 'lesson-title', lesson.title));
       text.appendChild(element('small', null, lesson.subtitle));
       button.appendChild(text);
-      button.appendChild(element('span', 'lesson-count', lesson.steps.length + ' steps'));
+      button.appendChild(element('span', 'lesson-count', lesson.steps.length + ' ' + (UI.steps || 'steps')));
       button.addEventListener('click', function () {
         position = {lesson: index, step: 0};
         showingStep = true;
@@ -425,33 +495,75 @@
     bar.setAttribute('aria-hidden', 'true');
     lesson.steps.forEach(function (_, i) { bar.appendChild(element('i', i < position.step ? 'on' : i === position.step ? 'here' : '')); });
     stepBox.appendChild(bar);
-    stepBox.appendChild(element('div', 'step-count', 'Lesson ' + (position.lesson + 1) + ': ' + lesson.title + ' · step ' + (position.step + 1) + ' of ' + lesson.steps.length));
+    stepBox.appendChild(element('div', 'step-count', (UI.lesson || 'Lesson') + ' ' + (position.lesson + 1) + ': ' + lesson.title + ' · ' + (UI.step || 'step') + ' ' + (position.step + 1) + ' ' + (UI.of || 'of') + ' ' + lesson.steps.length));
     stepBox.appendChild(element('h3', null, step.title));
-    stepBox.appendChild(element('p', 'tutorial-text', step.text));
-    stepBox.appendChild(element('pre', 'tutorial-code', step.code));
+    String(step.text).split('\n\n').forEach(function (paragraph) {
+      stepBox.appendChild(element('p', 'tutorial-text', paragraph));
+    });
+
+    stepBox.appendChild(element('div', 'block-title', UI.lineByLine || 'Line by line'));
+    var rows = element('div', 'tutorial-code');
+    step.code.split('\n').forEach(function (line) {
+      if (!line.trim()) return;
+      var row = element('div', 'code-row');
+      row.appendChild(element('pre', 'src', line));
+      var note = explain(line);
+      if (note) row.appendChild(element('div', 'note', note));
+      rows.appendChild(row);
+    });
+    stepBox.appendChild(rows);
+
+    if (step.see) {
+      var see = element('div', 'see-box');
+      see.appendChild(element('div', 'block-title', UI.see || 'What you will see'));
+      see.appendChild(element('pre', 'screen', step.see));
+      stepBox.appendChild(see);
+    }
     if (step.turn) {
       var turn = element('p', 'your-turn');
-      turn.appendChild(element('b', null, 'Your turn'));
+      turn.appendChild(element('b', null, UI.turn || 'Your turn'));
       turn.appendChild(document.createTextNode(step.turn));
       stepBox.appendChild(turn);
     }
+    if (step.slip) {
+      var slip = element('p', 'slip-box');
+      slip.appendChild(element('b', null, UI.slip || 'Watch out'));
+      slip.appendChild(document.createTextNode(step.slip));
+      stepBox.appendChild(slip);
+    }
 
-    var actions = element('div', 'step-actions');
-    var open = element('button', 'btn primary', 'Put it in the editor');
-    open.type = 'button';
-    open.addEventListener('click', function () {
+    function keepBackup() {
       try { if (code.value.trim() && code.value !== step.code) localStorage.setItem(BACKUP, code.value); } catch (e) {}
-      code.value = step.code;
+    }
+    function afterLoad(message) {
       code.dispatchEvent(new Event('input', {bubbles: true}));
-      code.setSelectionRange(0, 0);
       code.scrollTop = 0;
       code.focus();
       if (window.innerWidth <= 900) setOpen(false);
-      document.dispatchEvent(new CustomEvent('kaviel:notice', {detail: 'Done. Now press the green Run button.'}));
+      document.dispatchEvent(new CustomEvent('kaviel:notice', {detail: message}));
+      drawStep();
+    }
+    var actions = element('div', 'step-actions');
+    var typeIt = element('button', 'btn primary type-it', UI.typeIt || 'Type it yourself');
+    typeIt.type = 'button';
+    typeIt.addEventListener('click', function () {
+      keepBackup();
+      code.value = 'start\n\nend\n';
+      code.setSelectionRange(6, 6);
+      afterLoad(UI.typeNote || 'Empty page ready. Type the lines, then press Run.');
+      code.setSelectionRange(6, 6);
+    });
+    actions.appendChild(typeIt);
+    var open = element('button', 'btn put-code', UI.putIt || 'Put it in the editor');
+    open.type = 'button';
+    open.addEventListener('click', function () {
+      keepBackup();
+      code.value = step.code;
+      code.setSelectionRange(0, 0);
       var run = $('run');
       run.classList.add('nudge');
       setTimeout(function () { run.classList.remove('nudge'); }, 2400);
-      drawStep();
+      afterLoad('Done. Now press the green Run button.');
     });
     actions.appendChild(open);
     stepBox.appendChild(actions);

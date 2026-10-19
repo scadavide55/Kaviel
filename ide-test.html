@@ -20,6 +20,7 @@
   var originalDone = localStorage.getItem('kaviel.tutorial.done');
   var originalVisited = localStorage.getItem('kaviel.visited');
   var originalTheme = localStorage.getItem('kaviel.theme');
+  var originalLang = localStorage.getItem('kaviel.lang');
   var originalSize = localStorage.getItem('kaviel.fontsize');
   function settle() { return new Promise(function (resolve) { setTimeout(resolve, 30); }); }
   function until(condition, timeout) {
@@ -71,6 +72,7 @@
   try {
     localStorage.setItem('kaviel.source', 'start\nprint "saved"\nend');
     localStorage.setItem('kaviel.visited', '1');
+    localStorage.setItem('kaviel.lang', 'en');
     localStorage.removeItem('kaviel.theme');
     localStorage.removeItem('kaviel.fontsize');
     await load();
@@ -244,20 +246,20 @@
     doc.getElementById('tutorials-toggle').click();
     check('The Lessons button opens the panel beside the editor', !doc.getElementById('tutorial').hidden && doc.getElementById('code').clientHeight > 0);
     check('Every lesson is listed', T.length >= 10 && doc.querySelectorAll('.tutorial-lesson').length === T.length);
-    doc.querySelectorAll('.tutorial-lesson')[6].click();
-    check('Choosing a lesson shows its first step', doc.querySelector('.tutorial-step h3').textContent === 'Make a command' && doc.querySelector('.tutorial-code').textContent.includes('define greet(name)'));
+    doc.querySelectorAll('.tutorial-lesson')[7].click();
+    check('Choosing a lesson shows its first step', doc.querySelector('.tutorial-step h3').textContent === 'Make a command' && doc.querySelector('.tutorial-code').textContent.includes('define greet(name)') && !!doc.querySelector('.code-row .note') && !!doc.querySelector('.see-box'));
     doc.querySelectorAll('.nav-row .btn')[1].click();
     check('Next step moves forward inside the lesson', doc.querySelector('.tutorial-step .step-count').textContent.includes('step 2 of 4'));
     check('Steps give the reader a small job', !!doc.querySelector('.your-turn'));
     var sourceBeforeTutorial = setSource('start\nprint "mine"\nend').value;
-    doc.querySelector('.step-actions .primary').click();
+    doc.querySelector('.step-actions .put-code').click();
     check('Putting a step in the editor loads its code and keeps the panel open', !doc.getElementById('tutorial').hidden && code.value.includes('define area(width, height)'));
     check('The previous code is kept for restoring', localStorage.getItem('kaviel.tutorial.backup') === sourceBeforeTutorial);
-    check('Tutorial progress is remembered', JSON.parse(localStorage.getItem('kaviel.tutorial.position')).lesson === 6);
+    check('Tutorial progress is remembered', JSON.parse(localStorage.getItem('kaviel.tutorial.position')).lesson === 7);
     doc.querySelector('.restore-code').click();
     check('Restore brings the previous code back', code.value === sourceBeforeTutorial);
     doc.getElementById('tab-examples').click();
-    check('The Examples tab shows the example list', !doc.getElementById('examples-view').hidden && doc.getElementById('lessons-view').hidden && doc.querySelectorAll('#example-list button').length === 13);
+    check('The Examples tab shows the example list', !doc.getElementById('examples-view').hidden && doc.getElementById('lessons-view').hidden && doc.querySelectorAll('#example-list button').length === 14);
     doc.getElementById('tab-lessons').click();
     doc.getElementById('tutorial-close').click();
     check('Close hides the panel and drops its expanded state', doc.getElementById('tutorial').hidden && doc.getElementById('tutorials-toggle').getAttribute('aria-expanded') === 'false');
@@ -268,7 +270,7 @@
       doc.querySelectorAll('.tutorial-lesson')[lessonIndex].click();
       for (var stepIndex = 0; stepIndex < T[lessonIndex].steps.length; stepIndex++) {
         walked.push(doc.querySelector('.tutorial-step h3').textContent);
-        tutorialSources.push({source: doc.querySelector('.tutorial-code').textContent, expectErrors: !!T[lessonIndex].steps[stepIndex].expectErrors});
+        tutorialSources.push({source: T[lessonIndex].steps[stepIndex].code, expectErrors: !!T[lessonIndex].steps[stepIndex].expectErrors});
         if (stepIndex < T[lessonIndex].steps.length - 1) doc.querySelectorAll('.nav-row .btn')[1].click();
       }
     }
@@ -281,9 +283,24 @@
     doc.querySelectorAll('.nav-row .btn')[1].click();
     check('Finishing a lesson ticks it off', JSON.parse(localStorage.getItem('kaviel.tutorial.done')).indexOf(T.length - 1) >= 0 && doc.querySelectorAll('.tutorial-lesson.done').length >= 1);
     doc.getElementById('tutorial-close').click();
+    check('Every step has a short note for each known line of code', T.every(function (l) { return l.steps.every(function (st) { return st.text && st.text.length > 60 && st.see && st.turn; }); }));
+    var packs = win.KavielLessons;
+    check('Italian and French have the same lessons and steps as English', ['it', 'fr'].every(function (l) {
+      return packs[l].lessons.length === packs.en.lessons.length && packs[l].lessons.every(function (row, i) { return row[2].length === packs.en.lessons[i][2].length && row[2].every(function (st) { return st.length === 5 && st[1] && st[2] && st[3]; }); }) &&
+        Object.keys(packs.en.explain).every(function (k) { return packs[l].explain[k]; });
+    }));
+    doc.querySelectorAll('.nav-row .btn')[1].click();
+    doc.querySelector('.back-link') && doc.querySelector('.back-link').click();
+    doc.querySelectorAll('.tutorial-lesson')[T.length - 1].click();
+    var typeButton = doc.querySelector('.step-actions .type-it');
+    var keepSource = setSource('start\nprint "mine"\nend').value;
+    typeButton.click();
+    check('Type it yourself gives an empty page ready to type in', code.value === 'start\n\nend\n' && code.selectionStart === 6 && localStorage.getItem('kaviel.tutorial.backup') === keepSource);
+    var finalStep = T[T.length - 1].steps[T[T.length - 1].steps.length - 1];
+    check('The last lesson ends with the full treasure game', finalStep.code.indexOf('until day > 3') > 0 && finalStep.code.indexOf('random 70') > 0);
 
     doc = frame.contentDocument; win = frame.contentWindow; code = doc.getElementById('code'); examples = doc.getElementById('examples');
-    var pairs = [['hello', 'hello.kv'], ['questions', 'questions.kv'], ['age', 'age.kv'], ['dice', 'dice.kv'], ['collatz', 'collatz.kv'], ['rps', 'rock_paper_scissors.kv'], ['functions', 'functions.kv'], ['lists', 'lists.kv'], ['keypress', 'keypress.kv'], ['errors', 'errors.kv'], ['guess', 'guess.kv'], ['timestable', 'timestable.kv'], ['quiz', 'quiz.kv']];
+    var pairs = [['hello', 'hello.kv'], ['questions', 'questions.kv'], ['age', 'age.kv'], ['dice', 'dice.kv'], ['collatz', 'collatz.kv'], ['rps', 'rock_paper_scissors.kv'], ['functions', 'functions.kv'], ['lists', 'lists.kv'], ['keypress', 'keypress.kv'], ['errors', 'errors.kv'], ['guess', 'guess.kv'], ['timestable', 'timestable.kv'], ['quiz', 'quiz.kv'], ['treasure', 'treasure_hunt.kv']];
     var inSync = true, examplesRun = true;
     for (var pair = 0; pair < pairs.length; pair++) {
       examples.value = pairs[pair][0];
@@ -422,6 +439,7 @@
     else localStorage.setItem('kaviel.tutorial.position', originalTutorial);
     if (originalDone === null) localStorage.removeItem('kaviel.tutorial.done'); else localStorage.setItem('kaviel.tutorial.done', originalDone);
     if (originalVisited === null) localStorage.removeItem('kaviel.visited'); else localStorage.setItem('kaviel.visited', originalVisited);
+    if (originalLang === null) localStorage.removeItem('kaviel.lang'); else localStorage.setItem('kaviel.lang', originalLang);
     if (originalTheme === null) localStorage.removeItem('kaviel.theme'); else localStorage.setItem('kaviel.theme', originalTheme);
     if (originalSize === null) localStorage.removeItem('kaviel.fontsize'); else localStorage.setItem('kaviel.fontsize', originalSize);
     if (originalBackup === null) localStorage.removeItem('kaviel.tutorial.backup');

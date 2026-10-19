@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kaviel</title>
-<link rel="stylesheet" href="editor.css?v=6">
+<link rel="stylesheet" href="editor.css?v=8">
 <script>try { var t = localStorage.getItem('kaviel.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 </head>
 <body>
@@ -63,6 +63,7 @@
         <button data-example="guess"><b>Guess the number</b><span>A small game</span></button>
         <button data-example="timestable"><b>Times table</b><span>Counting with a loop</span></button>
         <button data-example="quiz"><b>Quiz</b><span>Ask, check, count points</span></button>
+        <button data-example="treasure"><b>Treasure hunt</b><span>Your biggest program</span></button>
         <button data-example="rps"><b>Rock, paper, scissors</b><span>Play against the computer</span></button>
         <button data-example="collatz"><b>Collatz</b><span>A famous number puzzle</span></button>
         <button data-example="functions"><b>Your own commands</b><span>Functions</span></button>
@@ -74,7 +75,7 @@
   </aside>
 
   <div class="workspace">
-    <div class="mobile-examples"><label for="examples">Example</label><select id="examples" title="Examples"><option value="">Your code</option><option value="hello">Hello</option><option value="questions">Two questions</option><option value="age">Under or over</option><option value="dice">Dice</option><option value="guess">Guess the number</option><option value="timestable">Times table</option><option value="quiz">Quiz</option><option value="rps">Rock, paper, scissors</option><option value="collatz">Collatz</option><option value="functions">Your own commands</option><option value="lists">A list of pets</option><option value="keypress">Wait for a key</option><option value="errors">Mistakes</option></select></div>
+    <div class="mobile-examples"><label for="examples">Example</label><select id="examples" title="Examples"><option value="">Your code</option><option value="hello">Hello</option><option value="questions">Two questions</option><option value="age">Under or over</option><option value="dice">Dice</option><option value="guess">Guess the number</option><option value="timestable">Times table</option><option value="quiz">Quiz</option><option value="treasure">Treasure hunt</option><option value="rps">Rock, paper, scissors</option><option value="collatz">Collatz</option><option value="functions">Your own commands</option><option value="lists">A list of pets</option><option value="keypress">Wait for a key</option><option value="errors">Mistakes</option></select></div>
 
     <main class="workbench">
       <section class="editor" aria-label="Your program">
@@ -225,6 +226,35 @@ random 33
 '  print "Not quite. Grass is green."\n' +
 '\n' +
 'print "You got" points "out of 2."\n' +
+'end\n',
+
+    treasure:
+'start\n' +
+'define coins = 0\n' +
+'define ask{1} = ("What is your name? ")\n' +
+'define ask{2} = ("Which way: left or right? ")\n' +
+'ask{1}\n' +
+'print "Welcome to the island," answer{1}\n' +
+'print "Find as many coins as you can in 3 days."\n' +
+'\n' +
+'define day = 1\n' +
+'until day > 3\n' +
+'  print "Day" day\n' +
+'  ask{2}\n' +
+'  if answer{2} = "left"\n' +
+'    print "You walk into a cave."\n' +
+'  else\n' +
+'    print "You walk to a river."\n' +
+'  random 70\n' +
+'    print "You find 5 coins!"\n' +
+'    set coins = coins + 5\n' +
+'  random 30\n' +
+'    print "A crab pinches you. No coins today."\n' +
+'  set day = day + 1\n' +
+'\n' +
+'print answer{1} "found" coins "coins."\n' +
+'if coins > 10 = print "You are rich!"\n' +
+'if coins < 11 = print "Nice try. Play again!"\n' +
 'end\n',
 
     dice:
@@ -672,6 +702,7 @@ random 33
 </script>
 <script src="editor-ui.js"></script>
 <script src="i18n.js"></script>
+<script src="lessons.js"></script>
 <script src="tutorials.js"></script>
 </body>
 </html>

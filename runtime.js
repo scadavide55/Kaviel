@@ -228,7 +228,8 @@
           if (!scope.has(key)) {
             const names = [...this.vars.keys(), ...(this.locals ? this.locals.keys() : [])].map(k => k.split('\u0000')[0]);
             const suggestion = language.suggestFor(node.name, names);
-            return this.error(node.line, 'I do not know `' + node.name + '`. Did you create it with `define`?', suggestion ? 'Did you mean `' + suggestion + '`?' : '');
+            return this.error(node.line, 'I do not know `' + node.name + '`. Did you create it with `define`?',
+              (suggestion ? 'Did you mean `' + suggestion + '`? ' : '') + 'To show the word as text, put it in quotes: "' + node.name + '".');
           }
           return scope.get(key);
         }

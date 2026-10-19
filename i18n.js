@@ -40,6 +40,7 @@
     ['Quick help · press ?', 'Aiuto veloce · premi ?', 'Aide rapide · appuie sur ?'],
     ['Switch between light and dark', 'Passa da chiaro a scuro', 'Passer du clair au sombre'],
     ['Stop', 'Ferma', 'Arrêter'],
+    ['Treasure hunt', 'Caccia al tesoro', 'Chasse au trésor'], ['Your biggest program', 'Il tuo programma più grande', 'Ton plus gros programme'],
     ['Stop the program · Esc', 'Ferma il programma · Esc', 'Arrêter le programme · Esc'],
     ['Run', 'Esegui', 'Lancer'],
     ['Run your program · Cmd/Ctrl+Enter', 'Esegui il programma · Cmd/Ctrl+Invio', 'Lancer le programme · Cmd/Ctrl+Entrée'],
@@ -138,126 +139,12 @@
      'Un seul des blocs s\'exécute. Les nombres sont les chances et font 100 au total.']
   ];
 
-  // Lessons: [title, subtitle, [[step title, text, your turn], ...]]
-  var LESSONS = {
-    it: [
-      ['Saluta', 'Il tuo primo programma', [
-        ['Fai parlare il computer', 'Un programma è una lista di istruzioni. Il computer le legge dall\'alto verso il basso. Ogni programma inizia con start e finisce con end. La parola print fa dire qualcosa al computer.', 'Clicca il pulsante verde Esegui. Guarda il riquadro Risultato.'],
-        ['Di\' più di una cosa', 'Ogni riga print dice una riga. Il computer le fa in ordine, come quando leggi un libro.', 'Aggiungi una riga che dice il tuo nome.'],
-        ['Le parole vanno tra virgolette', 'Le parole si chiamano testo e stanno tra virgolette. I numeri non le vogliono. Il computer sa anche fare i conti.', 'Cambia il 7 con la tua età. Poi esegui di nuovo.'],
-        ['Note per le persone', 'Una riga che inizia con # è una nota. Il computer la salta. Le note aiutano chi legge il codice dopo.', 'Scrivi una tua nota con # all\'inizio.']]],
-      ['Nomi e scatole', 'Ricorda le cose per dopo', [
-        ['Una scatola con un nome', 'define crea una scatola e le dà un nome. Ci metti dentro qualcosa. Dopo puoi usare il nome al posto della cosa.', 'Metti il tuo nome nella scatola.'],
-        ['Cambia cosa c\'è dentro', 'set mette qualcosa di nuovo in una scatola che esiste già. La cosa vecchia sparisce.', 'Aggiungi un altro set per saltare avanti di dieci anni.'],
-        ['Fai i conti', 'Il computer sa sommare +, sottrarre -, moltiplicare * e dividere /. Il segno % dà quello che resta dopo la divisione.', 'Prova un conto più grande, come 123 * 456.'],
-        ['Mescola parole e scatole', 'print può mostrare tante cose in una riga. Usa + per attaccare pezzi di testo senza spazio in più.', 'Cambia l\'animale in un uccello. Quante zampe ha un uccello?']]],
-      ['Fai domande', 'Parla con chi usa il tuo programma', [
-        ['Prepara una domanda, poi falla', 'define ask{1} scrive la domanda numero 1. ask{1} la fa davvero e aspetta. Nel Risultato compare una casella. Scrivi una risposta e premi Invio. answer{1} contiene quello che hai scritto.', 'Eseguilo e scrivi il tuo nome.'],
-        ['Due domande', 'Ogni domanda ha il suo numero, così le risposte non si mescolano.', 'Aggiungi una terza domanda sul tuo cibo preferito.'],
-        ['Sotto i 18 o sopra i 18', 'Il computer può controllare un numero. under 18 vuol dire meno di 18. over 18 vuol dire 18 o più, quindi 18 conta come over.', 'Eseguilo due volte. Una con 10, una con 18.'],
-        ['Trasforma una risposta in numero', 'Le risposte sono sempre testo, anche se scrivi cifre. number() trasforma il testo in un vero numero, così puoi fare i conti.', 'Fai stampare il numero per 100.']]],
-      ['Fai scelte', 'Lascia decidere il programma', [
-        ['Se questo, allora quello', 'Le righe rientrate sotto if sono sue. Vengono eseguite solo se il controllo è vero. Per rientrare usa due spazi o premi Tab.', 'Cambia il punteggio in 3. Cosa cambia?'],
-        ['Altrimenti', 'else è l\'altra strada. Se il controllo è falso, vengono eseguite le righe di else. Si prende una sola strada.', 'Trova un punteggio che fa dire You win!'],
-        ['Scegli su una riga', 'Quando il lavoro è piccolo, un secondo = lo mette sulla stessa riga del controllo. Leggilo così: se questo è vero, fai quello.', 'Cambia l\'età in 25.'],
-        ['Confronta le parole', 'Si possono confrontare anche le parole. Un solo = chiede: sono uguali? Ricorda che maiuscole e minuscole sono diverse.', 'Cambia red in green.'],
-        ['And, or, not', 'and vuole che entrambi i controlli siano veri. or ne vuole uno solo. not trasforma vero in falso. Metti le parentesi attorno al controllo che not deve girare.', 'Prova età 2, poi età 95.']]],
-      ['Ancora e ancora', 'I cicli ripetono il lavoro per te', [
-        ['Ripeti qualche volta', 'repeat 3 fa tre volte le righe rientrate. Il computer non si stanca mai.', 'Fallo cantare 10 volte.'],
-        ['Continua finché', 'until controlla prima. Se il controllo è già vero, salta le righe. Altrimenti le esegue e controlla di nuovo. Dentro deve cambiare qualcosa, o non finisce mai.', 'Cambia 5 in 10.'],
-        ['Conta con un ciclo', 'Un ciclo e una scatola fanno un contatore. Questa è la tabellina del sette. Cambi una cosa e compaiono dieci righe.', 'Cambia il 7 con il tuo numero preferito.'],
-        ['Esci prima', 'break salta fuori dal ciclo subito. Usalo quando conosci già la risposta.', 'Cambia 50 in 200.']]],
-      ['Fortuna', 'Dadi, monete e sorprese', [
-        ['Scegli una cosa', 'pick sceglie una cosa a caso da un elenco. Ogni cosa ha la stessa probabilità. Eseguilo più volte per vedere risposte diverse.', 'Aggiungi il tuo animale preferito all\'elenco.'],
-        ['Lancia una moneta', 'Scegli tra due sole cose ed ecco una moneta.', 'Eseguilo dieci volte. È giusta?'],
-        ['Tira un dado', 'Puoi scegliere anche numeri. Un dado ha sei facce.', 'Cambialo in un dado a 20 facce.'],
-        ['Probabilità ingiuste', 'I blocchi random ti fanno decidere la probabilità. Blocchi vicini sono una sola estrazione e ne viene eseguito uno solo. I numeri sommano 100.', 'Rendi il diamante più comune.']]],
-      ['I tuoi comandi', 'Dai un nome a qualche riga', [
-        ['Crea un comando', 'define con le parentesi crea una funzione: qualche riga con un nome. return restituisce la risposta. Puoi usarla quante volte vuoi.', 'Saluta il tuo migliore amico.'],
-        ['Più di un ingresso', 'Metti più nomi dentro le parentesi, separati da virgole. Ognuno esiste solo dentro la funzione.', 'Trova l\'area di un giardino 25 per 8.'],
-        ['Comandi che usano comandi', 'Una funzione può usarne altre. Pezzi piccoli fanno programmi grandi.', 'Crea una funzione che triplica un numero.'],
-        ['Un comando che richiama se stesso', 'Una funzione può richiamare se stessa, se si avvicina a una fine. Si chiama ricorsione. 5! vuol dire 5 x 4 x 3 x 2 x 1.', 'Prova factorial(10).']]],
-      ['Liste', 'Tante cose in un posto', [
-        ['Una lista di cose', 'Le parentesi quadre fanno una lista. La prima cosa è la numero 1, la seconda la numero 2 e così via. length dice quante ce ne sono.', 'Stampa il secondo animale.'],
-        ['Aggiungi e cambia', 'append mette una cosa nuova alla fine. set può cambiare un posto della lista.', 'Aggiungi altri due animali.'],
-        ['Visita ogni elemento', 'Un ciclo con un contatore può visitare ogni posto della lista, uno dopo l\'altro.', 'Aggiungi un animale alla lista. Il ciclo funziona ancora?'],
-        ['Somma una lista', 'Una scatola può raccogliere un totale mentre il ciclo visita ogni numero.', 'Aggiungi un altro prezzo.']]],
-      ['Premi un tasto', 'Aspetta la tastiera', [
-        ['Aspetta un tasto', 'define keypress{1} = C dà un nome al tasto C. La riga if aspetta che quel tasto venga premuto e poi fa la sua domanda. Gli altri tasti vengono ignorati.', 'Eseguilo. Prima prova a premere un tasto sbagliato.'],
-        ['Altri tasti', 'Oltre alle lettere puoi usare Enter, Space, Escape, Tab e le frecce: ArrowUp, ArrowDown, ArrowLeft e ArrowRight.', 'Cambia Space in Enter.']]],
-      ['Crea un gioco', 'Metti tutto insieme', [
-        ['Indovina il numero', 'Il computer sceglie un numero segreto. Tu provi finché lo trovi. Il ciclo continua finché il tuo tentativo è il segreto, e i due piccoli if danno degli indizi.', 'Fai arrivare il numero segreto fino a 20.'],
-        ['Un quiz con i punti', 'Una scatola chiamata points conta le risposte giuste. Ogni risposta giusta ne aggiunge una.', 'Scrivi una terza domanda tua.'],
-        ['Sasso, carta, forbici', 'Il computer sceglie con pick. Poi le righe if decidono chi ha vinto. È un programma più grande: leggilo piano, una riga alla volta.', 'Aggiungi una riga che dice cosa succede se scrivi altro.']]],
-      ['Errori', 'Capitano. Va bene così.', [
-        ['Un errore di battitura', 'Tutti sbagliano. Quando una riga è sbagliata, Kaviel la salta, te lo dice e continua. Guarda il riquadro Problemi dopo aver eseguito.', 'Eseguilo. Poi clicca il problema per saltare alla riga.'],
-        ['Un nome che non esiste', 'Una scatola va creata con define prima di usarla. Kaviel prova anche a indovinare cosa volevi dire.', 'Correggi la riga togliendo la e in più.'],
-        ['Un conto impossibile', 'Certe cose non si possono fare, come dividere per zero. Il programma lo dice e va avanti.', 'Cambia lo 0 in 5.']]]
-    ],
-    fr: [
-      ['Dire bonjour', 'Ton tout premier programme', [
-        ['Fais parler l\'ordinateur', 'Un programme est une liste d\'instructions. L\'ordinateur les lit de haut en bas. Chaque programme commence par start et finit par end. Le mot print fait dire quelque chose à l\'ordinateur.', 'Clique sur le bouton vert Lancer. Regarde la boîte Résultat.'],
-        ['Dis plusieurs choses', 'Chaque ligne print dit une ligne. L\'ordinateur les fait dans l\'ordre, comme quand tu lis un livre.', 'Ajoute une ligne qui dit ton prénom.'],
-        ['Les mots vont entre guillemets', 'Les mots s\'appellent du texte et sont entre guillemets. Les nombres n\'en ont pas besoin. L\'ordinateur sait même faire le calcul.', 'Change le 7 en ton âge. Puis relance.'],
-        ['Des notes pour les humains', 'Une ligne qui commence par # est une note. L\'ordinateur la saute. Les notes aident à comprendre le code plus tard.', 'Écris ta propre note avec un # au début.']]],
-      ['Noms et boîtes', 'Retenir des choses pour plus tard', [
-        ['Une boîte avec un nom', 'define fabrique une boîte et lui donne un nom. Tu mets quelque chose dedans. Ensuite tu peux utiliser le nom à la place de la chose.', 'Mets ton prénom dans la boîte.'],
-        ['Change ce qu\'il y a dedans', 'set met quelque chose de nouveau dans une boîte qui existe déjà. L\'ancienne chose disparaît.', 'Ajoute un autre set pour avancer de dix ans.'],
-        ['Fais des calculs', 'L\'ordinateur sait additionner +, soustraire -, multiplier * et diviser /. Le signe % donne ce qui reste après la division.', 'Essaie un plus gros calcul, comme 123 * 456.'],
-        ['Mélange mots et boîtes', 'print peut montrer plusieurs choses sur une ligne. Utilise + pour coller des morceaux de texte sans espace en plus.', 'Change l\'animal en oiseau. Combien de pattes a un oiseau ?']]],
-      ['Pose des questions', 'Parle avec la personne qui utilise ton programme', [
-        ['Prépare une question, puis pose-la', 'define ask{1} écrit la question numéro 1. ask{1} la pose vraiment et attend. Une case apparaît dans le Résultat. Écris une réponse et appuie sur Entrée. answer{1} contient ce qui a été écrit.', 'Lance-le et écris ton prénom.'],
-        ['Deux questions', 'Chaque question a son numéro, donc les réponses ne se mélangent jamais.', 'Ajoute une troisième question sur ton plat préféré.'],
-        ['Moins de 18 ou plus de 18', 'L\'ordinateur peut vérifier un nombre. under 18 veut dire moins de 18. over 18 veut dire 18 ou plus, donc 18 compte comme over.', 'Lance-le deux fois. Une fois avec 10, une fois avec 18.'],
-        ['Transforme une réponse en nombre', 'Les réponses sont toujours du texte, même si tu tapes des chiffres. number() transforme le texte en vrai nombre pour pouvoir calculer.', 'Fais afficher le nombre fois 100.']]],
-      ['Fais des choix', 'Laisse le programme décider', [
-        ['Si ceci, alors cela', 'Les lignes décalées sous if lui appartiennent. Elles ne s\'exécutent que si le test est vrai. Pour décaler, utilise deux espaces ou appuie sur Tab.', 'Change le score en 3. Qu\'est-ce qui change ?'],
-        ['Sinon', 'else est l\'autre chemin. Quand le test est faux, les lignes de else s\'exécutent. On ne prend qu\'un seul chemin.', 'Trouve un score qui fait dire You win!'],
-        ['Choisis sur une ligne', 'Quand le travail est petit, un deuxième = le met sur la même ligne que le test. Lis-le ainsi : si ceci est vrai, fais cela.', 'Change l\'âge en 25.'],
-        ['Compare des mots', 'On peut aussi comparer des mots. Un seul = demande : est-ce pareil ? Souviens-toi que majuscules et minuscules sont différentes.', 'Change red en green.'],
-        ['And, or, not', 'and veut que les deux tests soient vrais. or n\'en veut qu\'un. not change vrai en faux. Mets des parenthèses autour du test que not doit retourner.', 'Essaie l\'âge 2, puis l\'âge 95.']]],
-      ['Encore et encore', 'Les boucles répètent le travail pour toi', [
-        ['Répète quelques fois', 'repeat 3 fait trois fois les lignes décalées. L\'ordinateur ne se fatigue jamais.', 'Fais-le chanter 10 fois.'],
-        ['Continue jusqu\'à ce que', 'until vérifie d\'abord. Si le test est déjà vrai, les lignes sont sautées. Sinon elles s\'exécutent et il revérifie. Quelque chose doit changer dedans, sinon ça ne finit jamais.', 'Change 5 en 10.'],
-        ['Compte avec une boucle', 'Une boucle et une boîte font un compteur. Voici la table de sept. Tu changes une chose et dix lignes apparaissent.', 'Change le 7 en ton nombre préféré.'],
-        ['Sors plus tôt', 'break sort de la boucle tout de suite. Utilise-le quand tu connais déjà la réponse.', 'Change 50 en 200.']]],
-      ['Chance', 'Dés, pièces et surprises', [
-        ['Choisis une chose', 'pick choisit une chose au hasard dans une liste. Chaque chose a la même chance. Relance plusieurs fois pour voir des réponses différentes.', 'Ajoute ton animal préféré à la liste.'],
-        ['Lance une pièce', 'Choisis entre deux choses seulement et tu as une pièce.', 'Lance-le dix fois. Est-elle juste ?'],
-        ['Lance un dé', 'Tu peux aussi choisir des nombres. Un dé a six faces.', 'Change-le en dé à 20 faces.'],
-        ['Des chances inégales', 'Les blocs random te laissent fixer la chance. Des blocs côte à côte forment un seul tirage et un seul s\'exécute. Les nombres font 100 au total.', 'Rends le diamant plus fréquent.']]],
-      ['Tes propres commandes', 'Donne un nom à quelques lignes', [
-        ['Crée une commande', 'define avec des parenthèses crée une fonction : quelques lignes avec un nom. return renvoie la réponse. Tu peux l\'utiliser autant de fois que tu veux.', 'Dis bonjour à ton meilleur ami.'],
-        ['Plus d\'une entrée', 'Mets plusieurs noms entre les parenthèses, séparés par des virgules. Chacun n\'existe que dans la fonction.', 'Trouve l\'aire d\'un jardin de 25 sur 8.'],
-        ['Des commandes qui utilisent des commandes', 'Une fonction peut en utiliser d\'autres. De petits morceaux font de grands programmes.', 'Crée une fonction qui triple un nombre.'],
-        ['Une commande qui s\'appelle elle-même', 'Une fonction peut s\'appeler elle-même, tant qu\'elle se rapproche d\'une fin. C\'est la récursivité. 5! veut dire 5 x 4 x 3 x 2 x 1.', 'Essaie factorial(10).']]],
-      ['Listes', 'Plein de choses au même endroit', [
-        ['Une liste de choses', 'Les crochets font une liste. La première chose est le numéro 1, la deuxième le numéro 2, et ainsi de suite. length dit combien il y en a.', 'Affiche le deuxième animal.'],
-        ['Ajoute et change', 'append met une nouvelle chose à la fin. set peut changer une place de la liste.', 'Ajoute deux autres animaux.'],
-        ['Visite chaque élément', 'Une boucle avec un compteur peut visiter chaque place de la liste, l\'une après l\'autre.', 'Ajoute un animal à la liste. La boucle marche-t-elle encore ?'],
-        ['Additionne une liste', 'Une boîte peut collecter un total pendant que la boucle visite chaque nombre.', 'Ajoute un autre prix.']]],
-      ['Appuie sur une touche', 'Attendre le clavier', [
-        ['Attends une touche', 'define keypress{1} = C donne un nom à la touche C. La ligne if attend que cette touche soit pressée, puis pose sa question. Les autres touches sont ignorées.', 'Lance-le. Essaie d\'abord une mauvaise touche.'],
-        ['D\'autres touches', 'En plus des lettres, tu peux utiliser Enter, Space, Escape, Tab et les flèches : ArrowUp, ArrowDown, ArrowLeft et ArrowRight.', 'Change Space en Enter.']]],
-      ['Crée un jeu', 'Mets tout ensemble', [
-        ['Devine le nombre', 'L\'ordinateur choisit un nombre secret. Tu essaies jusqu\'à le trouver. La boucle continue jusqu\'à ce que ton essai soit le secret, et les deux petits if donnent des indices.', 'Fais monter le nombre secret jusqu\'à 20.'],
-        ['Un quiz avec des points', 'Une boîte appelée points compte les bonnes réponses. Chaque bonne réponse en ajoute une.', 'Écris une troisième question à toi.'],
-        ['Pierre, feuille, ciseaux', 'L\'ordinateur choisit avec pick. Ensuite des lignes if décident qui a gagné. C\'est un plus gros programme : lis-le lentement, une ligne à la fois.', 'Ajoute une ligne qui dit ce qui se passe si tu écris autre chose.']]],
-      ['Erreurs', 'Ça arrive. Ce n\'est pas grave.', [
-        ['Une faute de frappe', 'Tout le monde se trompe. Quand une ligne est fausse, Kaviel la saute, te le dit et continue. Regarde la boîte Problèmes après avoir lancé.', 'Lance-le. Puis clique sur le problème pour aller à la ligne.'],
-        ['Un nom qui n\'existe pas', 'Une boîte doit être créée avec define avant d\'être utilisée. Kaviel essaie même de deviner ce que tu voulais dire.', 'Corrige la ligne en enlevant le e en trop.'],
-        ['Un calcul impossible', 'Certaines choses sont impossibles, comme diviser par zéro. Le programme le dit et continue.', 'Change le 0 en 5.']]]
-    ]
-  };
-
   var index = lang === 'en' ? 0 : LANGS.indexOf(lang);
   var table = {}, guide = {};
   if (index > 0) {
     UI.forEach(function (row) { table[row[0]] = row[index]; });
     GUIDE.forEach(function (row) { guide[row[0]] = row[index]; });
   }
-  var lessonTitles = {};
-  if (index > 0) LESSONS[lang].forEach(function (l, i) { lessonTitles[i] = l[0]; });
 
   var patterns = index === 0 ? [] : [
     [/^Opened (.+)\. Press Run when you are ready\.$/, ['Aperto $1. Premi Esegui quando sei pronto.', 'Ouvert : $1. Appuie sur Lancer quand tu es prêt.']],
@@ -268,7 +155,7 @@
     [/^(\d+) match$/, ['1 risultato', '1 résultat']],
     [/^Ln (\d+), Col (\d+)$/, ['Rg $1, Col $2', 'Lg $1, Col $2']],
     [/^(\d+) steps$/, ['$1 passi', '$1 étapes']],
-    [/^Lesson (\d+): (.*) · step (\d+) of (\d+)$/, ['Lezione $1: $2 · passo $3 di $4', 'Leçon $1 : $2 · étape $3 sur $4']]
+    [/^Nothing$/, ['Niente', 'Rien']]
   ];
 
   function translate(text) {
@@ -280,14 +167,7 @@
       for (var i = 0; i < patterns.length && out === null; i++) {
         var m = core.match(patterns[i][0]);
         if (m) {
-          out = patterns[i][1][index - 1].replace(/\$(\d)/g, function (_, n) {
-            var piece = m[Number(n)];
-            if (patterns[i][0].source.indexOf('Lesson') === 1 && n === '2') {
-              var li = Number(m[1]) - 1;
-              if (lessonTitles[li]) piece = lessonTitles[li];
-            }
-            return piece;
-          });
+          out = patterns[i][1][index - 1].replace(/\$(\d)/g, function (_, n) { return m[Number(n)]; });
         }
       }
     }
@@ -321,27 +201,7 @@
     });
   }
 
-  window.KavielI18n = {
-    lang: lang,
-    matched: index === 0,
-    lessons: function (tutorials) {
-      if (index === 0) return;
-      var data = LESSONS[lang];
-      var ok = data.length === tutorials.length;
-      tutorials.forEach(function (lesson, i) {
-        var row = data[i];
-        if (!row || row[2].length !== lesson.steps.length) { ok = false; return; }
-        lesson.title = row[0];
-        lesson.subtitle = row[1];
-        lesson.steps.forEach(function (step, j) {
-          step.title = row[2][j][0];
-          step.text = row[2][j][1];
-          step.turn = row[2][j][2];
-        });
-      });
-      this.matched = ok;
-    }
-  };
+  window.KavielI18n = {lang: lang};
 
   if (index > 0) {
     walk(document.body);

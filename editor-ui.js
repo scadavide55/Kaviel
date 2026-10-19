@@ -6,7 +6,7 @@
   var filename = 'untitled.kv', toastTimer, lastRun = false, dirty = false;
   var keywords = new Set('start end print define set if else repeat until ask random pick return break and or not keypress'.split(' '));
   var values = new Set(['true', 'false', 'nothing']);
-  var names = {hello: 'hello.kv', dice: 'dice.kv', rps: 'rock_paper_scissors.kv', collatz: 'collatz.kv', errors: 'errors.kv', questions: 'questions.kv', age: 'age.kv', functions: 'functions.kv', lists: 'lists.kv', keypress: 'keypress.kv', guess: 'guess_the_number.kv', timestable: 'times_table.kv', quiz: 'quiz.kv'};
+  var names = {hello: 'hello.kv', dice: 'dice.kv', rps: 'rock_paper_scissors.kv', collatz: 'collatz.kv', errors: 'errors.kv', questions: 'questions.kv', age: 'age.kv', functions: 'functions.kv', lists: 'lists.kv', keypress: 'keypress.kv', guess: 'guess_the_number.kv', timestable: 'times_table.kv', quiz: 'quiz.kv', treasure: 'treasure_hunt.kv'};
 
   function escapeHTML(text) {
     return text.replace(/[&<>"']/g, function (c) { return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]; });

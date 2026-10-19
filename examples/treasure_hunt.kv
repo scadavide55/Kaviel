@@ -1,0 +1,27 @@
+start
+define coins = 0
+define ask{1} = ("What is your name? ")
+define ask{2} = ("Which way: left or right? ")
+ask{1}
+print "Welcome to the island," answer{1}
+print "Find as many coins as you can in 3 days."
+
+define day = 1
+until day > 3
+  print "Day" day
+  ask{2}
+  if answer{2} = "left"
+    print "You walk into a cave."
+  else
+    print "You walk to a river."
+  random 70
+    print "You find 5 coins!"
+    set coins = coins + 5
+  random 30
+    print "A crab pinches you. No coins today."
+  set day = day + 1
+
+print answer{1} "found" coins "coins."
+if coins > 10 = print "You are rich!"
+if coins < 11 = print "Nice try. Play again!"
+end

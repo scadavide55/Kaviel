@@ -732,7 +732,16 @@
     // ---- expressions
 
     function parseExpression() { return parseLogic('or', parseAnd); }
-    function parseAnd() { return parseLogic('and', parseComparison); }
+    function parseAnd() { return parseLogic('and', parseNot); }
+    // not covers the whole comparison after it: not age = 9 means not (age = 9).
+    function parseNot() {
+      var t = peek();
+      if (t.type !== 'op' && t.value === 'not') {
+        pos++;
+        return { type: 'Unary', op: 'not', expr: parseNot(), line: t.line };
+      }
+      return parseComparison();
+    }
     function parseLogic(word, next) {
       var left = next();
       while (peek().value === word) {

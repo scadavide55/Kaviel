@@ -334,11 +334,12 @@ Static files, no dependencies, no build step:
 | `kaviel.html` | editor window, layout and run integration |
 | `editor.css` | responsive workspace theme |
 | `editor-ui.js` | highlighting, find, local files, guide, status |
-| `tutorials.js` | ten lessons (41 steps) in a side panel next to the editor |
+| `tutorials.js` | 13 lessons (50 steps) in a side panel next to the editor, texts in `lessons.js` (en, it, fr) |
 | `test.js` | 80 language tests, including the §14 examples |
-| `v1-test.js` | 61 tests: thresholds, functions, lists, keys, async and cancellation |
+| `v1-test.js` | 64 tests: thresholds, functions, lists, keys, async and cancellation |
 | `cli-test.js` | 19 tests of the `kaviel` command through pipes and signals |
-| `ide-test.html` | 108 browser checks: run, input, keys, Stop, lessons, files, drag and drop, layout |
+| `i18n.js` | Italian and French interface (the language itself stays English) |
+| `ide-test.html` | 112 browser checks: run, input, keys, Stop, lessons, files, drag and drop, layout |
 | `run.js` | the command: `kaviel run`, `kaviel help`, `kaviel version` |
 | `examples/` | runnable programs, one per idea |
 
@@ -369,7 +370,7 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 - Output streams as it is printed, including before an answer or a key.
 - Problems are buttons; click one to select its source line. Editing clears old marks and marks the output as belonging to the previous run.
 - `Tab` two spaces, `Shift+Tab` up to two back, Enter keeps indentation and opens a block after `if`, `else`, `repeat`, `until`, `random`, `define name(...)`.
-- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Lessons** opens a side panel with ten lessons (41 steps) and 13 examples; each step loads into the editor, and the previous code is kept for restoring.
+- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Lessons** opens a side panel with 13 lessons (50 steps, ending in a guided treasure game) and 14 examples; each step loads into the editor, and the previous code is kept for restoring.
 - Draft and file name live in `localStorage`; the file name can be renamed in the top bar. New, Open and Save sit in the top bar: Open (or dropping a file on the page) reads `.kv` up to 1 MB without executing it; Save downloads the exact source; `Cmd/Ctrl+S` saves instead of the page. Light/dark theme and text size are remembered.
 - Everything is local: no account, no upload, no analytics.
 
@@ -380,9 +381,9 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 | Check | Result |
 |---|---|
 | `node test.js` | 80 passed |
-| `node v1-test.js` | 61 passed |
+| `node v1-test.js` | 64 passed |
 | `node cli-test.js` | 19 passed |
-| `ide-test.html` in Brave (headless) | 108 passed |
+| `ide-test.html` in Brave (headless) | 112 passed |
 | The ten examples in `examples/` | all run without errors except `errors.kv`, which is meant to show them |
 | Interactive terminal through a real pty | answers, order and final line verified by hand |
 | Collatz of 27 | reaches 1; counted from 1 it reads 112 |
@@ -428,3 +429,6 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 1. A shorter way to walk a list (`for each`) — v1.1?
 2. `import` with real modules — v1.1 or v2?
 3. Whether `nothing` should print as an empty string instead of the word `nothing`.
+
+| `not` | covers the whole comparison after it: `not age = 9` means `not (age = 9)` | **Davide's decision**, 19 Oct 2026 |
+| unknown word in an expression | the hint adds: put it in quotes to show it as text | a first program often forgets the quotes |

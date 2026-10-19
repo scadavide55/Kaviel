@@ -64,6 +64,9 @@ check('no key available continues safely', keyProgram, {keys: [], output: ['Pres
 check('undefined key', program('define ask{1} = ("?")\nif keypress{1} = ask{1}\nprint "alive"'), {output: ['alive'], errors: 1});
 check('undefined linked question', program('define keypress{1} = C\nif keypress{1} = ask{1}\nprint "alive"'), {output: ['alive'], errors: 1});
 check('unsupported key name', program('define keypress{1} = CommandW\nprint "alive"'), {output: ['alive'], errors: 1});
+check('not covers the whole comparison', program('define age = 9\nif not age = 9\n  print "A"\nif not age = 10\n  print "B"\nif not age = 10 and age = 9\n  print "C"\nprint not false'), {output: ['B', 'C', 'true']});
+check('not with brackets and in arithmetic stays valid', program('define age = 9\nif not (age > 3)\n  print "D"\nprint -age'), {output: ['-9']});
+check('unknown word suggests quotes', program('print Hello'), {errors: 1, contains: 'put it in quotes: "Hello"'});
 check('step budget', program('until false\n  print "loop"'), {limit: 20, errors: 1, stopped: true, contains: 'not ending'});
 (async () => {
   const seen = [];

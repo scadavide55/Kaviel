@@ -35,6 +35,10 @@ The version where the language stopped surprising the person using it.
 - 19 lessons and 67 steps now, in English, Italian and French, and every word of the language appears in one of them.
 - Every new instruction has a note under its line: `for each`, the six text commands, `//` and `%`.
 
+### The example
+
+- `examples/machine.kv`, **The Kaviel machine**: a small computer written in Kaviel, with a stack, variables, labels and jumps. It runs two programs on itself (the factorial of 6 and the first ten Fibonacci numbers) and then reports with the text tools. It is the biggest program in the language.
+
 ### Cleanup
 
 - 405 lines of the old interpreter removed from `engine.js`.

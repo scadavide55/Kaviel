@@ -80,6 +80,7 @@
         <button data-example="quiz"><b>Quiz</b><span>Ask, check, count points</span></button>
         <button data-example="treasure"><b>Treasure hunt</b><span>Your biggest program</span></button>
         <button data-example="foreach"><b>One item at a time</b><span>for each</span></button>
+        <button data-example="machine"><b>The Kaviel machine</b><span>A computer inside the language</span></button>
         <button data-example="citadel"><b>The citadel</b><span>The biggest program of all</span></button>
         <button data-example="rps"><b>Rock, paper, scissors</b><span>Play against the computer</span></button>
         <button data-example="collatz"><b>Collatz</b><span>A famous number puzzle</span></button>
@@ -92,7 +93,7 @@
   </aside>
 
   <div class="workspace">
-    <div class="mobile-examples"><label for="examples">Example</label><select id="examples" title="Examples"><option value="">Your code</option><option value="hello">Hello</option><option value="questions">Two questions</option><option value="age">Under or over</option><option value="dice">Dice</option><option value="guess">Guess the number</option><option value="timestable">Times table</option><option value="quiz">Quiz</option><option value="treasure">Treasure hunt</option><option value="foreach">One item at a time</option><option value="citadel">The citadel</option><option value="rps">Rock, paper, scissors</option><option value="collatz">Collatz</option><option value="functions">Your own commands</option><option value="lists">A list of pets</option><option value="keypress">Wait for a key</option><option value="errors">Mistakes</option></select></div>
+    <div class="mobile-examples"><label for="examples">Example</label><select id="examples" title="Examples"><option value="">Your code</option><option value="hello">Hello</option><option value="questions">Two questions</option><option value="age">Under or over</option><option value="dice">Dice</option><option value="guess">Guess the number</option><option value="timestable">Times table</option><option value="quiz">Quiz</option><option value="treasure">Treasure hunt</option><option value="foreach">One item at a time</option><option value="machine">The Kaviel machine</option><option value="citadel">The citadel</option><option value="rps">Rock, paper, scissors</option><option value="collatz">Collatz</option><option value="functions">Your own commands</option><option value="lists">A list of pets</option><option value="keypress">Wait for a key</option><option value="errors">Mistakes</option></select></div>
 
     <main class="workbench">
       <section class="editor" aria-label="Your program">
@@ -410,6 +411,290 @@ random 33
 'for each number in [3, 6, 9, 12]\n' +
 '  if number > 6 = break\n' +
 '  print number\n' +
+'end\n',
+
+    machine:
+'start\n' +
+'# ============================================================\n' +
+'#   THE KAVIEL MACHINE\n' +
+'#   A tiny computer written in Kaviel: it reads a program made\n' +
+'#   of short instructions and runs it, with a stack, variables,\n' +
+'#   labels and jumps. It then runs two real programs on it:\n' +
+'#   the factorial of 6 and the first ten Fibonacci numbers.\n' +
+'#   Written for Kaviel 1.5: it uses for each, split, part,\n' +
+'#   trim, upper, number, //, %, is, lists of lists and functions.\n' +
+'# ============================================================\n' +
+'\n' +
+'# ---------------------------------------------------------- the tools\n' +
+'\n' +
+'# the position of a name in a list, or 0 when it is not there\n' +
+'define findIndex(names, wanted)\n' +
+'  define at = 1\n' +
+'  for each name in names\n' +
+'    if name = wanted = return at\n' +
+'    set at = at + 1\n' +
+'  return 0\n' +
+'\n' +
+'# the stack: a list of cells and a pointer to the last one used\n' +
+'define pushValue(v)\n' +
+'  set top = top + 1\n' +
+'  if top > length(stack)\n' +
+'    append(stack, 0)\n' +
+'  set stack[top] = v\n' +
+'\n' +
+'define popValue()\n' +
+'  if top < 1\n' +
+'    print "! the stack is empty"\n' +
+'    return 0\n' +
+'  define v = stack[top]\n' +
+'  set stack[top] = 0\n' +
+'  set top = top - 1\n' +
+'  return v\n' +
+'\n' +
+'define peekValue()\n' +
+'  if top < 1 = return 0\n' +
+'  return stack[top]\n' +
+'\n' +
+'# variables: two lists that stay side by side, name and value\n' +
+'define storeVar(name, v)\n' +
+'  define at = findIndex(varNames, name)\n' +
+'  if at = 0\n' +
+'    append(varNames, name)\n' +
+'    append(varValues, v)\n' +
+'  else\n' +
+'    set varValues[at] = v\n' +
+'\n' +
+'define loadVar(name)\n' +
+'  define at = findIndex(varNames, name)\n' +
+'  if at = 0\n' +
+'    print "! no variable called" name\n' +
+'    return 0\n' +
+'  return varValues[at]\n' +
+'\n' +
+'define findLabel(name)\n' +
+'  define at = findIndex(labelNames, name)\n' +
+'  if at = 0 = return -1\n' +
+'  return labelLines[at]\n' +
+'\n' +
+'# ---------------------------------------------------------- the machine\n' +
+'\n' +
+'define isLabel(text)\n' +
+'  if length(text) = 0 = return false\n' +
+'  if part(text, length(text), length(text)) = ":" = return true\n' +
+'  return false\n' +
+'\n' +
+'define readProgram(lines)\n' +
+'  set lineNumber = 0\n' +
+'  for each line in lines\n' +
+'    set lineNumber = lineNumber + 1\n' +
+'    define text = trim(line)\n' +
+'    if isLabel(text)\n' +
+'      append(labelNames, part(text, 1, length(text) - 1))\n' +
+'      append(labelLines, lineNumber)\n' +
+'\n' +
+'define runProgram(lines)\n' +
+'  set pc = 1\n' +
+'  set halted = 0\n' +
+'  set instructions = 0\n' +
+'  until pc > length(lines) or halted = 1\n' +
+'    define text = trim(lines[pc])\n' +
+'    set jumped = 0\n' +
+'    if length(text) > 0 and not isLabel(text)\n' +
+'      set instructions = instructions + 1\n' +
+'      define words = split(text, " ")\n' +
+'      define op = words[1]\n' +
+'      define arg = ""\n' +
+'      if length(words) > 1 = set arg = words[2]\n' +
+'\n' +
+'      if op = "push"\n' +
+'        pushValue(number(arg))\n' +
+'      if op = "load"\n' +
+'        pushValue(loadVar(arg))\n' +
+'      if op = "store"\n' +
+'        storeVar(arg, popValue())\n' +
+'      if op = "dup"\n' +
+'        pushValue(peekValue())\n' +
+'      if op = "drop"\n' +
+'        set dropIt = popValue()\n' +
+'\n' +
+'      if op = "add"\n' +
+'        define b = popValue()\n' +
+'        define a = popValue()\n' +
+'        pushValue(a + b)\n' +
+'      if op = "sub"\n' +
+'        define b2 = popValue()\n' +
+'        define a2 = popValue()\n' +
+'        pushValue(a2 - b2)\n' +
+'      if op = "mul"\n' +
+'        define b3 = popValue()\n' +
+'        define a3 = popValue()\n' +
+'        pushValue(a3 * b3)\n' +
+'      if op = "div"\n' +
+'        define b4 = popValue()\n' +
+'        define a4 = popValue()\n' +
+'        pushValue(a4 // b4)\n' +
+'      if op = "gt"\n' +
+'        define b5 = popValue()\n' +
+'        define a5 = popValue()\n' +
+'        pushValue(a5 > b5)\n' +
+'      if op = "lt"\n' +
+'        define b6 = popValue()\n' +
+'        define a6 = popValue()\n' +
+'        pushValue(a6 < b6)\n' +
+'      if op = "eq"\n' +
+'        define b7 = popValue()\n' +
+'        define a7 = popValue()\n' +
+'        pushValue(a7 = b7)\n' +
+'      if op = "not"\n' +
+'        pushValue(not popValue())\n' +
+'\n' +
+'      if op = "print" = print popValue()\n' +
+'      if op = "jump"\n' +
+'        set pc = findLabel(arg)\n' +
+'        set jumped = 1\n' +
+'      if op = "jz"\n' +
+'        if popValue() = false\n' +
+'          set pc = findLabel(arg)\n' +
+'          set jumped = 1\n' +
+'      if op = "halt" = set halted = 1\n' +
+'    if jumped = 0 = set pc = pc + 1\n' +
+'  set machineResult = peekValue()\n' +
+'  return instructions\n' +
+'\n' +
+'# ---------------------------------------------------------- the programs\n' +
+'\n' +
+'define factorial = [\n' +
+'  "push 6",\n' +
+'  "store n",\n' +
+'  "push 1",\n' +
+'  "store acc",\n' +
+'  "loop:",\n' +
+'  "  load n",\n' +
+'  "  push 1",\n' +
+'  "  gt",\n' +
+'  "  jz done",\n' +
+'  "  load acc",\n' +
+'  "  load n",\n' +
+'  "  mul",\n' +
+'  "  store acc",\n' +
+'  "  load n",\n' +
+'  "  push 1",\n' +
+'  "  sub",\n' +
+'  "  store n",\n' +
+'  "  jump loop",\n' +
+'  "done:",\n' +
+'  "  load acc",\n' +
+'  "  print",\n' +
+'  "  load acc",\n' +
+'  "  halt"\n' +
+']\n' +
+'\n' +
+'define fibonacci = [\n' +
+'  "push 0",\n' +
+'  "store a",\n' +
+'  "push 1",\n' +
+'  "store b",\n' +
+'  "push 10",\n' +
+'  "store i",\n' +
+'  "loop:",\n' +
+'  "  load i",\n' +
+'  "  push 0",\n' +
+'  "  gt",\n' +
+'  "  jz done",\n' +
+'  "  load a",\n' +
+'  "  print",\n' +
+'  "  load a",\n' +
+'  "  load b",\n' +
+'  "  add",\n' +
+'  "  store t",\n' +
+'  "  load b",\n' +
+'  "  store a",\n' +
+'  "  load t",\n' +
+'  "  store b",\n' +
+'  "  load i",\n' +
+'  "  push 1",\n' +
+'  "  sub",\n' +
+'  "  store i",\n' +
+'  "  jump loop",\n' +
+'  "done:",\n' +
+'  "  halt"\n' +
+']\n' +
+'\n' +
+'# ---------------------------------------------------------- the session\n' +
+'\n' +
+'define stack = []\n' +
+'define top = 0\n' +
+'define varNames = []\n' +
+'define varValues = []\n' +
+'define labelNames = []\n' +
+'define labelLines = []\n' +
+'define pc = 1\n' +
+'define halted = 0\n' +
+'define jumped = 0\n' +
+'define lineNumber = 0\n' +
+'define instructions = 0\n' +
+'define dropIt = 0\n' +
+'define machineResult = nothing\n' +
+'define result = nothing\n' +
+'\n' +
+'print "============================================"\n' +
+'print "            THE KAVIEL MACHINE"\n' +
+'print "============================================"\n' +
+'print ""\n' +
+'\n' +
+'print "Program 1: the factorial of 6"\n' +
+'readProgram(factorial)\n' +
+'define usedFact = runProgram(factorial)\n' +
+'define fact = machineResult\n' +
+'print "  instructions run:" usedFact\n' +
+'print ""\n' +
+'\n' +
+'set stack = []\n' +
+'set top = 0\n' +
+'set varNames = []\n' +
+'set varValues = []\n' +
+'set labelNames = []\n' +
+'set labelLines = []\n' +
+'\n' +
+'print "Program 2: the first ten Fibonacci numbers"\n' +
+'readProgram(fibonacci)\n' +
+'define usedFib = runProgram(fibonacci)\n' +
+'print "  instructions run:" usedFib\n' +
+'print ""\n' +
+'\n' +
+'# ---------------------------------------------------------- the report\n' +
+'\n' +
+'print "--------------------------------------------"\n' +
+'print "A small report, with the tools of the language"\n' +
+'\n' +
+'define words = split("the machine ran both programs", " ")\n' +
+'print "words in the sentence:" length(words)\n' +
+'print "joined with a dash:" join(words, "-")\n' +
+'print "the first word in capitals:" upper(words[1])\n' +
+'print "the last word, cut:" part(words[length(words)], 1, 3)\n' +
+'\n' +
+'define total = usedFact + usedFib\n' +
+'define done = 2\n' +
+'print "average instructions per program:" total // done\n' +
+'print "and what is left over:" total % done\n' +
+'print "the machine says the factorial of 6 is" fact\n' +
+'print "and is it 720?" fact = is 720\n' +
+'if result = nothing = print "when it started, the machine had no answer yet."\n' +
+'\n' +
+'random 70\n' +
+'  print "this time the machine felt fast"\n' +
+'random 30\n' +
+'  print "this time the machine felt slow"\n' +
+'\n' +
+'define lucky = pick "red", "green", "blue"\n' +
+'print "a lucky colour:" lucky\n' +
+'\n' +
+'define scores = [["Ada", 10], ["Luca", 7]]\n' +
+'for each row in scores\n' +
+'  print " " row[1] "has" row[2] "points"\n' +
+'\n' +
+'print ""\n' +
+'print "The machine stops here."\n' +
 'end\n',
 
     citadel:

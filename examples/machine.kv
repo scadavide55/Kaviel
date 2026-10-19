@@ -1,0 +1,282 @@
+start
+# ============================================================
+#   THE KAVIEL MACHINE
+#   A tiny computer written in Kaviel: it reads a program made
+#   of short instructions and runs it, with a stack, variables,
+#   labels and jumps. It then runs two real programs on it:
+#   the factorial of 6 and the first ten Fibonacci numbers.
+#   Written for Kaviel 1.5: it uses for each, split, part,
+#   trim, upper, number, //, %, is, lists of lists and functions.
+# ============================================================
+
+# ---------------------------------------------------------- the tools
+
+# the position of a name in a list, or 0 when it is not there
+define findIndex(names, wanted)
+  define at = 1
+  for each name in names
+    if name = wanted = return at
+    set at = at + 1
+  return 0
+
+# the stack: a list of cells and a pointer to the last one used
+define pushValue(v)
+  set top = top + 1
+  if top > length(stack)
+    append(stack, 0)
+  set stack[top] = v
+
+define popValue()
+  if top < 1
+    print "! the stack is empty"
+    return 0
+  define v = stack[top]
+  set stack[top] = 0
+  set top = top - 1
+  return v
+
+define peekValue()
+  if top < 1 = return 0
+  return stack[top]
+
+# variables: two lists that stay side by side, name and value
+define storeVar(name, v)
+  define at = findIndex(varNames, name)
+  if at = 0
+    append(varNames, name)
+    append(varValues, v)
+  else
+    set varValues[at] = v
+
+define loadVar(name)
+  define at = findIndex(varNames, name)
+  if at = 0
+    print "! no variable called" name
+    return 0
+  return varValues[at]
+
+define findLabel(name)
+  define at = findIndex(labelNames, name)
+  if at = 0 = return -1
+  return labelLines[at]
+
+# ---------------------------------------------------------- the machine
+
+define isLabel(text)
+  if length(text) = 0 = return false
+  if part(text, length(text), length(text)) = ":" = return true
+  return false
+
+define readProgram(lines)
+  set lineNumber = 0
+  for each line in lines
+    set lineNumber = lineNumber + 1
+    define text = trim(line)
+    if isLabel(text)
+      append(labelNames, part(text, 1, length(text) - 1))
+      append(labelLines, lineNumber)
+
+define runProgram(lines)
+  set pc = 1
+  set halted = 0
+  set instructions = 0
+  until pc > length(lines) or halted = 1
+    define text = trim(lines[pc])
+    set jumped = 0
+    if length(text) > 0 and not isLabel(text)
+      set instructions = instructions + 1
+      define words = split(text, " ")
+      define op = words[1]
+      define arg = ""
+      if length(words) > 1 = set arg = words[2]
+
+      if op = "push"
+        pushValue(number(arg))
+      if op = "load"
+        pushValue(loadVar(arg))
+      if op = "store"
+        storeVar(arg, popValue())
+      if op = "dup"
+        pushValue(peekValue())
+      if op = "drop"
+        set dropIt = popValue()
+
+      if op = "add"
+        define b = popValue()
+        define a = popValue()
+        pushValue(a + b)
+      if op = "sub"
+        define b2 = popValue()
+        define a2 = popValue()
+        pushValue(a2 - b2)
+      if op = "mul"
+        define b3 = popValue()
+        define a3 = popValue()
+        pushValue(a3 * b3)
+      if op = "div"
+        define b4 = popValue()
+        define a4 = popValue()
+        pushValue(a4 // b4)
+      if op = "gt"
+        define b5 = popValue()
+        define a5 = popValue()
+        pushValue(a5 > b5)
+      if op = "lt"
+        define b6 = popValue()
+        define a6 = popValue()
+        pushValue(a6 < b6)
+      if op = "eq"
+        define b7 = popValue()
+        define a7 = popValue()
+        pushValue(a7 = b7)
+      if op = "not"
+        pushValue(not popValue())
+
+      if op = "print" = print popValue()
+      if op = "jump"
+        set pc = findLabel(arg)
+        set jumped = 1
+      if op = "jz"
+        if popValue() = false
+          set pc = findLabel(arg)
+          set jumped = 1
+      if op = "halt" = set halted = 1
+    if jumped = 0 = set pc = pc + 1
+  set machineResult = peekValue()
+  return instructions
+
+# ---------------------------------------------------------- the programs
+
+define factorial = [
+  "push 6",
+  "store n",
+  "push 1",
+  "store acc",
+  "loop:",
+  "  load n",
+  "  push 1",
+  "  gt",
+  "  jz done",
+  "  load acc",
+  "  load n",
+  "  mul",
+  "  store acc",
+  "  load n",
+  "  push 1",
+  "  sub",
+  "  store n",
+  "  jump loop",
+  "done:",
+  "  load acc",
+  "  print",
+  "  load acc",
+  "  halt"
+]
+
+define fibonacci = [
+  "push 0",
+  "store a",
+  "push 1",
+  "store b",
+  "push 10",
+  "store i",
+  "loop:",
+  "  load i",
+  "  push 0",
+  "  gt",
+  "  jz done",
+  "  load a",
+  "  print",
+  "  load a",
+  "  load b",
+  "  add",
+  "  store t",
+  "  load b",
+  "  store a",
+  "  load t",
+  "  store b",
+  "  load i",
+  "  push 1",
+  "  sub",
+  "  store i",
+  "  jump loop",
+  "done:",
+  "  halt"
+]
+
+# ---------------------------------------------------------- the session
+
+define stack = []
+define top = 0
+define varNames = []
+define varValues = []
+define labelNames = []
+define labelLines = []
+define pc = 1
+define halted = 0
+define jumped = 0
+define lineNumber = 0
+define instructions = 0
+define dropIt = 0
+define machineResult = nothing
+define result = nothing
+
+print "============================================"
+print "            THE KAVIEL MACHINE"
+print "============================================"
+print ""
+
+print "Program 1: the factorial of 6"
+readProgram(factorial)
+define usedFact = runProgram(factorial)
+define fact = machineResult
+print "  instructions run:" usedFact
+print ""
+
+set stack = []
+set top = 0
+set varNames = []
+set varValues = []
+set labelNames = []
+set labelLines = []
+
+print "Program 2: the first ten Fibonacci numbers"
+readProgram(fibonacci)
+define usedFib = runProgram(fibonacci)
+print "  instructions run:" usedFib
+print ""
+
+# ---------------------------------------------------------- the report
+
+print "--------------------------------------------"
+print "A small report, with the tools of the language"
+
+define words = split("the machine ran both programs", " ")
+print "words in the sentence:" length(words)
+print "joined with a dash:" join(words, "-")
+print "the first word in capitals:" upper(words[1])
+print "the last word, cut:" part(words[length(words)], 1, 3)
+
+define total = usedFact + usedFib
+define done = 2
+print "average instructions per program:" total // done
+print "and what is left over:" total % done
+print "the machine says the factorial of 6 is" fact
+print "and is it 720?" fact = is 720
+if result = nothing = print "when it started, the machine had no answer yet."
+
+random 70
+  print "this time the machine felt fast"
+random 30
+  print "this time the machine felt slow"
+
+define lucky = pick "red", "green", "blue"
+print "a lucky colour:" lucky
+
+define scores = [["Ada", 10], ["Luca", 7]]
+for each row in scores
+  print " " row[1] "has" row[2] "points"
+
+print ""
+print "The machine stops here."
+end

@@ -403,7 +403,10 @@
           const nr = typeof right === 'string' ? numeric(right) : right;
           if (typeof nl === 'number' && typeof nr === 'number') result = nl === nr;
           else {
-            this.warning(node.line, 'You are comparing ' + typeName(left) + ' with ' + typeName(right) + ': they can never be equal.', 'Maybe one side is a text and the other a number?');
+            const hinted = (typeof left === 'boolean' || typeof right === 'boolean') && (left === null || right === null);
+            this.warning(node.line, 'You are comparing ' + typeName(left) + ' with ' + typeName(right) + ': they can never be equal.',
+              hinted ? 'If you meant to run a command after the `=`, put that command on the next line, indented. Only print, set, break, return and define can follow a `=` on the same line.'
+                     : 'Maybe one side is a text and the other a number?');
             result = false;
           }
         }

@@ -259,7 +259,7 @@
     doc.querySelector('.restore-code').click();
     check('Restore brings the previous code back', code.value === sourceBeforeTutorial);
     doc.getElementById('tab-examples').click();
-    check('The Examples tab shows the example list', !doc.getElementById('examples-view').hidden && doc.getElementById('lessons-view').hidden && doc.querySelectorAll('#example-list button').length === 14);
+    check('The Examples tab shows the example list', !doc.getElementById('examples-view').hidden && doc.getElementById('lessons-view').hidden && doc.querySelectorAll('#example-list button').length === 15);
     doc.getElementById('tab-lessons').click();
     doc.getElementById('tutorial-close').click();
     check('Close hides the panel and drops its expanded state', doc.getElementById('tutorial').hidden && doc.getElementById('tutorials-toggle').getAttribute('aria-expanded') === 'false');

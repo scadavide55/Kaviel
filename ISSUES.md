@@ -29,6 +29,10 @@
 | B text | `upper`, `lower`, `trim`, `part`, `split`, `join`, with positions from 1 and accents counted as one |
 | H1 | 405 lines of the old interpreter removed from `engine.js` |
 | D | every count in the README and the specification brought up to date, help aligned |
+| A5 | the sign rule of `%` is written in the specification |
+| A7 | a key can start any action, not only a question |
+| G10 | the unused `fs` import left the command line |
+| — | `tools/sync-examples.js` regenerates the copies of the examples inside `kaviel.html`, so the two can no longer drift without a test noticing |
 
 ## Still open after 1.5
 

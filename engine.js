@@ -395,14 +395,22 @@
       pos++;
       var keySlot = parseQuestionSlot('keypress');
       if (keySlot === null) { recover(); return null; }
-      if (!isOp('=') || peek(1).value !== 'ask') {
-        error(peek(), 'Link the key to a question with `= ask{n}`.', 'For example: if keypress{1} = ask{1}'); recover(); return null;
+      if (!isOp('=')) {
+        error(peek(), 'After a key comes `= ` and what to do.', 'For example: if keypress{1} = ask{1}');
+        recover(); return null;
       }
-      pos += 2;
-      var questionSlot = parseQuestionSlot('ask');
-      if (questionSlot === null) { recover(); return null; }
-      if (!atEnd()) { error(peek(), 'Nothing goes after a key-to-question link.', ''); recover(); return null; }
-      return { type: 'AwaitQuestion', keySlot: keySlot, slot: questionSlot, line: t.line };
+      if (peek(1).value === 'ask' && peek(2).type === 'op' && peek(2).value === '{') {
+        pos += 2;
+        var questionSlot = parseQuestionSlot('ask');
+        if (questionSlot === null) { recover(); return null; }
+        if (!atEnd()) { error(peek(), 'Nothing goes after a key-to-question link.', ''); recover(); return null; }
+        return { type: 'AwaitQuestion', keySlot: keySlot, slot: questionSlot, line: t.line };
+      }
+      // Any other action: the key waits, then that line runs.
+      pos++;
+      var keyAction = parseStatement();
+      if (!atEnd()) { error(peek(), 'Nothing goes after the action of a key.', ''); recover(); return null; }
+      return { type: 'AwaitKey', keySlot: keySlot, body: { type: 'Block', body: keyAction ? [keyAction] : [], line: t.line }, line: t.line };
     }
 
     function parseStatements() {

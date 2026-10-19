@@ -165,6 +165,20 @@
         case 'DefineKey':
           if (this.keys.has(st.slot)) this.warning(st.line, '`keypress{' + st.slot + '}` already existed: the new key took over.');
           this.keys.set(st.slot, st.key); return;
+        case 'AwaitKey': {
+          if (!this.keys.has(st.keySlot)) { this.error(st.line, '`keypress{' + st.keySlot + '}` has not been defined.'); return; }
+          const wanted = this.keys.get(st.keySlot);
+          for (;;) {
+            if (!(yield* this.step(st.line))) return;
+            let received;
+            try { received = yield {type: 'keypress', key: wanted, line: st.line}; }
+            catch (e) { this.error(st.line, 'The key could not be read. The program continued.'); return; }
+            if (this.stopped) return;
+            if (received === undefined || received === null) { this.error(st.line, 'No key came back while waiting for ' + wanted + '.'); return; }
+            if (matchesKey(received, wanted)) break;
+          }
+          yield* this.list(st.body.body); return;
+        }
         case 'AwaitQuestion': {
           if (!this.keys.has(st.keySlot)) { this.error(st.line, '`keypress{' + st.keySlot + '}` has not been defined.'); return; }
           if (!this.questions.has(st.slot)) { this.error(st.line, '`ask{' + st.slot + '}` has not been defined.'); return; }

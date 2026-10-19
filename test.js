@@ -21,6 +21,10 @@ function test(name, src, expect) {
     const next = queue(expect.input);
     opts.input = (question) => { questions.push(question); return next(); };
   }
+  if (expect.keypress) {
+    const nextKey = queue(expect.keypress);
+    opts.keypress = () => nextKey();
+  }
   if (expect.limit) opts.limit = expect.limit;
 
   let res;
@@ -931,6 +935,23 @@ end
 print "b"
 end`,
   { output: ['a', 'b'], errors: 0, warnings: 1, contains: 'after `end`' });
+
+test('a key can start any action, not only a question',
+  `start
+define keypress{1} = C
+if keypress{1} = print "pressed"
+print "after"
+end`,
+  { output: ['pressed', 'after'], errors: 0, warnings: 0, keypress: ['x', 'C'] });
+
+test('a key still opens a question',
+  `start
+define keypress{1} = C
+define ask{1} = ("Name? ")
+if keypress{1} = ask{1}
+print answer{1}
+end`,
+  { output: ['Ada'], errors: 0, warnings: 0, keypress: ['C'], input: ['Ada'] });
 
 /* ---------------------------------------------------------- result */
 

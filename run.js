@@ -6,7 +6,6 @@
 
 'use strict';
 
-const fs = require('fs');
 const path = require('path');
 const {readFile} = require('fs/promises');
 const {runAsync, VERSION} = require('./engine.js');

@@ -173,6 +173,7 @@ print ("Hello ") answer{1}
 
 - `define keypress{n} = C` names one key. One character, or `Enter`, `Space`, `Escape`, `Tab`, `Backspace`, `Delete`, `ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`.
 - `if keypress{n} = ask{m}` waits for exactly that key, then asks that question. Wrong keys keep waiting; terminals and the editor wait for a real event, not a simulated prompt.
+- After `=` the action can be anything, not only a question: `if keypress{1} = print "pressed"` waits, then prints.
 - In the browser the editor shows "Press C …" and pauses the run; in the terminal the key is read in raw mode and the terminal is restored afterwards.
 
 ### The expression form (preserved)
@@ -245,6 +246,7 @@ Four kinds of value: number, text, `true`/`false`, `nothing`, plus lists.
 | `5 + "5"` | `55` (glues, does not add) |
 | `"a" - 1` | **error**, `nothing`, run continues |
 | `1 / 0` | **error**, `nothing`, run continues |
+| `-5 % 3` | `-2`: `%` keeps the sign of the left side, like the `rest` of a division |
 | `"rock" = 1` | `false` + **warning** (a text that is not a number stays unequal) |
 | `print "a " b` | one space between values, and none where one is already written |
 | `print "Ciao" name "!"` | punctuation stays attached: `Ciao Mario!`, never `Mario !` |

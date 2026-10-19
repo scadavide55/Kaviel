@@ -6,7 +6,7 @@
   var filename = 'untitled.kaviel', toastTimer, lastRun = false;
   var keywords = new Set('start end print define set if else repeat until ask random pick'.split(' '));
   var values = new Set(['true', 'false', 'nothing']);
-  var names = {hello: 'hello.kaviel', dice: 'dice.kaviel', rps: 'rock_paper_scissors.kaviel', collatz: 'collatz.kaviel', errors: 'errors.kaviel'};
+  var names = {hello: 'hello.kaviel', dice: 'dice.kaviel', rps: 'rock_paper_scissors.kaviel', collatz: 'collatz.kaviel', errors: 'errors.kaviel', questions: 'questions.kaviel'};
 
   function escapeHTML(text) {
     return text.replace(/[&<>"']/g, function (c) { return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]; });
@@ -23,7 +23,7 @@
       else if (word[0] === '"') kind = 'string';
       else if (/^\d/.test(word)) kind = 'number';
       else if (keywords.has(word)) kind = 'keyword';
-      else if (values.has(word)) kind = 'value';
+      else if (values.has(word) || (word === 'answer' && /^[ \t]*\{/.test(source.slice(token.lastIndex)))) kind = 'value';
       else if (/^[=<>!+*\/%{}(),\[\]-]$/.test(word)) kind = 'operator';
       html += kind ? '<span class="tok-' + kind + '">' + escapeHTML(word) + '</span>' : escapeHTML(word);
       last = token.lastIndex;

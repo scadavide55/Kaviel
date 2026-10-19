@@ -21,13 +21,14 @@
   <aside class="explorer" aria-label="Examples and quick reference">
     <div class="section-label">YOUR WORKSPACE</div>
     <div class="workspace-item"><span class="file-icon">K</span><span id="explorer-file">untitled.kaviel</span><span class="dot"></span></div>
-    <div class="section-label examples-heading">GET STARTED <span>05</span></div>
+    <div class="section-label examples-heading">GET STARTED <span>06</span></div>
     <nav class="sample-list" aria-label="Example programs">
       <button data-example="hello"><span class="sample-symbol">01</span><span>Hello world<small>Your first few lines</small></span><span class="sample-arrow">↗</span></button>
       <button data-example="dice"><span class="sample-symbol">02</span><span>A little chance<small>Weighted random blocks</small></span><span class="sample-arrow">↗</span></button>
       <button data-example="rps"><span class="sample-symbol">03</span><span>Rock, paper, scissors<small>Ask, pick and compare</small></span><span class="sample-arrow">↗</span></button>
       <button data-example="collatz"><span class="sample-symbol">04</span><span>The Collatz sequence<small>Loops and conditions</small></span><span class="sample-arrow">↗</span></button>
       <button data-example="errors"><span class="sample-symbol">05</span><span>Room for mistakes<small>See how recovery works</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="questions"><span class="sample-symbol">06</span><span>Two questions<small>Prepare, ask, then answer</small></span><span class="sample-arrow">↗</span></button>
     </nav>
     <div class="sidebar-note"><span class="note-mark">//</span><strong>Make a mistake.<br/>Keep going.</strong><p>A broken line doesn't have to break the whole program.</p></div>
     <div class="sidebar-foot"><span class="dot"></span> Runs in your browser<br/><span>No account. No setup.</span></div>
@@ -35,7 +36,7 @@
 
   <div class="workspace">
     <div class="workspace-heading"><div><div class="eyebrow">A LITTLE CODE. A LOT OF POSSIBILITY.</div><h1>Make something happen<span>.</span></h1><p>Write a few lines. Run them. See where they take you.</p></div><span class="language-pill">Kaviel <span>PLAYGROUND</span></span></div>
-    <div class="mobile-examples"><label for="examples">Start from</label><select id="examples" title="Examples"><option value="">Your code</option><option value="hello">Hello world</option><option value="dice">A little chance</option><option value="rps">Rock, paper, scissors</option><option value="collatz">The Collatz sequence</option><option value="errors">Room for mistakes</option></select></div>
+    <div class="mobile-examples"><label for="examples">Start from</label><select id="examples" title="Examples"><option value="">Your code</option><option value="hello">Hello world</option><option value="dice">A little chance</option><option value="rps">Rock, paper, scissors</option><option value="collatz">The Collatz sequence</option><option value="errors">Room for mistakes</option><option value="questions">Two questions</option></select></div>
     <main class="workbench">
       <section class="editor" aria-label="Source editor">
         <div class="editor-head"><div class="file-tab"><span class="file-icon">K</span><span id="file-name">untitled.kaviel</span><span class="tab-dot" title="Local working copy"></span></div><div class="editor-actions"><button id="open-file" class="icon-button" title="Open a .kaviel file" aria-label="Open file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 15.5v-11h5l2 2h8v3m-15 6 2-6h13l-2 6z"/></svg></button><button id="save-file" class="icon-button" title="Download source · Cmd/Ctrl+S" aria-label="Save file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m-4-4 4 4 4-4M3 13v4h14v-4"/></svg></button><span class="toolbar-divider"></span><button id="find-toggle" class="icon-button" title="Find · Cmd/Ctrl+F" aria-label="Find in code"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5"/><path d="m12 12 5 5"/></svg></button></div></div>
@@ -70,9 +71,11 @@ else
 
 until score = 10
   set score = score + 1</pre><p><code>repeat</code> counts. <code>until</code> checks before each turn.</p></section>
-    <section><h3>Ask and choose</h3><pre>define name = ask("Your name?")
-define die = pick 1, 2, 3
-print "Hi " + name</pre><p><code>ask</code> returns text. <code>pick</code> chooses a value.</p></section>
+    <section><h3>Ask, then answer</h3><pre>define ask{1} = ("Your name?")
+define ask{2} = ("Your age?")
+ask{1}
+ask{2}
+print ("Hi ") answer{1} ("Age:") answer{2}</pre><p><code>define ask{n}</code> prepares a question. <code>ask{n}</code> asks it. <code>answer{n}</code> holds its latest response as text.</p></section>
     <section><h3>Leave room for chance</h3><pre>random 67
   print "This one."
 random 33
@@ -153,6 +156,15 @@ random 33
 '  set steps = steps + 1\n' +
 '\n' +
 'print "done in " steps " steps"\n' +
+'end\n',
+
+    questions:
+'start\n' +
+'define ask{1} = ("What\'s your name? ")\n' +
+'define ask{2} = ("How old are you? ")\n' +
+'ask{1}\n' +
+'ask{2}\n' +
+'print ("Hello ") answer{1} ("You are") answer{2} ("Years old.")\n' +
 'end\n',
 
     errors:

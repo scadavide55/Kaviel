@@ -354,6 +354,62 @@
       return { type: 'Block', body: body, line: headerLine };
     }
 
+    // Numbered questions use their own slots, separate from ordinary variables.
+    function parseQuestionSlot(word) {
+      if (!isOp('{')) {
+        error(peek(), '`' + word + '` needs a question number in `{ }`.', 'For example: ' + word + '{1}');
+        return null;
+      }
+      pos++;
+      var number = peek();
+      if (number.type !== 'number' || !Number.isSafeInteger(number.value) || number.value < 1) {
+        error(number, 'A question number must be a positive whole number.', 'For example: ' + word + '{1} or ' + word + '{2}');
+        while (!atEnd()) pos++;
+        return null;
+      }
+      pos++;
+      if (!isOp('}')) {
+        error(peek(), 'The `}` that closes `' + word + '{' + number.value + '` is missing.', '');
+        while (!atEnd()) pos++;
+        return null;
+      }
+      pos++;
+      return number.value;
+    }
+
+    function parseQuestionDefinition(t) {
+      pos++; // ask
+      var slot = parseQuestionSlot('ask');
+      if (slot === null) { recover(); return null; }
+      if (!isOp('=')) {
+        error(peek(), 'After `ask{' + slot + '}` comes `=` and the question text.', 'For example: define ask{' + slot + '} = ("Your name?")');
+        recover();
+        return null;
+      }
+      pos++;
+      var before = problems.length;
+      var question = parseExpression();
+      if (problems.length > before) { recover(); return null; }
+      if (!atEnd() || question.type !== 'Literal' || typeof question.value !== 'string') {
+        error(t, 'A numbered question needs text in double quotes.', 'For example: define ask{' + slot + '} = ("Your name?")');
+        recover();
+        return null;
+      }
+      return { type: 'DefineQuestion', slot: slot, question: question.value, line: t.line };
+    }
+
+    function parseQuestionCall() {
+      var t = advance(); // ask
+      var slot = parseQuestionSlot('ask');
+      if (slot === null) { recover(); return null; }
+      if (!atEnd()) {
+        error(peek(), '`ask{' + slot + '}` sits alone on its line.', 'Read its response afterward with answer{' + slot + '}.');
+        recover();
+        return null;
+      }
+      return { type: 'RunQuestion', slot: slot, line: t.line };
+    }
+
     function parseStatement() {
       var t = peek();
 
@@ -397,12 +453,18 @@
           case 'set': {
             pos++;
             var nameTok = peek();
+            if (t.value === 'define' && isKw('ask')) return parseQuestionDefinition(t);
             if (nameTok.type !== 'ident') {
               error(nameTok, 'After `' + t.value + '` comes a name.', 'For example: ' + t.value + ' age = 12');
               recover();
               return null;
             }
             pos++;
+            if (nameTok.value === 'answer' && isOp('{')) {
+              error(nameTok, '`answer{n}` is filled by its matching `ask{n}`, not by `define` or `set`.', 'Use another name for an ordinary variable.');
+              recover();
+              return null;
+            }
             var slot = 1;
             if (isOp('{')) {
               pos++;
@@ -490,6 +552,8 @@
           }
 
           case 'ask':
+            if (peek(1).type === 'op' && peek(1).value === '{') return parseQuestionCall();
+            // The existing ask("question") expression remains supported.
           case 'pick':
           case 'true':
           case 'false':
@@ -668,6 +732,12 @@
         return { type: 'Bad', line: t.line };
       }
 
+      if (t.type === 'ident' && t.value === 'answer' && peek(1).type === 'op' && peek(1).value === '{') {
+        pos++;
+        var answerSlot = parseQuestionSlot('answer');
+        return answerSlot === null ? { type: 'Bad', line: t.line } : { type: 'Answer', slot: answerSlot, line: t.line };
+      }
+
       if (t.type === 'ident') {
         pos++;
         var slot = 1;
@@ -753,6 +823,8 @@
     this.rng = opts.rng || Math.random;
     this.limit = opts.limit || MAX_STEPS;
     this.vars = new Map();
+    this.questions = new Map();
+    this.answers = new Map();
     this.steps = 0;
     this.stopped = false;
   }
@@ -857,6 +929,29 @@
         return;
       }
 
+      case 'DefineQuestion':
+        if (this.questions.has(st.slot)) {
+          this.warning(st.line, '`ask{' + st.slot + '}` already existed: the new question took over.', 'Its previous answer was cleared.');
+        }
+        this.questions.set(st.slot, st.question);
+        this.answers.delete(st.slot);
+        return;
+
+      case 'RunQuestion': {
+        if (!this.questions.has(st.slot)) {
+          this.error(st.line, '`ask{' + st.slot + '}` has not been defined.', 'Prepare it first with define ask{' + st.slot + '} = ("Your question?").');
+          return;
+        }
+        this.answers.delete(st.slot);
+        var response = this.eval({
+          type: 'Ask',
+          args: [{ type: 'Literal', value: this.questions.get(st.slot), line: st.line }],
+          line: st.line
+        });
+        if (!isErr(response)) this.answers.set(st.slot, response);
+        return;
+      }
+
       case 'Define': {
         var dv = this.eval(st.expr);
         if (isErr(dv)) return;
@@ -947,6 +1042,13 @@
         return node.value;
       case 'Bad':
         return ERROR;
+
+      case 'Answer':
+        if (!this.answers.has(node.slot)) {
+          this.error(node.line, '`answer{' + node.slot + '}` has no answer yet.', 'Run ask{' + node.slot + '} before reading its answer.');
+          return ERROR;
+        }
+        return this.answers.get(node.slot);
 
       case 'Name': {
         var k = this.key(node.name, node.slot);

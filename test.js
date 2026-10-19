@@ -16,7 +16,11 @@ function queue(items) {
 function test(name, src, expect) {
   const opts = {};
   if (expect.rng !== undefined) opts.rng = rngOf(expect.rng);
-  if (expect.input) opts.input = queue(expect.input);
+  const questions = [];
+  if (expect.input) {
+    const next = queue(expect.input);
+    opts.input = (question) => { questions.push(question); return next(); };
+  }
   if (expect.limit) opts.limit = expect.limit;
 
   let res;
@@ -29,6 +33,9 @@ function test(name, src, expect) {
   }
 
   const problems = [];
+  if (expect.questions && JSON.stringify(questions) !== JSON.stringify(expect.questions)) {
+    problems.push('questions: expected ' + JSON.stringify(expect.questions) + ', got ' + JSON.stringify(questions));
+  }
   if (expect.output && JSON.stringify(res.output) !== JSON.stringify(expect.output)) {
     problems.push('output: expected ' + JSON.stringify(expect.output) + ', got ' + JSON.stringify(res.output));
   }
@@ -454,6 +461,199 @@ else
   print "x"
 end`,
   { errors: 1, warnings: 0, contains: ['`else` alone'] });
+
+/* ---------------------------------------------------------- numbered questions */
+
+const numberedExample = `start
+define ask{1} = ("What's your name? ")
+define ask{2} = ("How old are you? ")
+ask{1}
+ask{2}
+print ("Hello ") answer{1} ("You are") answer{2} ("Years old.")
+end`;
+
+test('numbered questions: the requested second example', numberedExample,
+  { output: ['Hello Luca You are 14 Years old.'], errors: 0, warnings: 0,
+    input: ['Luca', '14'], questions: ["What's your name? ", 'How old are you? '] });
+
+test('numbered questions: original example without end still runs', numberedExample.replace(/\nend$/, ''),
+  { output: ['Hello Luca You are 14 Years old.'], errors: 0, warnings: 1,
+    input: ['Luca', '14'], questions: ["What's your name? ", 'How old are you? '], contains: ['`end`'] });
+
+test('numbered questions: define never asks',
+  `start
+define ask{1} = ("Not yet")
+print "ready"
+end`,
+  { output: ['ready'], errors: 0, warnings: 0, input: [], questions: [] });
+
+test('numbered questions: execution order is independent from definition order',
+  `start
+define ask{1} = ("first")
+define ask{2} = ("second")
+ask{2}
+ask{1}
+print answer{1} answer{2}
+end`,
+  { output: ['one two'], errors: 0, warnings: 0, input: ['two', 'one'], questions: ['second', 'first'] });
+
+test('numbered questions: reading twice does not ask twice',
+  `start
+define ask{1} = ("name")
+ask{1}
+print answer{1}
+print answer{1}
+end`,
+  { output: ['Luca', 'Luca'], errors: 0, warnings: 0, input: ['Luca'], questions: ['name'] });
+
+test('numbered questions: repeating ask updates its answer',
+  `start
+define ask{1} = ("again")
+repeat 2
+  ask{1}
+  print answer{1}
+print answer{1}
+end`,
+  { output: ['first', 'second', 'second'], errors: 0, warnings: 0, input: ['first', 'second'], questions: ['again', 'again'] });
+
+test('numbered questions: empty answers remain readable',
+  `start
+define ask{1} = ("name")
+ask{1}
+print "[" + answer{1} + "]"
+end`,
+  { output: ['[]'], errors: 0, warnings: 1, input: [''], questions: ['name'], contains: ['empty'] });
+
+test('numbered questions: reading before asking skips just that print',
+  `start
+define ask{1} = ("name")
+print answer{1}
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, warnings: 0, input: [], questions: [], contains: ['`answer{1}` has no answer yet'] });
+
+test('numbered questions: undefined question reports its number',
+  `start
+ask{2}
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, warnings: 0, input: [], questions: [], contains: ['`ask{2}` has not been defined'] });
+
+test('numbered questions: reading an unknown answer reports its number',
+  `start
+print answer{9}
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, warnings: 0, contains: ['`answer{9}` has no answer yet'] });
+
+test('numbered questions: no input handler reports an error and continues',
+  `start
+define ask{1} = ("name")
+ask{1}
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, warnings: 0, contains: ['nobody here'] });
+
+test('numbered questions: a failed repeat clears its previous response',
+  `start
+define ask{1} = ("name")
+ask{1}
+print answer{1}
+ask{1}
+print answer{1}
+print "alive"
+end`,
+  { output: ['first', 'alive'], errors: 2, warnings: 0, input: ['first', null], questions: ['name', 'name'], contains: ['No answer came back', 'no answer yet'] });
+
+test('numbered questions: large valid numbers use independent sparse slots',
+  `start
+define ask{9007199254740991} = ("name")
+ask{9007199254740991}
+print answer{9007199254740991}
+end`,
+  { output: ['Luca'], errors: 0, warnings: 0, input: ['Luca'], questions: ['name'] });
+
+test('numbered questions: redefinition clears the old answer and warns',
+  `start
+define ask{1} = ("old")
+ask{1}
+define ask{1} = ("new")
+print answer{1}
+ask{1}
+print answer{1}
+end`,
+  { output: ['latest'], errors: 1, warnings: 1, input: ['old answer', 'latest'], questions: ['old', 'new'], contains: ['previous answer was cleared', 'no answer yet'] });
+
+test('numbered questions: numeric-looking answers remain text',
+  `start
+define ask{1} = ("age")
+ask{1}
+print answer{1} + 1
+end`,
+  { output: ['141'], errors: 0, warnings: 0, input: ['14'] });
+
+test('numbered questions: normal slots and legacy ask remain supported',
+  `start
+define answer = ask("legacy")
+define points{1} = 7
+define ask{1} = ("numbered")
+ask{1}
+print answer answer{1} points{1}
+end`,
+  { output: ['old new 7'], errors: 0, warnings: 0, input: ['old', 'new'], questions: ['legacy', 'numbered'] });
+
+for (const command of ['define', 'set']) {
+  test('numbered questions: ' + command + ' cannot overwrite an automatic answer',
+    `start\n${command} answer{1} = "manual"\nprint "alive"\nend`,
+    { output: ['alive'], errors: 1, warnings: 0, contains: ['filled by its matching'] });
+}
+
+for (const slot of ['0', '-1', '1.5', 'word', '9007199254740992']) {
+  test('numbered questions: invalid question number ' + slot,
+    `start\ndefine ask{${slot}} = ("name")\nprint "alive"\nend`,
+    { output: ['alive'], errors: 1, warnings: 0, input: [], questions: [], contains: ['positive whole number'] });
+  test('numbered questions: invalid answer number ' + slot,
+    `start\nprint answer{${slot}}\nprint "alive"\nend`,
+    { output: ['alive'], errors: 1, warnings: 0, contains: ['positive whole number'] });
+}
+
+test('numbered questions: missing question text does not define it',
+  `start
+define ask{1}
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, warnings: 0, input: [], questions: [], contains: ['question text'] });
+
+test('numbered questions: non-text definitions are rejected',
+  `start
+define ask{1} = 42
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, warnings: 0, contains: ['text in double quotes'] });
+
+test('numbered questions: definitions cannot hide an input side effect',
+  `start
+define ask{1} = ask("not now")
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, warnings: 0, input: [], questions: [], contains: ['text in double quotes'] });
+
+test('numbered questions: extra tokens on ask do not trigger it',
+  `start
+define ask{1} = ("name")
+ask{1} print "wrong"
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, warnings: 0, input: [], questions: [], contains: ['sits alone'] });
+
+// Separate runs must not share prepared questions or saved answers.
+run(numberedExample, { input: queue(['Luca', '14']) });
+test('numbered questions: definitions do not leak between runs',
+  `start\nask{1}\nprint "alive"\nend`,
+  { output: ['alive'], errors: 1, warnings: 0, contains: ['has not been defined'] });
+test('numbered questions: answers do not leak between runs',
+  `start\nprint answer{1}\nprint "alive"\nend`,
+  { output: ['alive'], errors: 1, warnings: 0, contains: ['no answer yet'] });
 
 /* ---------------------------------------------------------- random, statistically */
 

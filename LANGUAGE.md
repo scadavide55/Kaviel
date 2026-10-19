@@ -127,17 +127,42 @@ In rock-paper-scissors this is worth a lot: `define cpu = pick "rock", "paper", 
 
 ---
 
-## 6. `ask`
+## 6. Questions and answers
+
+### Numbered questions
+
+```
+start
+define ask{1} = ("What's your name? ")
+define ask{2} = ("How old are you? ")
+ask{1}
+ask{2}
+print ("Hello ") answer{1} ("You are") answer{2} ("Years old.")
+end
+```
+
+With answers `Luca` and `14`, this prints `Hello Luca You are 14 Years old.`
+The runnable example is `examples/questions.kaviel`, also available as **Two questions** in the editor.
+
+- `define ask{n} = ("question")` prepares a question without requesting input. In this first implementation its text must be a double-quoted literal; the outer parentheses are accepted but not required.
+- `ask{n}` on its own line asks that question, waits for its response, then continues to the next instruction. Questions run in execution order, not definition order.
+- `answer{n}` reads the response belonging to that same question number. Reading it does not ask again.
+- Numbers are positive safe integers. Question slots, answer slots and ordinary variables are separate; `answer{n}` is an automatic read-only response, while the unindexed name `answer` is still available as an ordinary variable.
+- Responses remain **text**, including numeric-looking responses such as `"14"`. No numeric conversion or new comparison syntax is introduced here.
+- Repeating `ask{n}` requests a new response and replaces only its matching answer. Redefining a question gives a warning and clears its previous answer.
+- Asking an undefined question or reading a response before it exists is an error; only that instruction is skipped. An unsuccessful input attempt clears that question's old response rather than silently reusing it.
+- Pressing Enter with no text stores `""` and gives a warning. Definitions and responses are reset between program runs.
+- With the terminal runner, responses come from stdin. In the editor each executed question opens a prompt dialog.
+
+### Existing expression form (preserved)
 
 ```
 define name = ask("Your name? ")
 print "Hello " name
 ```
 
-- `ask` writes the question, waits for Enter, gives back what was typed (a text; pressing Enter alone gives `""`).
-- The same `ask` line can run more than once (inside a `repeat`).
-- With no interface (terminal) `ask` reads from stdin.
-- In the editor page the question opens a small window.
+`ask("question")` still immediately requests input and returns text. Existing programs continue to work.
+This change does **not** implement `keypress`, `under` / `over`, or same-line condition-to-action links.
 
 ---
 
@@ -425,13 +450,13 @@ open kaviel.html                        # editor with Output and Problems
 - The footer shows cursor position and whether local draft saving succeeded. A blocked `localStorage` is reported rather than silently claiming success.
 - Language guide opens a built-in reference and keyboard shortcuts. Timing beside Output is elapsed wall time, including time spent answering any input prompts.
 
-For the browser checks, serve this folder locally (`python3 -m http.server 8765 --bind 127.0.0.1`) and open `http://127.0.0.1:8765/ide-test.html`. The page runs 59 checks and restores the previous saved source and filename afterward. Do not edit another editor tab while these checks run.
+For the browser checks, serve this folder locally (`python3 -m http.server 8765 --bind 127.0.0.1`) and open `http://127.0.0.1:8765/ide-test.html`. The page runs 67 checks and restores the previous saved source and filename afterward. Do not edit another editor tab while these checks run.
 
 ### What has been verified
 
 | Check | Result |
 |---|---|
-| 46 tests in `test.js` | all passing |
+| 80 tests in `test.js` | all passing, including numbered questions and compatibility |
 | §10 examples (dice, rock-paper-scissors, Collatz) | expected output |
 | Collatz of 27 | reaches 1 in 111 computation steps; counted from 1 it reads 112 |
 | `random 67/33` over 1000 runs | 600–750 successes (expected ~670) |

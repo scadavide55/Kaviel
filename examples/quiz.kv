@@ -1,0 +1,21 @@
+start
+define points = 0
+define ask{1} = ("What is 2 + 2? ")
+define ask{2} = ("What colour is grass? ")
+
+ask{1}
+if answer{1} = "4"
+  print "Correct!"
+  set points = points + 1
+else
+  print "Not quite. The answer is 4."
+
+ask{2}
+if answer{2} = "green"
+  print "Correct!"
+  set points = points + 1
+else
+  print "Not quite. Grass is green."
+
+print "You got" points "out of 2."
+end

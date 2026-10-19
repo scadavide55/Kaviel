@@ -17,6 +17,10 @@
   var originalName = localStorage.getItem('kaviel.filename');
   var originalTutorial = localStorage.getItem('kaviel.tutorial.position');
   var originalBackup = localStorage.getItem('kaviel.tutorial.backup');
+  var originalDone = localStorage.getItem('kaviel.tutorial.done');
+  var originalVisited = localStorage.getItem('kaviel.visited');
+  var originalTheme = localStorage.getItem('kaviel.theme');
+  var originalSize = localStorage.getItem('kaviel.fontsize');
   function settle() { return new Promise(function (resolve) { setTimeout(resolve, 30); }); }
   function until(condition, timeout) {
     var started = Date.now();
@@ -66,6 +70,9 @@
   }
   try {
     localStorage.setItem('kaviel.source', 'start\nprint "saved"\nend');
+    localStorage.setItem('kaviel.visited', '1');
+    localStorage.removeItem('kaviel.theme');
+    localStorage.removeItem('kaviel.fontsize');
     await load();
     var doc = frame.contentDocument, win = frame.contentWindow;
     var code = doc.getElementById('code');
@@ -134,7 +141,7 @@
     var askedPrompts = [];
     examples.value = 'questions';
     examples.dispatchEvent(new win.Event('change'));
-    check('Numbered question example loads without asking for input', askedPrompts.length === 0 && doc.getElementById('file-name').textContent === 'questions.kv');
+    check('Numbered question example loads without asking for input', askedPrompts.length === 0 && doc.getElementById('file-name').value === 'questions.kv');
     var fixtureResponse = await fetch('examples/questions.kv');
     check('Numbered question example matches the runnable source file', fixtureResponse.ok && code.value === await fixtureResponse.text());
     doc.getElementById('run').click();
@@ -225,41 +232,58 @@
 
     localStorage.removeItem('kaviel.tutorial.position');
     localStorage.removeItem('kaviel.tutorial.backup');
+    localStorage.removeItem('kaviel.tutorial.done');
+    localStorage.removeItem('kaviel.visited');
+    await load();
+    doc = frame.contentDocument; win = frame.contentWindow; code = doc.getElementById('code');
+    var T = win.KavielTutorials;
+    check('A first visit opens the lessons panel', !doc.getElementById('tutorial').hidden && doc.getElementById('tutorials-toggle').getAttribute('aria-expanded') === 'true');
+    await load();
+    doc = frame.contentDocument; win = frame.contentWindow; code = doc.getElementById('code');
+    check('Later visits keep the panel closed', doc.getElementById('tutorial').hidden && doc.getElementById('tutorials-toggle').getAttribute('aria-expanded') === 'false');
     doc.getElementById('tutorials-toggle').click();
-    check('Tutorials open as a modal', doc.getElementById('tutorial').open && doc.getElementById('tutorials-toggle').getAttribute('aria-expanded') === 'true');
-    check('Five lessons are listed', doc.querySelectorAll('.tutorial-lesson').length === 5);
-    check('The first step explains itself and shows code', doc.querySelector('.tutorial-step h3').textContent === 'Make the computer talk' && doc.querySelector('.tutorial-code').textContent.includes('Hello, Kaviel!'));
-    doc.querySelectorAll('.tutorial-lesson')[3].click();
-    check('Choosing a lesson shows its first step', doc.querySelector('.tutorial-step h3').textContent === 'A command of your own');
-    doc.querySelector('.step-actions .quiet-button:last-of-type').click();
-    check('Next step moves forward inside the lesson', doc.querySelectorAll('.tutorial-step .eyebrow')[0].textContent.includes('STEP 2 OF 5'));
+    check('The Lessons button opens the panel beside the editor', !doc.getElementById('tutorial').hidden && doc.getElementById('code').clientHeight > 0);
+    check('Every lesson is listed', T.length >= 10 && doc.querySelectorAll('.tutorial-lesson').length === T.length);
+    doc.querySelectorAll('.tutorial-lesson')[6].click();
+    check('Choosing a lesson shows its first step', doc.querySelector('.tutorial-step h3').textContent === 'Make a command' && doc.querySelector('.tutorial-code').textContent.includes('define greet(name)'));
+    doc.querySelectorAll('.nav-row .btn')[1].click();
+    check('Next step moves forward inside the lesson', doc.querySelector('.tutorial-step .step-count').textContent.includes('step 2 of 4'));
+    check('Steps give the reader a small job', !!doc.querySelector('.your-turn'));
     var sourceBeforeTutorial = setSource('start\nprint "mine"\nend').value;
-    doc.getElementById('tutorial-step').querySelector('.run.small').click();
-    check('Opening a step loads its code and closes the dialog', !doc.getElementById('tutorial').open && code.value.includes('define area(width, height)'));
+    doc.querySelector('.step-actions .primary').click();
+    check('Putting a step in the editor loads its code and keeps the panel open', !doc.getElementById('tutorial').hidden && code.value.includes('define area(width, height)'));
     check('The previous code is kept for restoring', localStorage.getItem('kaviel.tutorial.backup') === sourceBeforeTutorial);
-    check('Tutorial progress is remembered', JSON.parse(localStorage.getItem('kaviel.tutorial.position')).lesson === 3);
-    doc.getElementById('tutorials-toggle').click();
+    check('Tutorial progress is remembered', JSON.parse(localStorage.getItem('kaviel.tutorial.position')).lesson === 6);
     doc.querySelector('.restore-code').click();
     check('Restore brings the previous code back', code.value === sourceBeforeTutorial);
+    doc.getElementById('tab-examples').click();
+    check('The Examples tab shows the example list', !doc.getElementById('examples-view').hidden && doc.getElementById('lessons-view').hidden && doc.querySelectorAll('#example-list button').length === 13);
+    doc.getElementById('tab-lessons').click();
     doc.getElementById('tutorial-close').click();
-    await settle();
-    check('Tutorials close and drop their expanded state', !doc.getElementById('tutorial').open && doc.getElementById('tutorials-toggle').getAttribute('aria-expanded') === 'false');
-    var tutorialSources = [];
-    for (var lessonIndex = 0; lessonIndex < 5; lessonIndex++) {
+    check('Close hides the panel and drops its expanded state', doc.getElementById('tutorial').hidden && doc.getElementById('tutorials-toggle').getAttribute('aria-expanded') === 'false');
+    doc.getElementById('tutorials-toggle').click();
+    var tutorialSources = [], walked = [];
+    for (var lessonIndex = 0; lessonIndex < T.length; lessonIndex++) {
+      doc.querySelector('.back-link').click();
       doc.querySelectorAll('.tutorial-lesson')[lessonIndex].click();
-      var lessonLabel = 'LESSON ' + (lessonIndex + 1) + ' ·';
-      while (doc.querySelector('.tutorial-step .eyebrow').textContent.indexOf(lessonLabel) === 0) {
-        tutorialSources.push(doc.querySelector('.tutorial-code').textContent);
-        var nextStep = doc.querySelectorAll('.step-actions .quiet-button')[1];
-        if (nextStep.disabled) break;
-        nextStep.click();
+      for (var stepIndex = 0; stepIndex < T[lessonIndex].steps.length; stepIndex++) {
+        walked.push(doc.querySelector('.tutorial-step h3').textContent);
+        tutorialSources.push({source: doc.querySelector('.tutorial-code').textContent, expectErrors: !!T[lessonIndex].steps[stepIndex].expectErrors});
+        if (stepIndex < T[lessonIndex].steps.length - 1) doc.querySelectorAll('.nav-row .btn')[1].click();
       }
     }
-    check('Every tutorial step runs without language errors', tutorialSources.length === 19 && tutorialSources.every(function (source) {
-      return win.Kaviel.run(source, {input: function () { return '14'; }, keypress: function (wanted) { return wanted === 'Space' ? ' ' : wanted; }, rng: function () { return 0.5; }}).errors === 0;
+    check('The panel shows every step of every lesson', walked.length === T.reduce(function (n, l) { return n + l.steps.length; }, 0) && walked.length >= 40);
+    check('Every tutorial step runs as intended', tutorialSources.every(function (item) {
+      var asked = 0;
+      var outcome = win.Kaviel.run(item.source, {input: function () { return String(asked++ % 10 + 1); }, keypress: function (wanted) { return wanted === 'Space' ? ' ' : wanted; }, rng: function () { return 0.5; }});
+      return item.expectErrors ? outcome.errors > 0 : outcome.errors === 0;
     }));
+    doc.querySelectorAll('.nav-row .btn')[1].click();
+    check('Finishing a lesson ticks it off', JSON.parse(localStorage.getItem('kaviel.tutorial.done')).indexOf(T.length - 1) >= 0 && doc.querySelectorAll('.tutorial-lesson.done').length >= 1);
+    doc.getElementById('tutorial-close').click();
 
-    var pairs = [['hello', 'hello.kv'], ['questions', 'questions.kv'], ['age', 'age.kv'], ['dice', 'dice.kv'], ['collatz', 'collatz.kv'], ['rps', 'rock_paper_scissors.kv'], ['functions', 'functions.kv'], ['lists', 'lists.kv'], ['keypress', 'keypress.kv'], ['errors', 'errors.kv']];
+    doc = frame.contentDocument; win = frame.contentWindow; code = doc.getElementById('code'); examples = doc.getElementById('examples');
+    var pairs = [['hello', 'hello.kv'], ['questions', 'questions.kv'], ['age', 'age.kv'], ['dice', 'dice.kv'], ['collatz', 'collatz.kv'], ['rps', 'rock_paper_scissors.kv'], ['functions', 'functions.kv'], ['lists', 'lists.kv'], ['keypress', 'keypress.kv'], ['errors', 'errors.kv'], ['guess', 'guess.kv'], ['timestable', 'timestable.kv'], ['quiz', 'quiz.kv']];
     var inSync = true, examplesRun = true;
     for (var pair = 0; pair < pairs.length; pair++) {
       examples.value = pairs[pair][0];
@@ -275,7 +299,7 @@
     check('Every example runs without language errors', examplesRun);
 
     doc.querySelector('[data-example="collatz"]').click();
-    check('Explorer examples load source and update the file name', code.value.includes('define n = 27') && doc.getElementById('file-name').textContent === 'collatz.kv');
+    check('Explorer examples load source and update the file name', code.value.includes('define n = 27') && doc.getElementById('file-name').value === 'collatz.kv');
     check('Explorer identifies the selected example', doc.querySelector('[data-example="collatz"]').getAttribute('aria-current') === 'true');
     await runWith(doc, win);
     check('Elapsed time appears after Run', /ms$/.test(doc.getElementById('execution-time').textContent));
@@ -313,7 +337,7 @@
       for (var wait = 0; wait < 100 && doc.getElementById('toast').textContent === previousToast; wait++) await settle();
     }
     await importFile(new win.File(['\uFEFFstart\r\nprint "imported"\r\nend'], 'imported.kv', {type: 'text/plain'}));
-    check('Open imports local source and normalizes BOM and CRLF', code.value === 'start\nprint "imported"\nend' && doc.getElementById('file-name').textContent === 'imported.kv');
+    check('Open imports local source and normalizes BOM and CRLF', code.value === 'start\nprint "imported"\nend' && doc.getElementById('file-name').value === 'imported.kv');
     check('Imported files are saved locally without execution', localStorage.getItem('kaviel.source') === code.value && doc.getElementById('out').textContent === '');
     var importedSource = code.value;
     await importFile(new win.File(['not source'], 'invalid.png'));
@@ -329,7 +353,7 @@
     setSource('start\nprint "newer edit"\nend');
     finishRead('start\nprint "older file"\nend');
     await settle();
-    check('Async file reads do not overwrite newer source edits', code.value.includes('newer edit') && doc.getElementById('toast').textContent.includes('source changed'));
+    check('Async file reads do not overwrite newer source edits', code.value.includes('newer edit') && doc.getElementById('toast').textContent.includes('code changed'));
     win.File.prototype.text = fileText;
     var storageSet = win.Storage.prototype.setItem;
     win.Storage.prototype.setItem = function () { throw new Error('Storage unavailable'); };
@@ -338,6 +362,37 @@
     win.Storage.prototype.setItem = storageSet;
     setSource('start\nprint "recovered"\nend');
 
+    // New file, rename, drag and drop, edited marker, theme and text size.
+    doc = frame.contentDocument; win = frame.contentWindow; code = doc.getElementById('code');
+    setSource('start\nprint "keep me"\nend');
+    check('Typing shows the edited marker', !doc.getElementById('edited').hidden);
+    doc.getElementById('new-file').click();
+    check('New starts an empty program with a start and end', code.value === 'start\n\nend\n' && doc.getElementById('file-name').value === 'untitled.kv' && doc.getElementById('edited').hidden);
+    check('New offers Undo and Undo brings the old code back', !doc.getElementById('toast-action').hidden);
+    doc.getElementById('toast-action').click();
+    check('Undo restores the previous program', code.value === 'start\nprint "keep me"\nend');
+    var nameBox = doc.getElementById('file-name');
+    nameBox.value = 'my game';
+    nameBox.dispatchEvent(new win.Event('change'));
+    check('Renaming adds .kv and keeps the name as plain text', nameBox.value === 'my game.kv' && localStorage.getItem('kaviel.filename') === 'my game.kv');
+    nameBox.value = '../evil<b>.kv';
+    nameBox.dispatchEvent(new win.Event('change'));
+    check('A rename cannot hold a path', nameBox.value.indexOf('/') < 0);
+    var dropped = new win.DataTransfer();
+    dropped.items.add(new win.File(['start\nprint "dropped"\nend'], 'dropped.kv'));
+    var previousToastText = doc.getElementById('toast-text').textContent;
+    doc.dispatchEvent(new win.DragEvent('drop', {dataTransfer: dropped, bubbles: true, cancelable: true}));
+    for (var waits = 0; waits < 100 && doc.getElementById('toast-text').textContent === previousToastText; waits++) await settle();
+    check('Dropping a .kv file opens it', code.value.includes('"dropped"') && doc.getElementById('file-name').value === 'dropped.kv' && doc.getElementById('edited').hidden);
+    var themeBefore = doc.documentElement.dataset.theme || '';
+    doc.getElementById('theme-toggle').click();
+    check('The theme button switches and remembers the theme', doc.documentElement.dataset.theme && doc.documentElement.dataset.theme !== themeBefore && localStorage.getItem('kaviel.theme') === doc.documentElement.dataset.theme);
+    doc.getElementById('bigger').click();
+    var sizeNow = win.getComputedStyle(code).fontSize;
+    check('Bigger text grows the editor and highlight together', sizeNow === '16px' && win.getComputedStyle(doc.getElementById('highlight')).fontSize === '16px' && win.getComputedStyle(code).lineHeight === win.getComputedStyle(doc.getElementById('highlight')).lineHeight && localStorage.getItem('kaviel.fontsize') === '16');
+    doc.getElementById('smaller').click();
+    check('Smaller text brings it back', win.getComputedStyle(code).fontSize === '15px');
+
     var savedNameBeforeHash = localStorage.getItem('kaviel.filename');
     await load('#collatz');
     check('Hash loads the requested example', frame.contentDocument.getElementById('code').value.includes('define n = 27'));
@@ -345,7 +400,7 @@
     await load('#%');
     check('Malformed hash does not break editor initialization', frame.contentDocument.getElementById('gutter').children.length > 0);
     await load('#toString');
-    check('Inherited object names are not examples', frame.contentDocument.getElementById('code').value.includes('recovered'));
+    check('Inherited object names are not examples', frame.contentDocument.getElementById('code').value === localStorage.getItem('kaviel.source'));
     localStorage.setItem('kaviel.source', '');
     await load();
     check('Empty saved source remains empty', frame.contentDocument.getElementById('code').value === '');
@@ -353,7 +408,7 @@
     doc = frame.contentDocument;
     check('Narrow layout keeps editor and both panels visible', doc.getElementById('code').clientHeight > 0 && doc.querySelector('.pane.output').clientHeight > 0 && doc.querySelector('.pane.problems').clientHeight > 0 && doc.documentElement.scrollWidth <= 390);
     doc.getElementById('tutorials-toggle').click();
-    check('Tutorials stay usable on a narrow screen', doc.getElementById('tutorial').open && doc.querySelectorAll('.tutorial-lesson').length === 5);
+    check('Tutorials stay usable on a narrow screen', !doc.getElementById('tutorial').hidden && doc.querySelectorAll('.tutorial-lesson').length === T.length);
     doc.getElementById('tutorial-close').click();
   } catch (error) {
     failed++;
@@ -365,6 +420,10 @@
     else localStorage.setItem('kaviel.filename', originalName);
     if (originalTutorial === null) localStorage.removeItem('kaviel.tutorial.position');
     else localStorage.setItem('kaviel.tutorial.position', originalTutorial);
+    if (originalDone === null) localStorage.removeItem('kaviel.tutorial.done'); else localStorage.setItem('kaviel.tutorial.done', originalDone);
+    if (originalVisited === null) localStorage.removeItem('kaviel.visited'); else localStorage.setItem('kaviel.visited', originalVisited);
+    if (originalTheme === null) localStorage.removeItem('kaviel.theme'); else localStorage.setItem('kaviel.theme', originalTheme);
+    if (originalSize === null) localStorage.removeItem('kaviel.fontsize'); else localStorage.setItem('kaviel.fontsize', originalSize);
     if (originalBackup === null) localStorage.removeItem('kaviel.tutorial.backup');
     else localStorage.setItem('kaviel.tutorial.backup', originalBackup);
     results.textContent = passed + ' passed, ' + failed + ' failed\n' + log.join('\n');

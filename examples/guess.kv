@@ -1,0 +1,11 @@
+start
+# The computer thinks of a number. Can you guess it?
+define secret = pick 1, 2, 3, 4, 5
+define ask{1} = ("Guess my number, from 1 to 5: ")
+ask{1}
+define guess = number(answer{1})
+if guess = secret
+  print "Yes! You got it."
+else
+  print "Not this time. I was thinking of" secret
+end

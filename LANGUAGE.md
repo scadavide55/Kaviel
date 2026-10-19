@@ -334,11 +334,11 @@ Static files, no dependencies, no build step:
 | `kaviel.html` | editor window, layout and run integration |
 | `editor.css` | responsive workspace theme |
 | `editor-ui.js` | highlighting, find, local files, guide, status |
-| `tutorials.js` | five step-by-step lessons, opened from the editor |
+| `tutorials.js` | ten lessons (41 steps) in a side panel next to the editor |
 | `test.js` | 80 language tests, including the §14 examples |
 | `v1-test.js` | 61 tests: thresholds, functions, lists, keys, async and cancellation |
 | `cli-test.js` | 19 tests of the `kaviel` command through pipes and signals |
-| `ide-test.html` | 93 browser checks: run, input, keys, Stop, tutorials, files, layout |
+| `ide-test.html` | 108 browser checks: run, input, keys, Stop, lessons, files, drag and drop, layout |
 | `run.js` | the command: `kaviel run`, `kaviel help`, `kaviel version` |
 | `examples/` | runnable programs, one per idea |
 
@@ -369,8 +369,8 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 - Output streams as it is printed, including before an answer or a key.
 - Problems are buttons; click one to select its source line. Editing clears old marks and marks the output as belonging to the previous run.
 - `Tab` two spaces, `Shift+Tab` up to two back, Enter keeps indentation and opens a block after `if`, `else`, `repeat`, `until`, `random`, `define name(...)`.
-- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Tutorials** opens five lessons with 19 steps, each loadable into the editor, with the previous code kept for restoring.
-- Draft and file name live in `localStorage`; Open reads `.kv` up to 1 MB without executing it; Save downloads the exact source; `Cmd/Ctrl+S` saves instead of the page.
+- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Lessons** opens a side panel with ten lessons (41 steps) and 13 examples; each step loads into the editor, and the previous code is kept for restoring.
+- Draft and file name live in `localStorage`; the file name can be renamed in the top bar. New, Open and Save sit in the top bar: Open (or dropping a file on the page) reads `.kv` up to 1 MB without executing it; Save downloads the exact source; `Cmd/Ctrl+S` saves instead of the page. Light/dark theme and text size are remembered.
 - Everything is local: no account, no upload, no analytics.
 
 ---
@@ -382,7 +382,7 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 | `node test.js` | 80 passed |
 | `node v1-test.js` | 61 passed |
 | `node cli-test.js` | 19 passed |
-| `ide-test.html` in Brave (headless) | 93 passed |
+| `ide-test.html` in Brave (headless) | 108 passed |
 | The ten examples in `examples/` | all run without errors except `errors.kv`, which is meant to show them |
 | Interactive terminal through a real pty | answers, order and final line verified by hand |
 | Collatz of 27 | reaches 1; counted from 1 it reads 112 |

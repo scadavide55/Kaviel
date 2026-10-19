@@ -18,6 +18,17 @@
 | A13 | a decimal comma is read as a decimal point, in `number("1,5")` and in `is 2.5` |
 | A14 | the same mistake inside a loop is shown once, with `(×50)`, in the terminal and in the editor |
 | B `for each` | `for each pet in pets` walks a list or a text, with `break`; a new example, a lesson step in three languages and the specification came with it |
+| A6 | `nothing` prints an empty line; inside a list it still reads `nothing` |
+| A8 | "needs 1 argument", singular |
+| A9 | the step limit says the program used its steps, not that a loop is broken |
+| A11 | a text stops at 1 000 000 characters with a sentence, instead of an internal error |
+| A16 | a line after `end` is reported once |
+| A17 | a function can be called above its own definition, as the specification promised |
+| A18, A19 | `Ciao Mario!` and `Ada` — punctuation attaches, an empty piece adds no space |
+| A20, A21 | truthiness and the text comparison rule are written in the specification |
+| B text | `upper`, `lower`, `trim`, `part`, `split`, `join`, with positions from 1 and accents counted as one |
+| H1 | 405 lines of the old interpreter removed from `engine.js` |
+| D | every count in the README and the specification brought up to date, help aligned |
 
 This file is the list that was started on 19 October 2026 and then checked again, item by item, against the code.
 Every line below was **run or read**, not guessed. Where a claim could not be reproduced it says so.

@@ -15,8 +15,8 @@ const HELP = `Kaviel ${VERSION} — a small language that reads like you think.
 
 Usage
   kaviel run <file.kv>   Run a program
-  kaviel help               Show this help
-  kaviel version            Show the version
+  kaviel help            Show this help
+  kaviel version         Show the version
 
 While a program runs
   Answers to a question are typed and confirmed with Enter.

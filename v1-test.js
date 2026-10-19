@@ -37,7 +37,7 @@ check('locals do not leak', program('define n = 10\ndefine local(n)\n  set n = n
 check('functions use globals, not caller locals', program('define x = 5\ndefine read()\n  return x\ndefine caller(x)\n  return read()\nprint caller(99)'), {output: ['5']});
 check('set existing global in function', program('define n = 0\ndefine inc()\n  set n = n + 1\ninc()\nprint n'), {output: ['1']});
 check('recursive factorial', program('define factorial(n)\n  if n = 0 = return 1\n  return n * factorial(n - 1)\nprint factorial(5)'), {output: ['120']});
-check('function without return', program('define say()\n  print "hi"\nprint say()'), {output: ['hi', 'nothing']});
+check('function without return', program('define say()\n  print "hi"\nprint say()'), {output: ['hi', '']});
 check('unknown function', program('unknown()\nprint "alive"'), {output: ['alive'], errors: 1, contains: 'function'});
 check('wrong arity does not evaluate side effects', program('define f()\n  return 1\nprint f(ask("no"))\nprint "alive"'), {output: ['alive'], errors: 1, contains: 'arguments'});
 check('duplicate parameter', program('define bad(x, x)\n  print "no"\nprint "alive"'), {output: ['alive'], errors: 1, contains: 'different name'});
@@ -74,7 +74,7 @@ check('unsupported key name', program('define keypress{1} = CommandW\nprint "ali
 check('not covers the whole comparison', program('define age = 9\nif not age = 9\n  print "A"\nif not age = 10\n  print "B"\nif not age = 10 and age = 9\n  print "C"\nprint not false'), {output: ['B', 'C', 'true']});
 check('not with brackets and in arithmetic stays valid', program('define age = 9\nif not (age > 3)\n  print "D"\nprint -age'), {output: ['-9']});
 check('unknown word suggests quotes', program('print Hello'), {errors: 1, contains: 'put it in quotes: "Hello"'});
-check('step budget', program('until false\n  print "loop"'), {limit: 20, errors: 1, stopped: true, contains: 'not ending'});
+check('step budget', program('until false\n  print "loop"'), {limit: 20, errors: 1, stopped: true, contains: 'used its'});
 (async () => {
   const seen = [];
   const asyncResult = await runAsync(keyProgram, {onOutput: text => seen.push(text), keypress: async key => { assert.equal(key, 'C'); assert.deepEqual(seen, ['Press C to start']); return 'C'; }, input: async () => '21'});

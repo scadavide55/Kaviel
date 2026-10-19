@@ -63,7 +63,7 @@ node run.js version
 | `runtime.js` | the values and built-in commands |
 | `i18n.js`, `strings.js`, `lessons.js`, `tutorials.js` | the three interface languages and the lessons |
 | `run.js` | the command line |
-| `examples/` | 14 small programs |
+| `examples/` | 16 small programs |
 | `test.js`, `v1-test.js`, `cli-test.js`, `ide-test.html` | the tests |
 | `electron/`, `build/` | the desktop app and its icon |
 

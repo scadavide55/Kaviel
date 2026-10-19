@@ -168,7 +168,7 @@ define name = "Davide"
 print "Hello " name "!"
 print "age:" 14
 end`,
-  { output: ['Hello Davide !', 'age: 14'], errors: 0, warnings: 0 });
+  { output: ['Hello Davide!', 'age: 14'], errors: 0, warnings: 0 });
 
 test('+ glues exactly, no space added',
   `start
@@ -244,7 +244,7 @@ print nothing
 if true
   print "ok"
 end`,
-  { output: ['true', 'false', 'nothing', 'ok'], errors: 0, warnings: 0 });
+  { output: ['true', 'false', '', 'ok'], errors: 0, warnings: 0 });
 
 test('decimals and division',
   `start
@@ -382,7 +382,7 @@ define x = 1
 until x = 2
   set x = 1
 end`,
-  { errors: 1, stopped: true, contains: ['not ending'] });
+  { errors: 1, stopped: true, contains: ['used its'] });
 
 test('missing start and end: warnings, everything runs',
   `print "hello"`,
@@ -419,7 +419,7 @@ test('empty ask: warning and empty text',
 define answer = ask("? ")
 print "[" answer "]"
 end`,
-  { output: ['[ ]'], errors: 0, warnings: 1, input: [''], contains: ['empty'] });
+  { output: ['[]'], errors: 0, warnings: 1, input: [''], contains: ['empty'] });
 
 test('ask with nobody to answer: error, run continues',
   `start
@@ -858,6 +858,79 @@ for pet in ["cat"]
   print pet
 end`,
   { output: [], errors: 1, contains: 'followed by `each`' });
+
+test('text commands: upper, lower, trim',
+  `start
+print upper("città")
+print lower("ABC")
+print trim("  x  ") "|"
+end`,
+  { output: ['CITTÀ', 'abc', 'x |'], errors: 0, warnings: 0 });
+
+test('split makes a list and join puts it back together',
+  `start
+define parts = split("uno due tre", " ")
+print length(parts)
+print parts
+print join(parts, "-")
+end`,
+  { output: ['3', '["uno", "due", "tre"]', 'uno-due-tre'], errors: 0, warnings: 0 });
+
+test('part takes a piece by position',
+  `start
+print part("hello", 2, 4)
+print part("città", 5, 5)
+end`,
+  { output: ['ell', 'à'], errors: 0, warnings: 0 });
+
+test('text commands refuse what they cannot do',
+  `start
+print upper(5)
+print part("abc", 2, 9)
+print split("a b")
+print "alive"
+end`,
+  { output: ['alive'], errors: 3 });
+
+test('punctuation stays attached to the word before it',
+  `start
+print "Ciao" "Mario" "!"
+print "" "Ada"
+print "(" "x" ")"
+end`,
+  { output: ['Ciao Mario!', 'Ada', '(x)'], errors: 0, warnings: 0 });
+
+test('nothing prints as an empty line',
+  `start
+print nothing
+print "after"
+end`,
+  { output: ['', 'after'], errors: 0, warnings: 0 });
+
+test('a text that grows past the limit stops that line only',
+  `start
+define s = "ab"
+repeat 25
+  set s = s + s
+print "alive"
+end`,
+  { output: ['alive'], errors: 1, contains: 'limit' });
+
+test('a function can be called above its own definition',
+  `start
+print twice(4)
+define twice(n)
+  return n * 2
+end`,
+  { output: ['8'], errors: 0, warnings: 0 });
+
+test('a line after end is reported',
+  `start
+print "a"
+end
+print "b"
+end`,
+  { output: ['a', 'b'], errors: 0, warnings: 1, contains: 'after `end`' });
 
 /* ---------------------------------------------------------- result */
 

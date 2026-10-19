@@ -15,7 +15,7 @@ Six laws follow. If a proposal breaks one of them, the proposal is wrong, not th
 |---|---|---|
 | 1 | **It never stops** | a broken line is skipped, the rest runs to `end` |
 | 2 | **Nothing is silent** | every error leaves a visible mark, with line and explanation |
-| 3 | **Few words** | one word per idea, no synonyms; the engine reserves 23 words, of which 14 are commands and 5 (`under`, `over`, `is`, `and`, `or`) are words used inside a sentence |
+| 3 | **Few words** | one word per idea, no synonyms; the engine reserves 24 words, of which 15 are commands and 6 (`under`, `over`, `is`, `and`, `or`, `in`) are words used inside a sentence |
 | 4 | **One thing, one way** | two syntaxes for the same action are a design bug |
 | 5 | **It reads as it happens** | indentation is the block, `print "hi"`, `=` is equality, `under 18` reads like English |
 | 6 | **The first error is not the last** | every error is reported in one run, not one per run |
@@ -200,7 +200,7 @@ print square(6)
 - `return expr` ends the function and sends the value back; `return` alone sends `nothing`.
 - A function without `return` runs and gives `nothing`.
 - Parameters are local names; they shadow outer names of the same kind. A function can read globals and change an existing global with `set`.
-- Functions are defined at the start of the program and may be called before their line; nested definitions are an error.
+- A function may be called from a line above its own `define`: the whole program is read before it runs. Nested definitions are an error.
 - Calling with the wrong number of arguments is an error and **does not evaluate the arguments**.
 - Recursion works up to **128 nested calls**; past that it is an error, not a crash.
 - A function cannot `break` its caller's loop.
@@ -225,6 +225,7 @@ print pets               # ["cat", "owl", "fox", "bee"]
 - `items[i]` reads; `set items[i] = v` changes one item; `set items[1][2] = v` reaches inside.
 - A position must be a whole number from 1 to the length; `2.0` counts as 2. Otherwise an error names the real length. To get a whole number from a division, use `//`.
 - `length(x)` counts items, or characters in text (Unicode-aware).
+- Text commands: `upper("ciao")`, `lower("ABC")`, `trim("  x  ")`, `part("hello", 2, 4)` gives `ell`, `split("a,b", ",")` gives a list, `join(list, "-")` puts it back together. Positions start at 1, and accented letters count as one.
 - `append(list, value)` adds at the end; `list` is changed in place, so functions receive the same list.
 - `number(text)` converts text to a number, or errors if it is not one. A comma works as the decimal mark: `number("1,5")` is 1.5, and so is `2,5 = is 2.5`.
 - Lists compare by their contents: `[1, [2]] = [1, [2]]` is true.
@@ -246,10 +247,13 @@ Four kinds of value: number, text, `true`/`false`, `nothing`, plus lists.
 | `1 / 0` | **error**, `nothing`, run continues |
 | `"rock" = 1` | `false` + **warning** (a text that is not a number stays unequal) |
 | `print "a " b` | one space between values, and none where one is already written |
+| `print "Ciao" name "!"` | punctuation stays attached: `Ciao Mario!`, never `Mario !` |
+| `print nothing` | an empty line |
 
 To glue text exactly, use `+`: `print "Hi " + name + "!"`.
 
-Truthiness: `false`, `0`, `""` and `nothing` are false; everything else, including `[]`, is true.
+Truthiness: `false`, `0`, `""` and `nothing` are false; everything else, including `[]`, is true. This is used by `if`, `until`, `and`, `or` and `not`.
+Comparison of text: `=` works, and reads a number out of a text when the other side is a number. `<`, `>`, `<=`, `>=` want numbers; on text they raise an error.
 
 ---
 
@@ -292,6 +296,7 @@ Editor: Output on top, Problems below, click a problem to select its line. Termi
 | Nested function calls | 128 | error, the call is skipped |
 | Items in a list | 100 000 | error, `append` refused |
 | Output lines | 10 000 | error, program stopped |
+| Characters in one text | 1 000 000 | error on that line, run continues |
 
 The step limit is the only automatic stop, and it is mandatory: a wrong `set` inside a loop creates an endless loop on the first try.
 
@@ -340,12 +345,12 @@ Static files, no dependencies, no build step:
 | `editor.css` | responsive workspace theme |
 | `editor-ui.js` | highlighting, find, local files, guide, status |
 | `tutorials.js` | 13 lessons (50 steps) in a side panel next to the editor, texts in `lessons.js` (en, it, fr) |
-| `test.js` | 80 language tests, including the §14 examples |
-| `v1-test.js` | 64 tests: thresholds, functions, lists, keys, async and cancellation |
+| `test.js` | 112 language tests, including the §14 examples |
+| `v1-test.js` | 72 tests: thresholds, functions, lists, keys, async and cancellation |
 | `cli-test.js` | 20 tests of the `kaviel` command through pipes and signals |
 | `i18n.js` | Italian and French interface (the language itself stays English) |
 | `strings.js` | translations of the text inside quotes in lessons, examples and help; keywords never change |
-| `ide-test.html` | 136 browser checks: run, input, keys, Stop, lessons, symbols, files, drag and drop, layout |
+| `ide-test.html` | 137 browser checks: run, input, keys, Stop, lessons, symbols, files, drag and drop, layout |
 | `run.js` | the command: `kaviel run`, `kaviel help`, `kaviel version` |
 | `examples/` | runnable programs, one per idea |
 | `index.html` | the address GitHub Pages serves: it opens `kaviel.html` |
@@ -386,7 +391,7 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 - Output streams as it is printed, including before an answer or a key.
 - Problems are buttons; click one to select its source line. Editing clears old marks and marks the output as belonging to the previous run.
 - `Tab` two spaces, `Shift+Tab` up to two back, Enter keeps indentation and opens a block after `if`, `else`, `repeat`, `until`, `random`, `define name(...)`.
-- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Lessons** opens a side panel with 13 lessons (50 steps, ending in a guided treasure game) and 14 examples; each step loads into the editor, and the previous code is kept for restoring.
+- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Lessons** opens a side panel with 13 lessons (51 steps, ending in a guided treasure game) and 16 examples; each step loads into the editor, and the previous code is kept for restoring.
 - The symbol bar above the code puts `"` `(` `)` `{` `}` `[` `]` `=` `#` `,` where the cursor is: on a French keyboard the curly and square brackets need AltGr, and on a tablet they are missing. A symbol replaces the selected text and marks the file as edited.
 - Every lesson step has **Listen**: the browser's own voice reads the title and the text in the language of the site, and the same button stops it. Steps and closing the panel stop the reading. Without a voice on the system the button is not there.
 - **Download** in the top bar points at the installer for the system you are on (macOS, Windows, Linux) and names it in its title; on a phone, and inside the desktop app, it is not there. The file names live in one place, `window.KAVIEL_APP` in the head of `kaviel.html`, so moving the installers elsewhere is one line.
@@ -399,13 +404,13 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 
 | Check | Result |
 |---|---|
-| `node test.js` | 80 passed |
-| `node v1-test.js` | 64 passed |
+| `node test.js` | 112 passed |
+| `node v1-test.js` | 72 passed |
 | `node cli-test.js` | 20 passed |
 | `ide-test.html` in Brave (headless) | 136 passed |
 | `npm start` (the real window, Electron 44.9.0) | page, `localStorage`, Run and the hidden Download button verified in the window |
 | The built `Kaviel-1.0.0-beta-universal.dmg`, mounted and launched | the same checks pass from `app.asar`, console clean |
-| The ten examples in `examples/` | all run without errors except `errors.kv`, which is meant to show them |
+| The sixteen examples in `examples/` | all run without errors except `errors.kv`, which is meant to show them |
 | Interactive terminal through a real pty | answers, order and final line verified by hand |
 | Collatz of 27 | reaches 1; counted from 1 it reads 112 |
 
@@ -428,7 +433,11 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 | `under 18` / `over 18` | `< 18` / `> 18` | **Davide's decision**, changed on 20 October 2026 so that they match `<` and `>` |
 | `is 18` | `= 18`, and both read a number out of text | **Davide's decision**, 20 October 2026: `is` and `=` now agree on numbers |
 | `for each x in list` | three words, one block, no counter | **Davide's decision**, 20 October 2026: the shortest way to walk a list that still reads like English |
-| builtins | `length`, `append`, `number` | the three every first program needs; more would be words to learn |
+| `nothing` printed | an empty line | 20 October 2026: the word `nothing` on screen looked like a value |
+| punctuation in `print` | `! ? . , : ;` attach to the word before | 20 October 2026: `Ciao Mario !` was wrong in Italian and French |
+| functions before their line | allowed | the specification already promised it, the engine now does it |
+| text limit | 1 000 000 characters | a text that doubles itself ran the engine out of memory with no explanation |
+| builtins | `length`, `append`, `number`, `upper`, `lower`, `trim`, `part`, `split`, `join` | six of them arrived on 20 October 2026, when text work became the biggest hole |
 | `not` | covers the whole comparison after it: `not age = 9` is `not (age = 9)` | Davide asked for it, 19 Oct 2026 |
 | unknown word in an expression | the hint also says: put it in quotes to show it as text | a first program often forgets the quotes |
 
@@ -452,4 +461,4 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 ## 19. OPEN
 
 1. `import` with real modules — v1.1 or v2?
-3. Whether `nothing` should print as an empty string instead of the word `nothing`.
+3. ~~Whether `nothing` should print as an empty string~~ — decided on 20 October 2026: it does.

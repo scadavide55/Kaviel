@@ -6,19 +6,21 @@
   'use strict';
   const ERROR = Symbol('expression error');
   const MAX_DEPTH = 128, MAX_LIST = 100000, MAX_OUTPUT = 10000;
-  const builtins = new Set(['length', 'append', 'number']);
+  const ARITY = {length: 1, append: 2, number: 1, upper: 1, lower: 1, trim: 1, split: 2, part: 3, join: 2};
+  const builtins = new Set(Object.keys(ARITY));
+  const MAX_TEXT = 1000000;
   const truthy = v => v !== null && v !== false && v !== 0 && v !== '';
   const typeName = v => Array.isArray(v) ? 'a list' : typeof v === 'number' ? 'a number' : typeof v === 'string' ? 'a text' : typeof v === 'boolean' ? 'true or false' : 'nothing';
   function show(v) {
-    if (Array.isArray(v)) return '[' + v.map(x => typeof x === 'string' ? JSON.stringify(x) : show(x)).join(', ') + ']';
-    if (v === null) return 'nothing';
+    if (Array.isArray(v)) return '[' + v.map(x => x === null ? 'nothing' : typeof x === 'string' ? JSON.stringify(x) : show(x)).join(', ') + ']';
+    if (v === null) return '';
     return typeof v === 'number' && Math.abs(v) < 1e20 ? String(Math.round(v * 1e10) / 1e10) : String(v);
   }
   function joined(parts) {
     let out = '';
     for (let i = 0; i < parts.length; i++) {
       const p = parts[i];
-      if (i && p !== '' && !/[ \t]$/.test(out) && !/^[ \t]/.test(p)) out += ' ';
+      if (i && out !== '' && p !== '' && !/[ \t]$/.test(out) && !/^[ \t]/.test(p) && !/^[!?.,:;)\]}]/.test(p) && !/[([{]$/.test(out)) out += ' ';
       out += p;
     }
     return out;
@@ -72,7 +74,7 @@
     *step(line) {
       if (this.stopped) return false;
       if (++this.steps > this.limit) {
-        this.error(line, 'I ran more than ' + this.limit.toLocaleString('en-US') + ' steps and stopped: a loop is not ending.', 'Look at the repeat / until condition: something inside the loop must really change.');
+        this.error(line, 'The program used its ' + this.limit.toLocaleString('en-US') + ' steps and stopped. Either a loop never ends, or the work is bigger than this language allows.', 'Check the repeat / until condition, and do less inside the loop.');
         this.stopped = true; return false;
       }
       if (this.steps % 256 === 0) yield {type: 'checkpoint', line};
@@ -254,7 +256,7 @@
         }
         case 'Function':
           if (builtins.has(st.name)) { this.error(st.line, '`' + st.name + '` is a built-in function. Choose a different name.'); return; }
-          if (this.functions.has(st.name)) this.warning(st.line, 'Function `' + st.name + '` already existed: its new definition took over.');
+          if (this.functions.has(st.name) && this.functions.get(st.name) !== st) this.warning(st.line, 'Function `' + st.name + '` already existed: its new definition took over.');
           this.functions.set(st.name, st); return;
         default: this.error(st.line, 'The engine does not know this statement.');
       }
@@ -313,8 +315,8 @@
     *call(node) {
       const builtin = builtins.has(node.name), fn = this.functions.get(node.name);
       if (!builtin && !fn) return this.error(node.line, 'I do not know function `' + node.name + '`.', 'Define it first with define ' + node.name + '(...).');
-      const expected = builtin ? (node.name === 'append' ? 2 : 1) : fn.params.length;
-      if (node.args.length !== expected) return this.error(node.line, '`' + node.name + '` needs ' + expected + ' arguments, not ' + node.args.length + '.');
+      const expected = builtin ? ARITY[node.name] : fn.params.length;
+      if (node.args.length !== expected) return this.error(node.line, '`' + node.name + '` needs ' + expected + (expected === 1 ? ' argument' : ' arguments') + ', not ' + node.args.length + '.');
       const args = [];
       for (const expr of node.args) { const value = yield* this.eval(expr); if (value === ERROR) return ERROR; args.push(value); }
       if (builtin) {
@@ -322,6 +324,30 @@
         if (node.name === 'length') {
           if (!Array.isArray(args[0]) && typeof args[0] !== 'string') return this.error(node.line, '`length` needs a list or text.');
           return typeof args[0] === 'string' ? Array.from(args[0]).length : args[0].length;
+        }
+        if (node.name === 'upper' || node.name === 'lower' || node.name === 'trim') {
+          if (typeof args[0] !== 'string') return this.error(node.line, '`' + node.name + '` needs a text.', 'For example: upper("ciao")');
+          if (node.name === 'upper') return args[0].toUpperCase();
+          if (node.name === 'lower') return args[0].toLowerCase();
+          return args[0].trim();
+        }
+        if (node.name === 'split') {
+          if (typeof args[0] !== 'string' || typeof args[1] !== 'string') return this.error(node.line, '`split` needs a text and the separator.', 'For example: split("a,b", ",")');
+          if (args[1] === '') return this.error(node.line, '`split` needs a separator of at least one character.');
+          return args[0].split(args[1]);
+        }
+        if (node.name === 'part') {
+          if (typeof args[0] !== 'string') return this.error(node.line, '`part` needs a text first.', 'For example: part("hello", 2, 4)');
+          const chars = Array.from(args[0]);
+          const from = args[1], to = args[2];
+          if (!Number.isInteger(from) || !Number.isInteger(to)) return this.error(node.line, '`part` wants two whole positions.', 'Positions start at 1.');
+          if (from < 1 || to < from || to > chars.length) return this.error(node.line, '`part` asks for ' + from + ' to ' + to + ', and this text has ' + chars.length + ' letters.', 'Positions start at 1.');
+          return chars.slice(from - 1, to).join('');
+        }
+        if (node.name === 'join') {
+          if (!Array.isArray(args[0])) return this.error(node.line, '`join` needs a list first.', 'For example: join(["a", "b"], "-")');
+          if (typeof args[1] !== 'string') return this.error(node.line, '`join` needs a text to put between the pieces.');
+          return args[0].map(show).join(args[1]);
         }
         const list = args[0];
         if (!Array.isArray(list)) return this.error(node.line, '`append` needs a list as its first argument.');
@@ -369,7 +395,11 @@
         }
         return op === '=' ? result : !result;
       }
-      if (op === '+' && (typeof left === 'string' || typeof right === 'string')) return show(left) + show(right);
+      if (op === '+' && (typeof left === 'string' || typeof right === 'string')) {
+        const glued = show(left) + show(right);
+        if (glued.length > MAX_TEXT) return this.error(node.line, 'This text grew past ' + MAX_TEXT.toLocaleString('en-US') + ' characters, which is the limit.', 'A text that doubles itself runs out of room very quickly.');
+        return glued;
+      }
       if (typeof left !== 'number' || typeof right !== 'number') return this.error(node.line, 'A `' + op + '` wants two numbers, but here there is ' + typeName(left) + ' and ' + typeName(right) + '.', op === '+' ? 'To glue two texts, `+` needs at least one text.' : '');
       let result;
       switch (op) {
@@ -394,6 +424,8 @@
     let program;
     try { program = language.parse(lex.tokens, problems); }
     catch (e) { problems.push({kind: 'error', line: 1, col: 1, message: 'This program is nested too deeply to read safely.', hint: 'Use smaller expressions or functions.'}); program = {statements: []}; }
+    // A function can be called from a line above the one that defines it.
+    for (const st of program.statements) if (st && st.type === 'Function') interpreter.functions.set(st.name, st);
     return {interpreter, problems, iterator: interpreter.list(program.statements)};
   }
   function finish(state) {

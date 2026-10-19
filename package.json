@@ -1,0 +1,14 @@
+{
+  "name": "kaviel",
+  "version": "1.0.0",
+  "description": "A small language that reads like you think.",
+  "private": true,
+  "bin": {
+    "kaviel": "run.js"
+  },
+  "scripts": {
+    "test": "node test.js && node v1-test.js && node cli-test.js",
+    "serve": "python3 -m http.server 8765 --bind 127.0.0.1"
+  },
+  "license": "UNLICENSED"
+}

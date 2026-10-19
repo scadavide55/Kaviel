@@ -58,7 +58,7 @@ function sameKey(received, expected) {
   return expected.length === 1 ? received.toLowerCase() === expected.toLowerCase() : received === expected;
 }
 
-function terminalHost(stdout, stdin) {
+function terminalHost(stdout, stdin, onInterrupt) {
   let waiter = null, pending = '', line = '';
 
   function begin(kind, resolve, reject, expected) {
@@ -104,7 +104,7 @@ function terminalHost(stdout, stdin) {
           continue;
         }
         if (ch === '\x04') { stdout.write('\n'); finish(line); continue; }
-        if (ch === '\x03') { stdout.write('\n'); failWith('cancelled'); continue; }
+        if (ch === '\x03') { stdout.write('\n'); failWith('cancelled'); if (onInterrupt) onInterrupt(); continue; }
         if (ch === '\x1b' || ch < ' ') continue;
         line += ch;
         stdout.write(ch);
@@ -124,7 +124,7 @@ function terminalHost(stdout, stdin) {
       } else {
         const ch = Array.from(pending)[0];
         pending = pending.slice(ch.length);
-        if (ch === '\x03') { stdout.write('\n'); failWith('cancelled'); return; }
+        if (ch === '\x03') { stdout.write('\n'); failWith('cancelled'); if (onInterrupt) onInterrupt(); return; }
         name = ch === '\r' || ch === '\n' ? 'Enter' : ch;
       }
       if (sameKey(name, waiter.expected)) {
@@ -138,7 +138,14 @@ function terminalHost(stdout, stdin) {
 
   stdin.setEncoding('utf8');
   const onData = chunk => { pending += chunk; drain(); };
+  // A program that never reads input would otherwise die at once: Node ends
+  // the process when an empty stdin closes.
+  stdin.on('end', () => { while (waiter) failWith('the terminal closed'); });
+  stdin.on('error', () => { while (waiter) failWith('the terminal closed'); });
   stdin.on('data', onData);
+  // Keep the terminal open for the whole run, so it belongs to the program
+  // and not to Node's read loop.
+  stdin.resume();
 
   return {
     input(question) {
@@ -221,7 +228,7 @@ async function main() {
 
   const controller = new AbortController();
   const interactive = Boolean(process.stdin.isTTY);
-  const host = interactive ? terminalHost(process.stdout, process.stdin) : pipeHost(process.stdin, process.stdout);
+  const host = interactive ? terminalHost(process.stdout, process.stdin, () => controller.abort()) : pipeHost(process.stdin, process.stdout);
 
   const onSignal = () => {
     controller.abort();
@@ -246,7 +253,10 @@ async function main() {
   host.stop('finished');
 
   printProblems(result);
-  if (result.cancelled) return 130;
+  if (result.cancelled) {
+    if (!result.problems.length) process.stderr.write('Stopped by you.\n');
+    return 130;
+  }
   return result.errors ? 1 : 0;
 }
 

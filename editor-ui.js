@@ -167,7 +167,10 @@
   function openGuide() { if (!guide.open) guide.showModal(); $('guide-toggle').setAttribute('aria-expanded', 'true'); }
   $('guide-toggle').addEventListener('click', openGuide);
   $('shortcuts-toggle').addEventListener('click', openGuide);
-  $('guide-close').addEventListener('click', function () { guide.close(); });
+  $('guide-close').addEventListener('click', function () {
+    guide.close();
+    $('guide-toggle').setAttribute('aria-expanded', 'false');
+  });
   guide.addEventListener('close', function () { $('guide-toggle').setAttribute('aria-expanded', 'false'); });
   guide.addEventListener('click', function (ev) {
     var box = guide.getBoundingClientRect();

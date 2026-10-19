@@ -165,6 +165,17 @@ check('stdin closing early does not hang the program', () => {
     assert.equal(t.input.raw, false);
   });
 
+  await acheck('Ctrl+C during a question stops the whole run', async () => {
+    const t = fakeTerminal();
+    let interrupted = false;
+    const host = terminalHost(t.out, t.input, () => { interrupted = true; });
+    const answer = host.input('? ');
+    t.input.emit('data', '\x03');
+    await assert.rejects(answer, /cancelled/);
+    assert.equal(interrupted, true);
+    assert.equal(t.input.raw, false);
+  });
+
   const stopFile = path.join(os.tmpdir(), 'kaviel-stop-' + process.pid + '.kv');
   fs.writeFileSync(stopFile, 'start\nuntil false\n  define x = 1\nend\n');
   const stopper = spawn(node, [cli, 'run', stopFile], {cwd: __dirname, stdio: ['ignore', 'pipe', 'pipe']});

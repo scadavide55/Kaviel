@@ -1,4 +1,5 @@
-# Kaviel 1.0
+# Kaviel 1.5
+# updated on 20/10/2026 , 1:24AM Rome time
 
 **[Try it in your browser](https://scadavide55.github.io/Kaviel/)** · no install, no account, works offline ·
 [Download the desktop app](https://github.com/scadavide55/Kaviel/releases)

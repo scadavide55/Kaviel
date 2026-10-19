@@ -134,8 +134,8 @@
     var askedPrompts = [];
     examples.value = 'questions';
     examples.dispatchEvent(new win.Event('change'));
-    check('Numbered question example loads without asking for input', askedPrompts.length === 0 && doc.getElementById('file-name').textContent === 'questions.kaviel');
-    var fixtureResponse = await fetch('examples/questions.kaviel');
+    check('Numbered question example loads without asking for input', askedPrompts.length === 0 && doc.getElementById('file-name').textContent === 'questions.kv');
+    var fixtureResponse = await fetch('examples/questions.kv');
     check('Numbered question example matches the runnable source file', fixtureResponse.ok && code.value === await fixtureResponse.text());
     doc.getElementById('run').click();
     await until(function () { return state(doc) === 'input'; });
@@ -259,7 +259,7 @@
       return win.Kaviel.run(source, {input: function () { return '14'; }, keypress: function (wanted) { return wanted === 'Space' ? ' ' : wanted; }, rng: function () { return 0.5; }}).errors === 0;
     }));
 
-    var pairs = [['hello', 'hello.kaviel'], ['questions', 'questions.kaviel'], ['age', 'age.kaviel'], ['dice', 'dice.kaviel'], ['collatz', 'collatz.kaviel'], ['rps', 'rock_paper_scissors.kaviel'], ['functions', 'functions.kaviel'], ['lists', 'lists.kaviel'], ['keypress', 'keypress.kaviel'], ['errors', 'errors.kaviel']];
+    var pairs = [['hello', 'hello.kv'], ['questions', 'questions.kv'], ['age', 'age.kv'], ['dice', 'dice.kv'], ['collatz', 'collatz.kv'], ['rps', 'rock_paper_scissors.kv'], ['functions', 'functions.kv'], ['lists', 'lists.kv'], ['keypress', 'keypress.kv'], ['errors', 'errors.kv']];
     var inSync = true, examplesRun = true;
     for (var pair = 0; pair < pairs.length; pair++) {
       examples.value = pairs[pair][0];
@@ -275,7 +275,7 @@
     check('Every example runs without language errors', examplesRun);
 
     doc.querySelector('[data-example="collatz"]').click();
-    check('Explorer examples load source and update the file name', code.value.includes('define n = 27') && doc.getElementById('file-name').textContent === 'collatz.kaviel');
+    check('Explorer examples load source and update the file name', code.value.includes('define n = 27') && doc.getElementById('file-name').textContent === 'collatz.kv');
     check('Explorer identifies the selected example', doc.querySelector('[data-example="collatz"]').getAttribute('aria-current') === 'true');
     await runWith(doc, win);
     check('Elapsed time appears after Run', /ms$/.test(doc.getElementById('execution-time').textContent));
@@ -297,10 +297,10 @@
     win.URL.createObjectURL = function (blob) { savedBlob = blob; return originalURL.call(win.URL, blob); };
     doc.getElementById('save-file').click();
     var savedText = await savedBlob.text();
-    check('Save prepares a .kaviel download with exact source bytes', download === 'collatz.kaviel' && savedText === code.value);
+    check('Save prepares a .kv download with exact source bytes', download === 'collatz.kv' && savedText === code.value);
     download = null;
     code.dispatchEvent(new win.KeyboardEvent('keydown', {key: 's', ctrlKey: true, bubbles: true, cancelable: true}));
-    check('Ctrl+S saves source rather than the HTML page', download === 'collatz.kaviel');
+    check('Ctrl+S saves source rather than the HTML page', download === 'collatz.kv');
     win.HTMLAnchorElement.prototype.click = originalClick;
     win.URL.createObjectURL = originalURL;
 
@@ -312,18 +312,18 @@
       doc.getElementById('file-input').dispatchEvent(new win.Event('change'));
       for (var wait = 0; wait < 100 && doc.getElementById('toast').textContent === previousToast; wait++) await settle();
     }
-    await importFile(new win.File(['\uFEFFstart\r\nprint "imported"\r\nend'], 'imported.kaviel', {type: 'text/plain'}));
-    check('Open imports local source and normalizes BOM and CRLF', code.value === 'start\nprint "imported"\nend' && doc.getElementById('file-name').textContent === 'imported.kaviel');
+    await importFile(new win.File(['\uFEFFstart\r\nprint "imported"\r\nend'], 'imported.kv', {type: 'text/plain'}));
+    check('Open imports local source and normalizes BOM and CRLF', code.value === 'start\nprint "imported"\nend' && doc.getElementById('file-name').textContent === 'imported.kv');
     check('Imported files are saved locally without execution', localStorage.getItem('kaviel.source') === code.value && doc.getElementById('out').textContent === '');
     var importedSource = code.value;
     await importFile(new win.File(['not source'], 'invalid.png'));
-    check('Open rejects unsupported file types without replacing source', code.value === importedSource && doc.getElementById('toast').textContent.includes('.kaviel'));
-    await importFile(new win.File(['x'.repeat(1024 * 1024 + 1)], 'large.kaviel'));
+    check('Open rejects unsupported file types without replacing source', code.value === importedSource && doc.getElementById('toast').textContent.includes('.kv'));
+    await importFile(new win.File(['x'.repeat(1024 * 1024 + 1)], 'large.kv'));
     check('Open rejects oversized files without replacing source', code.value === importedSource && doc.getElementById('toast').textContent.includes('1 MB'));
     var fileText = win.File.prototype.text, finishRead;
     win.File.prototype.text = function () { return new Promise(function (resolve) { finishRead = resolve; }); };
     var delayed = new win.DataTransfer();
-    delayed.items.add(new win.File(['unused'], 'delayed.kaviel'));
+    delayed.items.add(new win.File(['unused'], 'delayed.kv'));
     doc.getElementById('file-input').files = delayed.files;
     doc.getElementById('file-input').dispatchEvent(new win.Event('change'));
     setSource('start\nprint "newer edit"\nend');

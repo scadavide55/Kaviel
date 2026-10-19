@@ -36,7 +36,7 @@ function run(args, input) {
 check('help explains run and help', () => {
   const r = run(['help']);
   assert.equal(r.status, 0);
-  assert.match(r.stdout, /kaviel run <file\.kaviel>/);
+  assert.match(r.stdout, /kaviel run <file\.kv>/);
   assert.match(r.stdout, /kaviel help/);
 });
 
@@ -53,31 +53,31 @@ check('version prints the engine version', () => {
 });
 
 check('running hello prints its line', () => {
-  const r = run(['run', 'examples/hello.kaviel']);
+  const r = run(['run', 'examples/hello.kv']);
   assert.equal(r.status, 0);
   assert.equal(r.stdout, 'Hello!\n');
 });
 
 check('legacy form without run still works', () => {
-  const r = run(['examples/hello.kaviel']);
+  const r = run(['examples/hello.kv']);
   assert.equal(r.status, 0);
   assert.equal(r.stdout, 'Hello!\n');
 });
 
 check('piped answers reach numbered questions in order', () => {
-  const r = run(['run', 'examples/questions.kaviel'], 'Luca\n14\n');
+  const r = run(['run', 'examples/questions.kv'], 'Luca\n14\n');
   assert.equal(r.status, 0);
   assert.equal(r.stdout, "What's your name? Luca\nHow old are you? 14\nHello Luca You are 14 Years old.\n");
 });
 
 check('a key waits for the matching letter', () => {
-  const r = run(['run', 'examples/keypress.kaviel'], 'c\nAda\n');
+  const r = run(['run', 'examples/keypress.kv'], 'c\nAda\n');
   assert.equal(r.status, 0);
   assert.equal(r.stdout, "Press C to continue.\nPress C … c\nWhat's your name? Ada\nHello Ada\n");
 });
 
 check('errors go to stderr with line numbers and exit 1', () => {
-  const r = run(['run', 'examples/errors.kaviel']);
+  const r = run(['run', 'examples/errors.kv']);
   assert.equal(r.status, 1);
   assert.equal(r.stdout, 'Hello!\nsmall\nI made it all the way to the end\n');
   assert.match(r.stderr, /line 3 · error/);
@@ -85,9 +85,9 @@ check('errors go to stderr with line numbers and exit 1', () => {
 });
 
 check('a missing file exits 2 with a readable message', () => {
-  const r = run(['run', 'nope.kaviel']);
+  const r = run(['run', 'nope.kv']);
   assert.equal(r.status, 2);
-  assert.match(r.stderr, /cannot read nope\.kaviel/);
+  assert.match(r.stderr, /cannot read nope\.kv/);
 });
 
 check('run without a file explains what is missing', () => {
@@ -97,7 +97,7 @@ check('run without a file explains what is missing', () => {
 });
 
 check('stdin closing early does not hang the program', () => {
-  const r = run(['run', 'examples/questions.kaviel'], 'Luca\n');
+  const r = run(['run', 'examples/questions.kv'], 'Luca\n');
   assert.equal(r.status, 0);
   assert.match(r.stdout, /Hello Luca You are\b/);
 });
@@ -165,7 +165,7 @@ check('stdin closing early does not hang the program', () => {
     assert.equal(t.input.raw, false);
   });
 
-  const stopFile = path.join(os.tmpdir(), 'kaviel-stop-' + process.pid + '.kaviel');
+  const stopFile = path.join(os.tmpdir(), 'kaviel-stop-' + process.pid + '.kv');
   fs.writeFileSync(stopFile, 'start\nuntil false\n  define x = 1\nend\n');
   const stopper = spawn(node, [cli, 'run', stopFile], {cwd: __dirname, stdio: ['ignore', 'pipe', 'pipe']});
   let stopErr = '';

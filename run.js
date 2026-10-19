@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /* Kaviel CLI.
-   kaviel run program.kaviel
+   kaviel run program.kv
    kaviel help
-   node run.js program.kaviel   (same as run, for older habits)  */
+   node run.js program.kv   (same as run, for older habits)  */
 
 'use strict';
 
@@ -14,7 +14,7 @@ const {runAsync, VERSION} = require('./engine.js');
 const HELP = `Kaviel ${VERSION} — a small language that reads like you think.
 
 Usage
-  kaviel run <file.kaviel>   Run a program
+  kaviel run <file.kv>   Run a program
   kaviel help               Show this help
   kaviel version            Show the version
 
@@ -207,7 +207,7 @@ async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.command === 'help') { process.stdout.write(HELP); return 0; }
   if (args.command === 'version') { process.stdout.write('Kaviel ' + VERSION + '\n'); return 0; }
-  if (!args.file) { fail('Which program? Write it after run: kaviel run hello.kaviel'); return 2; }
+  if (!args.file) { fail('Which program? Write it after run: kaviel run hello.kv'); return 2; }
 
   let source;
   try { source = await readFile(args.file, 'utf8'); }
@@ -215,8 +215,8 @@ async function main() {
     fail('I cannot read ' + args.file + '. Check the name and that the file exists.');
     return 2;
   }
-  if (!/\.kaviel$/i.test(args.file)) {
-    process.stderr.write('A Kaviel program is a .kaviel file; running ' + path.basename(args.file) + ' anyway.\n');
+  if (!/\.kv$/i.test(args.file)) {
+    process.stderr.write('A Kaviel program is a .kv file; running ' + path.basename(args.file) + ' anyway.\n');
   }
 
   const controller = new AbortController();

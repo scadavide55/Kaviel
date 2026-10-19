@@ -22,7 +22,7 @@
 <div class="app-shell">
   <aside class="explorer" aria-label="Examples and quick reference">
     <div class="section-label">YOUR WORKSPACE</div>
-    <div class="workspace-item"><span class="file-icon">K</span><span id="explorer-file">untitled.kaviel</span><span class="dot"></span></div>
+    <div class="workspace-item"><span class="file-icon">K</span><span id="explorer-file">untitled.kv</span><span class="dot"></span></div>
     <div class="section-label examples-heading">START HERE <span>03</span></div>
     <nav class="sample-list" aria-label="First example programs">
       <button data-example="hello"><span class="sample-symbol">01</span><span>Hello world<small>Your first few lines</small></span><span class="sample-arrow">↗</span></button>
@@ -48,7 +48,7 @@
     <div class="mobile-examples"><label for="examples">Start from</label><select id="examples" title="Examples"><option value="">Your code</option><option value="hello">Hello world</option><option value="questions">Two questions</option><option value="age">Under or over</option><option value="dice">A little chance</option><option value="collatz">The Collatz sequence</option><option value="rps">Rock, paper, scissors</option><option value="functions">Your own commands</option><option value="lists">A list of things</option><option value="keypress">Wait for a key</option><option value="errors">Room for mistakes</option></select></div>
     <main class="workbench">
       <section class="editor" aria-label="Source editor">
-        <div class="editor-head"><div class="file-tab"><span class="file-icon">K</span><span id="file-name">untitled.kaviel</span><span class="tab-dot" title="Local working copy"></span></div><div class="editor-actions"><button id="open-file" class="icon-button" title="Open a .kaviel file" aria-label="Open file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 15.5v-11h5l2 2h8v3m-15 6 2-6h13l-2 6z"/></svg></button><button id="save-file" class="icon-button" title="Download source · Cmd/Ctrl+S" aria-label="Save file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m-4-4 4 4 4-4M3 13v4h14v-4"/></svg></button><span class="toolbar-divider"></span><button id="find-toggle" class="icon-button" title="Find · Cmd/Ctrl+F" aria-label="Find in code"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5"/><path d="m12 12 5 5"/></svg></button></div></div>
+        <div class="editor-head"><div class="file-tab"><span class="file-icon">K</span><span id="file-name">untitled.kv</span><span class="tab-dot" title="Local working copy"></span></div><div class="editor-actions"><button id="open-file" class="icon-button" title="Open a .kv file" aria-label="Open file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 15.5v-11h5l2 2h8v3m-15 6 2-6h13l-2 6z"/></svg></button><button id="save-file" class="icon-button" title="Download source · Cmd/Ctrl+S" aria-label="Save file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m-4-4 4 4 4-4M3 13v4h14v-4"/></svg></button><span class="toolbar-divider"></span><button id="find-toggle" class="icon-button" title="Find · Cmd/Ctrl+F" aria-label="Find in code"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5"/><path d="m12 12 5 5"/></svg></button></div></div>
         <form id="find-bar" class="find-bar" hidden role="search"><input id="find-query" aria-label="Find text" placeholder="Find in this file…" autocomplete="off"><span id="find-count" aria-live="polite"></span><button type="button" id="find-prev" aria-label="Previous match">↑</button><button type="submit" aria-label="Next match">↓</button><button type="button" id="find-close" aria-label="Close search">×</button></form>
         <div class="editor-body"><div class="gutter" id="gutter" aria-hidden="true"></div><div class="code-stack"><div class="active-line" id="active-line" aria-hidden="true"></div><pre id="highlight" aria-hidden="true"></pre><textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Kaviel source code"></textarea></div></div>
         <div class="editor-foot"><span id="cursor-position">Ln 1, Col 1</span><span class="spacer"></span><span>Spaces: 2</span><span>UTF-8</span><span class="file-language">Kaviel</span></div>
@@ -61,7 +61,7 @@
     <footer class="workspace-footer"><span id="save-state"><span class="dot"></span> Local draft</span><span class="footer-hint">Small language. Real possibilities.</span><span class="spacer"></span><button id="shortcuts-toggle">Keyboard shortcuts <kbd>?</kbd></button></footer>
   </div>
 </div>
-<input type="file" id="file-input" accept=".kaviel,text/plain" hidden>
+<input type="file" id="file-input" accept=".kv,text/plain" hidden>
 <dialog id="guide" aria-labelledby="guide-title">
   <div class="dialog-head"><div><span class="eyebrow">THE ESSENTIALS</span><h2 id="guide-title">A language that reads like you think.</h2></div><button class="icon-button" id="guide-close" aria-label="Close guide">×</button></div>
   <div class="guide-grid">

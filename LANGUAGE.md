@@ -32,8 +32,8 @@ end
 
 - `start` first, `end` last; if missing, everything still runs and a **warning** appears (law 1).
 - Comments: `#` to the end of the line.
-- Extension: `.kaviel`.
-- A program is run from the terminal (`kaviel run file.kaviel`) or in the browser editor (`kaviel.html`).
+- Extension: `.kv`.
+- A program is run from the terminal (`kaviel run file.kv`) or in the browser editor (`kaviel.html`).
 
 ---
 
@@ -347,10 +347,10 @@ Static files, no dependencies, no build step:
 ## 14. The command
 
 ```
-kaviel run program.kaviel     run a program
+kaviel run program.kv     run a program
 kaviel help                   usage
 kaviel version                version
-node run.js program.kaviel    the same run, older habit
+node run.js program.kv    the same run, older habit
 ```
 
 - Output appears line by line while the program runs.
@@ -358,7 +358,7 @@ node run.js program.kaviel    the same run, older habit
 - Ctrl+C stops the program and prints `Stopped by you.`
 - Exit codes: 0 finished, 1 at least one error, 2 file unreadable or command incomplete, 130 stopped.
 
-To have the bare `kaviel` command, symlink `run.js` into `/usr/local/bin` (needs the owner's approval) or run `npm link` in this folder.
+The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kaviel` (already on the PATH); it calls `run.js` with `/usr/local/bin/node`, because Node is not on the interactive PATH on this Mac. It runs programs from any folder: `kaviel run path/to/name.kv`.
 
 ---
 
@@ -370,7 +370,7 @@ To have the bare `kaviel` command, symlink `run.js` into `/usr/local/bin` (needs
 - Problems are buttons; click one to select its source line. Editing clears old marks and marks the output as belonging to the previous run.
 - `Tab` two spaces, `Shift+Tab` up to two back, Enter keeps indentation and opens a block after `if`, `else`, `repeat`, `until`, `random`, `define name(...)`.
 - `Cmd/Ctrl+F` searches; `?` opens the language guide; **Tutorials** opens five lessons with 19 steps, each loadable into the editor, with the previous code kept for restoring.
-- Draft and file name live in `localStorage`; Open reads `.kaviel` up to 1 MB without executing it; Save downloads the exact source; `Cmd/Ctrl+S` saves instead of the page.
+- Draft and file name live in `localStorage`; Open reads `.kv` up to 1 MB without executing it; Save downloads the exact source; `Cmd/Ctrl+S` saves instead of the page.
 - Everything is local: no account, no upload, no analytics.
 
 ---
@@ -383,7 +383,7 @@ To have the bare `kaviel` command, symlink `run.js` into `/usr/local/bin` (needs
 | `node v1-test.js` | 61 passed |
 | `node cli-test.js` | 19 passed |
 | `ide-test.html` in Brave (headless) | 93 passed |
-| The ten examples in `examples/` | all run without errors except `errors.kaviel`, which is meant to show them |
+| The ten examples in `examples/` | all run without errors except `errors.kv`, which is meant to show them |
 | Interactive terminal through a real pty | answers, order and final line verified by hand |
 | Collatz of 27 | reaches 1; counted from 1 it reads 112 |
 

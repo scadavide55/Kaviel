@@ -3,10 +3,10 @@
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
   var code = $('code'), highlight = $('highlight'), out = $('out');
-  var filename = 'untitled.kaviel', toastTimer, lastRun = false;
+  var filename = 'untitled.kv', toastTimer, lastRun = false;
   var keywords = new Set('start end print define set if else repeat until ask random pick return break and or not keypress'.split(' '));
   var values = new Set(['true', 'false', 'nothing']);
-  var names = {hello: 'hello.kaviel', dice: 'dice.kaviel', rps: 'rock_paper_scissors.kaviel', collatz: 'collatz.kaviel', errors: 'errors.kaviel', questions: 'questions.kaviel', age: 'age.kaviel', functions: 'functions.kaviel', lists: 'lists.kaviel', keypress: 'keypress.kaviel'};
+  var names = {hello: 'hello.kv', dice: 'dice.kv', rps: 'rock_paper_scissors.kv', collatz: 'collatz.kv', errors: 'errors.kv', questions: 'questions.kv', age: 'age.kv', functions: 'functions.kv', lists: 'lists.kv', keypress: 'keypress.kv'};
 
   function escapeHTML(text) {
     return text.replace(/[&<>"']/g, function (c) { return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]; });
@@ -51,8 +51,8 @@
 
   function setFilename(name, persist) {
     // File names are rendered as text, never as markup or file paths.
-    filename = name.replace(/[\\/]/g, '_').replace(/[\u0000-\u001f\u007f]/g, '').slice(0, 120) || 'untitled.kaviel';
-    if (!/\.kaviel$/i.test(filename)) filename += '.kaviel';
+    filename = name.replace(/[\\/]/g, '_').replace(/[\u0000-\u001f\u007f]/g, '').slice(0, 120) || 'untitled.kv';
+    if (!/\.kv$/i.test(filename)) filename += '.kv';
     $('file-name').textContent = $('explorer-file').textContent = filename;
     document.title = filename + ' — Kaviel';
     if (persist !== false) {
@@ -87,7 +87,7 @@
     var file = this.files[0];
     this.value = '';
     if (!file) return;
-    if (!/\.kaviel$/i.test(file.name)) { toast('Choose a .kaviel source file.'); return; }
+    if (!/\.kv$/i.test(file.name)) { toast('Choose a .kv source file.'); return; }
     if (file.size > 1024 * 1024) { toast('This editor opens files up to 1 MB.'); return; }
     try {
       var beforeRead = code.value;

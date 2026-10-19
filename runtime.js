@@ -304,7 +304,7 @@
       if (op === 'under' || op === 'over') {
         const a = numeric(left), b = numeric(right);
         if (a === ERROR || b === ERROR) return this.error(node.line, '`' + op + '` needs numeric values; this response is not a valid number.');
-        return op === 'under' ? a < b : a >= b;
+        return op === 'under' ? a < b : a > b;
       }
       if (op === '=' || op === '!=') {
         const comparable = typeName(left) === typeName(right);

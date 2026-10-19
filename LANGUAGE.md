@@ -150,10 +150,10 @@ Answers `Luca`, `14` → `Hello Luca You are 14 Years old.`
 
 ```
 if answer{1} = under 18 = print "You are under 18."
-if answer{1} = over 18 = print "You are 18 or older."
+if answer{1} = over 18 = print "You are over 18."
 ```
 
-- `under 18` is **< 18**; `over 18` is **>= 18**. So 17 is under, 18 is over. (Decided by Davide.)
+- `under 18` is **< 18**; `over 18` is **> 18**, the same as `>` and `<`. So 17 is under, 19 is over, and 18 is neither: write `number(answer{1}) = 18` for the exact case. (Decided by Davide on 20 October 2026.)
 - They read numbers out of the answer, including `" 18 "`, `"17.5"`, `"1e3"`. Text that is not a number → **error** on that line, run continues.
 - They work on both sides: `if 18 = over answer{1}` is the same test.
 - Ordinary comparisons stay strict: `"18" = 18` is `false` with a warning, because one is text and one is a number.
@@ -420,7 +420,7 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 | functions | `define name(args)` + `return` | **Davide's decision** |
 | list positions | start at 1 | **Davide's decision** |
 | `define ask{1}` with no text | error | **Davide's decision** |
-| `under 18` / `over 18` | `< 18` / `>= 18` | **Davide's decision** |
+| `under 18` / `over 18` | `< 18` / `> 18` | **Davide's decision**, changed on 20 October 2026 so that they match `<` and `>` |
 | builtins | `length`, `append`, `number` | the three every first program needs; more would be words to learn |
 | `not` | covers the whole comparison after it: `not age = 9` is `not (age = 9)` | Davide asked for it, 19 Oct 2026 |
 | unknown word in an expression | the hint also says: put it in quotes to show it as text | a first program often forgets the quotes |

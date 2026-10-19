@@ -2,5 +2,6 @@ start
 define ask{1} = ("How old are you? ")
 ask{1}
 if answer{1} = under 18 = print ("You are under 18.")
-if answer{1} = over 18 = print ("You are 18 or older.")
+if number(answer{1}) = 18 = print ("You are exactly 18.")
+if answer{1} = over 18 = print ("You are over 18.")
 end

@@ -15,9 +15,10 @@ function check(name, source, expected = {}) {
   } catch (e) { console.error('FAIL ' + name, result); throw e; }
 }
 const program = body => 'start\n' + body + '\nend';
-for (const [age, label] of [['17', 'young'], ['18', 'adult'], ['19', 'adult'], [' 18 ', 'adult']]) {
-  check('threshold ' + age, program('define ask{1} = ("Age?")\nask{1}\nif answer{1} = under 18 = print ("young")\nif answer{1} = over 18 = print ("adult")'), {input: [age], output: [label]});
+for (const [age, label] of [['17', 'young'], ['18', 'exactly'], ['19', 'adult']]) {
+  check('threshold ' + age, program('define ask{1} = ("Age?")\nask{1}\nif answer{1} = under 18 = print ("young")\nif answer{1} = "18" = print ("exactly")\nif answer{1} = over 18 = print ("adult")'), {input: [age], output: [label]});
 }
+check('thresholds read numbers out of padded text', program('define ask{1} = ("Age?")\nask{1}\nif answer{1} = under 19 = print "young"\nif answer{1} = over 17 = print "adult"'), {input: [' 18 '], output: ['young', 'adult']});
 for (const input of ['hello', '', '0x12', 'Infinity']) check('invalid numeric input ' + input,
   program('define ask{1} = ("Age?")\nask{1}\nif answer{1} = over 18 = print "wrong"\nprint "alive"'), {input: [input], output: ['alive'], errors: 1, contains: 'numeric'});
 check('inline equality', program('define x = 2\nif x = 2 = print "yes"\nif x = 3 = print "no"'), {output: ['yes']});

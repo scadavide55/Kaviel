@@ -92,8 +92,8 @@
         },
         {
           title: 'Under 18 or over 18',
-          text: 'The computer can check a number. under 18 means less than 18. over 18 means 18 or more, so 18 itself counts as over.',
-          code: 'start\ndefine ask{1} = ("How old are you? ")\nask{1}\nif answer{1} = under 18 = print "You are under 18."\nif answer{1} = over 18 = print "You are 18 or older."\nend',
+          text: 'The computer can check a number. under 18 means less than 18. over 18 means more than 18, so 18 itself is neither under nor over.',
+          code: 'start\ndefine ask{1} = ("How old are you? ")\nask{1}\nif answer{1} = under 18 = print "You are under 18."\nif number(answer{1}) = 18 = print "You are exactly 18."\nif answer{1} = over 18 = print "You are over 18."\nend',
           turn: 'Run it twice. Once with 10, once with 18.'
         },
         {

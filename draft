@@ -68,3 +68,14 @@ import Ask
 
 define Ask value{1} = ("How old are you ? ")
 if keypress = "Command-W"
+
+
+
+#Capitolo 3
+#Esempio 1 
+ start 
+ print ("Press "C" to start )
+define keypress{1} = C
+define ask{1} = ("How are you?")
+if keypress{1} 
+

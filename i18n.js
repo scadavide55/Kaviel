@@ -107,7 +107,21 @@
     ['That is not a .kv file. Pick a file that ends in .kv.', 'Non è un file .kv. Scegli un file che finisce con .kv.', 'Ce n\'est pas un fichier .kv. Choisis un fichier qui finit par .kv.'],
     ['That file is too big. The editor opens files up to 1 MB.', 'Il file è troppo grande. L\'editor apre file fino a 1 MB.', 'Ce fichier est trop gros. L\'éditeur ouvre des fichiers jusqu\'à 1 Mo.'],
     ['Your code changed while the file was opening. Open the file again to replace it.', 'Il codice è cambiato mentre il file si apriva. Riapri il file per sostituirlo.', 'Ton code a changé pendant l\'ouverture. Rouvre le fichier pour le remplacer.'],
-    ['The file could not be read. Your code is unchanged.', 'Non sono riuscito a leggere il file. Il codice è invariato.', 'Le fichier n\'a pas pu être lu. Ton code est inchangé.']
+    ['The file could not be read. Your code is unchanged.', 'Non sono riuscito a leggere il file. Il codice è invariato.', 'Le fichier n\'a pas pu être lu. Ton code est inchangé.'],
+    ['Download', 'Scarica', 'Télécharger'],
+    ['Download Kaviel for your computer', 'Scarica Kaviel per il tuo computer', 'Télécharge Kaviel pour ton ordinateur'],
+    ['The installer is not here yet.', 'L\'installer non è ancora qui.', 'L\'installateur n\'est pas encore là.'],
+    ['Symbols', 'Simboli', 'Symboles'],
+    ['Quotation mark', 'Virgolette', 'Guillemets'],
+    ['Open round bracket', 'Parentesi tonda aperta', 'Parenthèse ouvrante'],
+    ['Close round bracket', 'Parentesi tonda chiusa', 'Parenthèse fermante'],
+    ['Open curly bracket', 'Parentesi graffa aperta', 'Accolade ouvrante'],
+    ['Close curly bracket', 'Parentesi graffa chiusa', 'Accolade fermante'],
+    ['Open square bracket', 'Parentesi quadra aperta', 'Crochet ouvrant'],
+    ['Close square bracket', 'Parentesi quadra chiusa', 'Crochet fermant'],
+    ['Equals sign', 'Segno uguale', 'Signe égal'],
+    ['Comment sign', 'Segno di commento', 'Signe de commentaire'],
+    ['Comma', 'Virgola', 'Virgule']
   ];
   var GUIDE = [
     ['A program begins with <code>start</code> and finishes with <code>end</code>. Words in quotes are text. A line that begins with <code>#</code> is a note for people; the computer skips it.',
@@ -210,7 +224,7 @@
       return Object.prototype.hasOwnProperty.call(literals, inner) ? '"' + literals[inner] + '"' : whole;
     });
   }
-  window.KavielI18n = {lang: lang, code: code};
+  window.KavielI18n = {lang: lang, code: code, t: translate};
 
   if (index > 0) {
     document.querySelectorAll('.guide-grid pre').forEach(function (pre) { pre.textContent = code(pre.textContent); });

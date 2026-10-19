@@ -337,12 +337,22 @@ Static files, no dependencies, no build step:
 | `tutorials.js` | 13 lessons (50 steps) in a side panel next to the editor, texts in `lessons.js` (en, it, fr) |
 | `test.js` | 80 language tests, including the §14 examples |
 | `v1-test.js` | 64 tests: thresholds, functions, lists, keys, async and cancellation |
-| `cli-test.js` | 19 tests of the `kaviel` command through pipes and signals |
+| `cli-test.js` | 20 tests of the `kaviel` command through pipes and signals |
 | `i18n.js` | Italian and French interface (the language itself stays English) |
 | `strings.js` | translations of the text inside quotes in lessons, examples and help; keywords never change |
-| `ide-test.html` | 127 browser checks: run, input, keys, Stop, lessons, files, drag and drop, layout |
+| `ide-test.html` | 136 browser checks: run, input, keys, Stop, lessons, symbols, files, drag and drop, layout |
 | `run.js` | the command: `kaviel run`, `kaviel help`, `kaviel version` |
 | `examples/` | runnable programs, one per idea |
+| `index.html` | the address GitHub Pages serves: it opens `kaviel.html` |
+| `electron/`, `build/` | the desktop app and its icon |
+| `tools/make-release.sh` | writes the release zip, installers included |
+
+The desktop app is this same page opened from disk by Electron: one editor, not two.
+
+- `electron/main.js` opens `kaviel.html` in a window, cancels every `http` and `https` request, and refuses to navigate away from the page. On macOS the menu exists only so that Cmd+C, Cmd+V, Cmd+Q and reload keep working; on Windows and Linux there is no menu bar.
+- `electron/preload.js` tells the page that it is the app (`window.kavielDesktop`), which is what hides **Download**. Nothing else crosses the bridge: no Node, no file system, sandbox on.
+- Electron 44.9.0 and electron-builder 26.15.3 are pinned exactly in `package.json`. `npm run dist:mac` builds one universal `.dmg` (Intel and Apple silicon), `dist:win` an NSIS `.exe`, `dist:linux` a `.tar.gz`. All three build on this Mac with no extra tool.
+- The app keeps drafts in its own `localStorage`, under `~/Library/Application Support/Kaviel` on macOS.
 
 ---
 
@@ -372,6 +382,9 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 - Problems are buttons; click one to select its source line. Editing clears old marks and marks the output as belonging to the previous run.
 - `Tab` two spaces, `Shift+Tab` up to two back, Enter keeps indentation and opens a block after `if`, `else`, `repeat`, `until`, `random`, `define name(...)`.
 - `Cmd/Ctrl+F` searches; `?` opens the language guide; **Lessons** opens a side panel with 13 lessons (50 steps, ending in a guided treasure game) and 14 examples; each step loads into the editor, and the previous code is kept for restoring.
+- The symbol bar above the code puts `"` `(` `)` `{` `}` `[` `]` `=` `#` `,` where the cursor is: on a French keyboard the curly and square brackets need AltGr, and on a tablet they are missing. A symbol replaces the selected text and marks the file as edited.
+- Every lesson step has **Listen**: the browser's own voice reads the title and the text in the language of the site, and the same button stops it. Steps and closing the panel stop the reading. Without a voice on the system the button is not there.
+- **Download** in the top bar points at the installer for the system you are on (macOS, Windows, Linux) and names it in its title; on a phone, and inside the desktop app, it is not there. The file names live in one place, `window.KAVIEL_APP` in the head of `kaviel.html`, so moving the installers elsewhere is one line.
 - Draft and file name live in `localStorage`; the file name can be renamed in the top bar. New, Open and Save sit in the top bar: Open (or dropping a file on the page) reads `.kv` up to 1 MB without executing it; Save downloads the exact source; `Cmd/Ctrl+S` saves instead of the page. Light/dark theme and text size are remembered.
 - Everything is local: no account, no upload, no analytics.
 
@@ -383,8 +396,10 @@ The bare `kaviel` command is installed as a small launcher in `~/.local/bin/kavi
 |---|---|
 | `node test.js` | 80 passed |
 | `node v1-test.js` | 64 passed |
-| `node cli-test.js` | 19 passed |
-| `ide-test.html` in Brave (headless) | 127 passed |
+| `node cli-test.js` | 20 passed |
+| `ide-test.html` in Brave (headless) | 136 passed |
+| `npm start` (the real window, Electron 44.9.0) | page, `localStorage`, Run and the hidden Download button verified in the window |
+| The built `Kaviel-1.0.0-beta-universal.dmg`, mounted and launched | the same checks pass from `app.asar`, console clean |
 | The ten examples in `examples/` | all run without errors except `errors.kv`, which is meant to show them |
 | Interactive terminal through a real pty | answers, order and final line verified by hand |
 | Collatz of 27 | reaches 1; counted from 1 it reads 112 |

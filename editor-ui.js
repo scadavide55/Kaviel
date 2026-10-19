@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   var $ = function (id) { return document.getElementById(id); };
+  var t = (window.KavielI18n && window.KavielI18n.t) || function (text) { return text; };
   var code = $('code'), highlight = $('highlight'), out = $('out');
   var filename = 'untitled.kv', toastTimer, lastRun = false, dirty = false;
   var keywords = new Set('start end print define set if else repeat until ask random pick return break and or not keypress'.split(' '));
@@ -132,6 +133,39 @@
     $('drop-veil').hidden = true;
     if (ev.dataTransfer.files[0]) openFileObject(ev.dataTransfer.files[0]);
   });
+
+  // Symbols: a tap puts the character where the cursor is, then the cursor moves past it.
+  document.querySelectorAll('[data-insert]').forEach(function (button) {
+    button.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
+    button.addEventListener('click', function () {
+      var start = code.selectionStart, end = code.selectionEnd;
+      code.setRangeText(button.dataset.insert, start, end, 'end');
+      code.dispatchEvent(new Event('input', {bubbles: true}));
+      code.focus();
+    });
+  });
+
+  // Download: the button points at the installer for the system you are on.
+  // On a phone there is no app to install, so the button goes away.
+  (function () {
+    var link = $('download'), app = window.KAVIEL_APP;
+    if (!link) return;
+    var ua = navigator.userAgent;
+    var os = /Android|iPhone|iPad|iPod/i.test(ua) ? '' : /Mac/i.test(ua) ? 'mac' : /Win/i.test(ua) ? 'win' : /Linux|X11/i.test(ua) ? 'linux' : '';
+    if (!app || !app.files || !os || !app.files[os]) { link.remove(); return; }
+    link.setAttribute('href', app.base + app.files[os]);
+    link.setAttribute('download', app.files[os]);
+    link.setAttribute('title', t('Download Kaviel for your computer') + ' — ' + {mac: 'macOS', win: 'Windows', linux: 'Linux'}[os]);
+    // From a website, say so plainly when the installer is not there yet (a 404 page helps nobody).
+    link.addEventListener('click', function (ev) {
+      if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
+      ev.preventDefault();
+      fetch(link.href, {method: 'HEAD'}).then(function (response) {
+        if (response.ok) location.href = link.href;
+        else toast(t('The installer is not here yet.') + ' ' + app.files[os]);
+      }).catch(function () { location.href = link.href; });
+    });
+  })();
 
   var NEW_SOURCE = 'start\n\nend\n';
   $('new-file').addEventListener('click', function () {

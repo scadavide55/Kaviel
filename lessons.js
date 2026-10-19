@@ -7,7 +7,8 @@ window.KavielLessons = {
     ui: {
       lesson: 'Lesson', step: 'step', of: 'of', steps: 'steps',
       lineByLine: 'Line by line', see: 'What you will see', turn: 'Your turn', slip: 'Watch out',
-      typeIt: 'Type it yourself', putIt: 'Put it in the editor', typeNote: 'Empty page ready. Type the lines you see in the lesson, then press Run.'
+      typeIt: 'Type it yourself', putIt: 'Put it in the editor', typeNote: 'Empty page ready. Type the lines you see in the lesson, then press Run.',
+      listen: 'Listen', stopReading: 'Stop reading'
     },
     explain: {
       start: 'The program begins here.',
@@ -284,7 +285,8 @@ When you are happy, press Save to keep your game as a .kv file. Show it to your 
     ui: {
       lesson: 'Lezione', step: 'passo', of: 'di', steps: 'passi',
       lineByLine: 'Riga per riga', see: 'Cosa vedrai', turn: 'Tocca a te', slip: 'Attenzione',
-      typeIt: 'Scrivilo tu', putIt: 'Mettilo nell\'editor', typeNote: 'Pagina vuota pronta. Scrivi le righe che vedi nella lezione, poi premi Esegui.'
+      typeIt: 'Scrivilo tu', putIt: 'Mettilo nell\'editor', typeNote: 'Pagina vuota pronta. Scrivi le righe che vedi nella lezione, poi premi Esegui.',
+      listen: 'Ascolta', stopReading: 'Ferma la lettura'
     },
     explain: {
       start: 'Il programma inizia qui.',
@@ -561,7 +563,8 @@ Quando sei contento, premi Salva per tenere il gioco come file .kv. Mostralo all
     ui: {
       lesson: 'Leçon', step: 'étape', of: 'sur', steps: 'étapes',
       lineByLine: 'Ligne par ligne', see: 'Ce que tu verras', turn: 'À toi', slip: 'Attention',
-      typeIt: 'Écris-le toi-même', putIt: 'Mets-le dans l\'éditeur', typeNote: 'Page vide prête. Écris les lignes que tu vois dans la leçon, puis appuie sur Lancer.'
+      typeIt: 'Écris-le toi-même', putIt: 'Mets-le dans l\'éditeur', typeNote: 'Page vide prête. Écris les lignes que tu vois dans la leçon, puis appuie sur Lancer.',
+      listen: 'Écouter', stopReading: 'Arrêter la lecture'
     },
     explain: {
       start: 'Le programme commence ici.',

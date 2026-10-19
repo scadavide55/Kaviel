@@ -430,9 +430,59 @@
     return node;
   }
 
+  // Reading a step aloud: the browser's own voice, in the language of the site.
+  var reader = null, SPEECH = {en: 'en-US', it: 'it-IT', fr: 'fr-FR'};
+  function silence() {
+    reader = null;
+    if (!window.speechSynthesis) return;
+    try { window.speechSynthesis.cancel(); } catch (e) {}
+  }
+  function voiceFor(lang) {
+    var voices = [];
+    try { voices = window.speechSynthesis.getVoices() || []; } catch (e) { return null; }
+    for (var i = 0; i < voices.length; i++) {
+      if (String(voices[i].lang || '').replace('_', '-').toLowerCase().indexOf(lang.slice(0, 2)) === 0) return voices[i];
+    }
+    return null;
+  }
+  function listenButton(step) {
+    if (!window.speechSynthesis || typeof SpeechSynthesisUtterance !== 'function') return null;
+    var said = step.title + '. ' + String(step.text).replace(/\n\n/g, ' ');
+    var button = element('button', 'btn listen');
+    button.type = 'button';
+    button.setAttribute('aria-pressed', 'false');
+    button.innerHTML = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 7.5h3L11 4v12L7 12.5H4z"/><path d="M14 7.5a4 4 0 0 1 0 5M16.5 5a7.5 7.5 0 0 1 0 10"/></svg>';
+    var label = element('span', null, UI.listen || 'Listen');
+    button.appendChild(label);
+    reader = button;
+    button.addEventListener('click', function () {
+      var speaking = button.getAttribute('aria-pressed') === 'true';
+      try { window.speechSynthesis.cancel(); } catch (e) {}
+      if (speaking) {
+        button.setAttribute('aria-pressed', 'false');
+        label.textContent = UI.listen || 'Listen';
+        return;
+      }
+      var speech = new SpeechSynthesisUtterance(said);
+      speech.lang = SPEECH[LANG] || 'en-US';
+      speech.rate = 0.95;
+      var voice = voiceFor(speech.lang);
+      if (voice) speech.voice = voice;
+      speech.onend = speech.onerror = function () {
+        button.setAttribute('aria-pressed', 'false');
+        label.textContent = UI.listen || 'Listen';
+      };
+      button.setAttribute('aria-pressed', 'true');
+      label.textContent = UI.stopReading || 'Stop reading';
+      window.speechSynthesis.speak(speech);
+    });
+    return button;
+  }
+
   function setOpen(open) {
     panel.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
+    if (!open) silence();
   }
   function showTab(name) {
     var lessons = name === 'lessons';
@@ -485,6 +535,7 @@
   }
 
   function drawStep() {
+    silence();
     var lesson = TUTORIALS[position.lesson], step = lesson.steps[position.step];
     var last = position.step === lesson.steps.length - 1;
     stepBox.innerHTML = '';
@@ -504,6 +555,8 @@
     String(step.text).split('\n\n').forEach(function (paragraph) {
       stepBox.appendChild(element('p', 'tutorial-text', paragraph));
     });
+    var listenRow = listenButton(step);
+    if (listenRow) stepBox.appendChild(listenRow);
 
     stepBox.appendChild(element('div', 'block-title', UI.lineByLine || 'Line by line'));
     var rows = element('div', 'tutorial-code');

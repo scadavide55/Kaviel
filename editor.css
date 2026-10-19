@@ -88,6 +88,10 @@ code { font: .92em ui-monospace, "SF Mono", Menlo, monospace; background: var(--
 .tool:hover { background: var(--accent-soft); }
 .tool[aria-expanded="true"] { background: var(--accent-soft); }
 .tool.icon-only { padding: 7px 9px; }
+/* Get the desktop app: the same editor, offline. */
+.download { box-shadow: inset 0 0 0 2px var(--accent); color: var(--accent); }
+.download:hover { background: var(--accent); color: #fff; }
+[data-desktop] #download { display: none !important; }
 .run, .stop { display: inline-flex; align-items: center; gap: 8px; height: 42px; padding: 0 20px; border: 2px solid var(--edge); border-radius: 12px; font-weight: 800; font-size: 17px; box-shadow: 0 3px 0 var(--edge); transition: transform .08s, box-shadow .08s; }
 .run svg, .stop svg { width: 16px; height: 16px; }
 .run { background: var(--go); color: var(--go-ink); }
@@ -139,6 +143,9 @@ code { font: .92em ui-monospace, "SF Mono", Menlo, monospace; background: var(--
 .btn:disabled { opacity: .35; cursor: default; }
 .btn.primary { background: var(--accent); color: #fff; box-shadow: 0 3px 0 var(--edge); }
 .btn.primary:hover { background: var(--accent); filter: brightness(1.06); }
+.listen { align-self: flex-start; height: 34px; padding: 0 12px; font-size: 14px; }
+.listen svg { width: 16px; height: 16px; }
+.listen[aria-pressed="true"] { border-color: var(--accent); background: var(--accent-soft); }
 .nav-row { display: flex; gap: 8px; justify-content: space-between; padding-top: 6px; border-top: 2px dashed var(--line); }
 .restore-code { align-self: flex-start; color: var(--muted); text-decoration: underline; text-underline-offset: 3px; font-size: 13px; }
 .restore-code:hover { color: var(--ink); }
@@ -185,6 +192,13 @@ code { font: .92em ui-monospace, "SF Mono", Menlo, monospace; background: var(--
 .tok-value { color: var(--tok-value); }
 .tok-operator { color: var(--tok-operator); }
 .editor-foot { display: flex; align-items: center; gap: 12px; padding: 6px 14px; border-top: 2px solid var(--line); font-size: 13px; color: var(--muted); }
+
+/* Symbols you cannot find on every keyboard, one tap away. */
+.symbols { display: flex; align-items: center; gap: 4px; padding: 5px 8px; border-bottom: 2px solid var(--line); background: var(--bg); overflow-x: auto; scrollbar-width: none; }
+.symbols button { flex: 0 0 auto; min-width: 30px; height: 30px; padding: 0 7px; border: 2px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 15px; font-weight: 700; line-height: 1; }
+.symbols button:hover { border-color: var(--accent); background: var(--accent-soft); }
+.symbols button:active { transform: translateY(1px); }
+@media (max-width: 460px) { .symbols button { min-width: 28px; padding: 0 5px; } }
 #save-state { display: inline-flex; align-items: center; gap: 6px; }
 
 .find-bar { display: flex; align-items: center; gap: 6px; padding: 6px 10px; border-bottom: 2px solid var(--line); background: var(--bg); }

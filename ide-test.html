@@ -299,6 +299,16 @@
     var finalStep = T[T.length - 1].steps[T[T.length - 1].steps.length - 1];
     check('The last lesson ends with the full treasure game', finalStep.code.indexOf('until day > 3') > 0 && finalStep.code.indexOf('random 70') > 0);
 
+    var listen = doc.querySelector('.tutorial-step .listen');
+    check('Every lesson step offers a Listen button', !!listen && listen.getAttribute('aria-pressed') === 'false' && listen.textContent.trim().length > 3);
+    var listeningWorks = true;
+    try {
+      listen.click();
+      listen.click();
+      listeningWorks = listen.getAttribute('aria-pressed') === 'false';
+    } catch (e) { listeningWorks = false; }
+    check('Reading a step aloud starts and stops without errors', listeningWorks);
+
     doc = frame.contentDocument; win = frame.contentWindow; code = doc.getElementById('code'); examples = doc.getElementById('examples');
     var pairs = [['hello', 'hello.kv'], ['questions', 'questions.kv'], ['age', 'age.kv'], ['dice', 'dice.kv'], ['collatz', 'collatz.kv'], ['rps', 'rock_paper_scissors.kv'], ['functions', 'functions.kv'], ['lists', 'lists.kv'], ['keypress', 'keypress.kv'], ['errors', 'errors.kv'], ['guess', 'guess.kv'], ['timestable', 'timestable.kv'], ['quiz', 'quiz.kv'], ['treasure', 'treasure_hunt.kv']];
     var inSync = true, examplesRun = true;
@@ -469,6 +479,39 @@
     localStorage.setItem('kaviel.source', '');
     await load();
     check('Empty saved source remains empty', frame.contentDocument.getElementById('code').value === '');
+    // Symbols bar and the download button.
+    doc = frame.contentDocument; win = frame.contentWindow; code = doc.getElementById('code');
+    var symbolButtons = doc.querySelectorAll('.symbols [data-insert]');
+    function symb(mark) {
+      for (var s = 0; s < symbolButtons.length; s++) if (symbolButtons[s].dataset.insert === mark) return symbolButtons[s];
+      return null;
+    }
+    check('The symbol bar carries the characters that are hard to type', symbolButtons.length >= 8 && !!symb('"') && !!symb('{') && !!symb('}') && !!symb('[') && !!symb(']'));
+    setSource('start\n\nend\n', 6, 6);
+    symb('"').click();
+    check('A symbol goes in where the cursor is', code.value === 'start\n"\nend\n' && code.selectionStart === 7);
+    setSource('define x = ', 11, 11);
+    symb('{').click();
+    symb('}').click();
+    check('Curly brackets can be typed with two clicks', code.value === 'define x = {}' && code.selectionStart === 13);
+    setSource('print 1', 6, 7);
+    symb('(').click();
+    check('A symbol replaces selected text', code.value === 'print (' && code.selectionStart === 7);
+    check('Using a symbol marks the file as edited', doc.getElementById('edited').hidden === false);
+    var download = doc.getElementById('download');
+    check('The download button points at the installer for this system', !!download && /application\/Kaviel-.+\.(dmg|exe|tar\.gz)$/.test(download.getAttribute('href')) && download.hasAttribute('download'));
+    doc.documentElement.dataset.desktop = '1';
+    check('The desktop app hides the download button', win.getComputedStyle(download).display === 'none');
+    delete doc.documentElement.dataset.desktop;
+
+    var missingReported = false;
+    try {
+      download.click();
+      await until(function () { return !doc.getElementById('toast').hidden; }, 3000);
+      missingReported = doc.getElementById('toast-text').textContent.indexOf('Kaviel-1.0.0-beta-') > 0;
+    } catch (e) { missingReported = false; }
+    check('A missing installer is reported instead of opening a broken page', missingReported);
+
     frame.style.width = '390px';
     doc = frame.contentDocument;
     check('Narrow layout keeps editor and both panels visible', doc.getElementById('code').clientHeight > 0 && doc.querySelector('.pane.output').clientHeight > 0 && doc.querySelector('.pane.problems').clientHeight > 0 && doc.documentElement.scrollWidth <= 390);

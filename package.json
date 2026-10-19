@@ -3,12 +3,93 @@
   "version": "1.0.0",
   "description": "A small language that reads like you think.",
   "private": true,
+  "main": "electron/main.js",
   "bin": {
     "kaviel": "run.js"
   },
   "scripts": {
     "test": "node test.js && node v1-test.js && node cli-test.js",
-    "serve": "python3 -m http.server 8765 --bind 127.0.0.1"
+    "serve": "python3 -m http.server 8765 --bind 127.0.0.1",
+    "start": "electron .",
+    "dist:mac": "electron-builder --mac --publish never",
+    "dist:win": "electron-builder --win --publish never",
+    "dist:linux": "electron-builder --linux --publish never",
+    "dist": "npm run dist:mac && npm run dist:win && npm run dist:linux"
   },
-  "license": "UNLICENSED"
+  "devDependencies": {
+    "electron": "44.9.0",
+    "electron-builder": "26.15.3"
+  },
+  "license": "UNLICENSED",
+  "build": {
+    "appId": "app.kaviel.ide",
+    "productName": "Kaviel",
+    "copyright": "Kaviel",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "kaviel.html",
+      "editor.css",
+      "editor-ui.js",
+      "engine.js",
+      "i18n.js",
+      "lessons.js",
+      "runtime.js",
+      "strings.js",
+      "tutorials.js",
+      "examples/**/*",
+      "electron/**/*"
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "category": "public.app-category.education",
+      "icon": "build/icon.png",
+      "identity": null,
+      "artifactName": "Kaviel-${version}-beta-${arch}.${ext}"
+    },
+    "dmg": {
+      "title": "Kaviel ${version}"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png",
+      "artifactName": "Kaviel-${version}-beta-setup.${ext}"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Kaviel"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Education",
+      "icon": "build/icon.png",
+      "artifactName": "Kaviel-${version}-beta-linux-${arch}.${ext}"
+    }
+  }
 }

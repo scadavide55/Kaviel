@@ -4,8 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kaviel</title>
-<link rel="stylesheet" href="editor.css?v=8">
+<link rel="stylesheet" href="editor.css?v=9">
 <script>try { var t = localStorage.getItem('kaviel.theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<script>
+  // Where the desktop installers live. Change base to a GitHub Releases folder
+  // (or anything that serves the files) when the site moves to GitHub Pages.
+  window.KAVIEL_APP = {
+    version: '1.0.0-beta',
+    base: 'application/',
+    files: {mac: 'Kaviel-1.0.0-beta-universal.dmg', win: 'Kaviel-1.0.0-beta-setup.exe', linux: 'Kaviel-1.0.0-beta-linux-x64.tar.gz'}
+  };
+  // The desktop app never shows the download button: it is already installed.
+  if (window.kavielDesktop) document.documentElement.dataset.desktop = '1';
+</script>
 </head>
 <body>
 
@@ -32,6 +43,7 @@
   <button class="tool" id="tutorials-toggle" aria-expanded="false" aria-controls="tutorial" title="Lessons and examples"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4.5c2.5-1 5-1 7 .8 2-1.800 4.500-1.800 7-.8v11c-2.500-1-5-1-7 .8-2-1.800-4.500-1.800-7-.8z M10 5.300v11"/></svg><span>Lessons</span></button>
   <button class="tool" id="guide-toggle" aria-expanded="false" aria-controls="guide" title="Quick help · press ?"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.500"/><path d="M7.800 8a2.300 2.300 0 1 1 3.300 2c-.8.500-1.100.9-1.100 1.800M10 14.200v.1"/></svg><span>Help</span></button>
   <select id="lang" class="lang" aria-label="Language" title="Language"><option value="en">English</option><option value="it">Italiano</option><option value="fr">Français</option></select>
+  <a class="tool download" id="download" href="application/Kaviel-1.0.0-beta-universal.dmg" title="Download Kaviel for your computer"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5v9m-3.5-3 3.5 3.5 3.5-3.5M4 15.5h12"/></svg><span>Download</span></a>
   <button class="tool icon-only" id="theme-toggle" title="Switch between light and dark" aria-label="Switch between light and dark"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16.500 11.500A7 7 0 1 1 8.500 3.500a5.500 5.500 0 0 0 8 8z"/></svg></button>
   <button class="stop" id="stop" hidden title="Stop the program · Esc"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="2" fill="currentColor" stroke="none"/></svg>Stop</button>
   <button class="run" id="run" title="Run your program · Cmd/Ctrl+Enter"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.500 2.500 9 5.500-9 5.500z" fill="currentColor" stroke="none"/></svg>Run</button>
@@ -87,6 +99,18 @@
           <button id="find-toggle" class="icon-button" title="Find · Cmd/Ctrl+F" aria-label="Find in code"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.500" cy="8.500" r="5"/><path d="m12 12 5 5"/></svg></button>
         </div>
         <form id="find-bar" class="find-bar" hidden role="search"><input id="find-query" aria-label="Find text" placeholder="Find…" autocomplete="off"><span id="find-count" aria-live="polite"></span><button type="button" id="find-prev" aria-label="Previous match">↑</button><button type="submit" aria-label="Next match">↓</button><button type="button" id="find-close" aria-label="Close search">×</button></form>
+        <div class="symbols" id="symbols" role="toolbar" aria-label="Symbols">
+          <button type="button" data-insert='"' title="Quotation mark">&quot;</button>
+          <button type="button" data-insert="(" title="Open round bracket">(</button>
+          <button type="button" data-insert=")" title="Close round bracket">)</button>
+          <button type="button" data-insert="{" title="Open curly bracket">{</button>
+          <button type="button" data-insert="}" title="Close curly bracket">}</button>
+          <button type="button" data-insert="[" title="Open square bracket">[</button>
+          <button type="button" data-insert="]" title="Close square bracket">]</button>
+          <button type="button" data-insert="=" title="Equals sign">=</button>
+          <button type="button" data-insert="#" title="Comment sign">#</button>
+          <button type="button" data-insert=", " title="Comma">,</button>
+        </div>
         <div class="editor-body"><div class="gutter" id="gutter" aria-hidden="true"></div><div class="code-stack"><div class="active-line" id="active-line" aria-hidden="true"></div><pre id="highlight" aria-hidden="true"></pre><textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Kaviel program"></textarea></div></div>
         <div class="editor-foot"><span id="cursor-position">Ln 1, Col 1</span><span class="spacer"></span><span id="save-state"><span class="dot"></span> Saved in this browser</span></div>
       </section>

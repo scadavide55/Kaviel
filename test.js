@@ -678,6 +678,60 @@ end`, {});
   }
 }
 
+test('quoted and, or and not stay text',
+  `start
+print "Tom" "and" "Jerry"
+print "a" "or" "b"
+print "not"
+end`,
+  { output: ['Tom and Jerry', 'a or b', 'not'], errors: 0, warnings: 0 });
+
+test('and and or still work as words between values',
+  `start
+print 1 and 2
+print 0 and 1
+print true or false
+print not false
+end`,
+  { output: ['true', 'false', 'true', 'true'], errors: 0, warnings: 0 });
+
+test('pick on the left of a comparison compares the picked value',
+  `start
+print pick 1, 2 = 2
+end`,
+  { output: ['false'], errors: 0, warnings: 0, rng: 0 });
+
+test('pick on the left of a comparison, second value',
+  `start
+print pick 1, 2 = 2
+end`,
+  { output: ['true'], errors: 0, warnings: 0, rng: 0.9 });
+
+test('each choice of pick is an arithmetic expression',
+  `start
+define v = pick 1, 2 + 10
+print v
+end`,
+  { output: ['1'], errors: 0, warnings: 0, rng: 0 });
+
+test('a case with a comma inside pick still works',
+  `start
+print (pick 1, 2) < 3
+end`,
+  { output: ['true'], errors: 0, warnings: 0, rng: 0.9 });
+
+test('else follows an if written on one line',
+  `start
+define a = 2
+if a = 1 = print "uno"
+else
+  print "altro"
+if a = 2 = print "due"
+else
+  print "non due"
+end`,
+  { output: ['altro', 'due'], errors: 0, warnings: 0 });
+
 /* ---------------------------------------------------------- result */
 
 console.log('');

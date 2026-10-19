@@ -17,7 +17,7 @@
 
   var KEYWORDS = ['start', 'end', 'print', 'define', 'set', 'if', 'else', 'repeat',
     'until', 'ask', 'random', 'pick', 'return', 'break',
-    'true', 'false', 'nothing'];
+    'true', 'false', 'nothing', 'and', 'or', 'not', 'under', 'over'];
   var KEYWORD_SET = new Set(KEYWORDS);
   var OPERATORS = ['and', 'or', 'not'];
   var TWO_CHAR_OPS = ['==', '!=', '<=', '>='];
@@ -619,6 +619,10 @@
               pos++;
               var action = parseStatement();
               body = { type: 'Block', body: action ? [action] : [], line: t.line };
+              // An `else` on the following line, at the same level, belongs to this one-line `if`.
+              var afterAction = pos;
+              while (peek().type === 'newline') pos++;
+              if (!isKw('else')) pos = afterAction;
             } else body = parseBlock('if', t.line);
             var otherwise = null;
             if (isKw('else')) {
@@ -736,7 +740,7 @@
     // not covers the whole comparison after it: not age = 9 means not (age = 9).
     function parseNot() {
       var t = peek();
-      if (t.type !== 'op' && t.value === 'not') {
+      if (t.type === 'keyword' && t.value === 'not') {
         pos++;
         return { type: 'Unary', op: 'not', expr: parseNot(), line: t.line };
       }
@@ -744,7 +748,7 @@
     }
     function parseLogic(word, next) {
       var left = next();
-      while (peek().value === word) {
+      while (peek().type === 'keyword' && peek().value === word) {
         var t = advance();
         left = { type: 'Binary', op: word, left: left, right: next(), line: t.line };
       }
@@ -759,7 +763,7 @@
         if (t.type === 'op' && CMP.indexOf(t.value) >= 0) {
           pos++;
           var op = t.value === '==' ? '=' : t.value;
-          if (op === '=' && (peek().value === 'under' || peek().value === 'over')) op = advance().value;
+          if (op === '=' && peek().type === 'keyword' && (peek().value === 'under' || peek().value === 'over')) op = advance().value;
           var right = parseAdditive();
           left = { type: 'Binary', op: op, left: left, right: right, line: t.line };
         } else break;
@@ -795,7 +799,7 @@
 
     function parseUnary() {
       var t = peek();
-      if ((t.type === 'op' && t.value === '-') || t.value === 'not') {
+      if ((t.type === 'op' && t.value === '-') || (t.type === 'keyword' && t.value === 'not')) {
         pos++;
         return { type: 'Unary', op: t.value, expr: parseUnary(), line: t.line };
       }
@@ -878,7 +882,7 @@
           var items = [];
           for (;;) {
             var before2 = pos;
-            items.push(parseExpression());
+            items.push(parseAdditive());
             if (pos === before2) break;
             if (isOp(',')) { pos++; continue; }
             break;

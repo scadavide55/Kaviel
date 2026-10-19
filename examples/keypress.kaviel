@@ -1,0 +1,7 @@
+start
+print ("Press C to continue.")
+define keypress{1} = C
+define ask{1} = ("What's your name? ")
+if keypress{1} = ask{1}
+print ("Hello ") answer{1}
+end

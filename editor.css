@@ -38,6 +38,12 @@ kbd { font: 10px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(
 .quiet-button:hover { color: var(--text); }
 .run { background: var(--accent); color: #1c3524; border: 1px solid #ceefd7; border-radius: 6px; display: flex; align-items: center; gap: 8px; font-weight: 650; height: 34px; padding: 0 13px; box-shadow: 0 2px 8px #0002; }
 .run:hover { background: #d0f1da; }
+.run.small { height: 30px; font-size: 11px; box-shadow: none; }
+.run[aria-busy="true"] { opacity: .55; }
+.stop { display: flex; align-items: center; gap: 8px; height: 34px; padding: 0 12px; border: 1px solid #6b4a46; border-radius: 6px; color: #f0b7b2; font-weight: 600; }
+.stop:hover { background: #3a2523; }
+.stop kbd { color: #c79b96; border-color: #6b4a46; }
+.badge { font-size: 9px; font-weight: 500; color: #9fbba9; border: 1px solid #3b4d41; border-radius: 4px; padding: 0 5px; }
 .run svg { width: 14px; height: 14px; stroke: none; }
 .run kbd { color: #3f654a; border: 0; margin-left: 12px; padding: 0; }
 .app-shell { display: flex; flex: 1; min-height: 0; }
@@ -138,6 +144,43 @@ pre.out { margin: 0; font: 12px/1.9 ui-monospace, SFMono-Regular, Menlo, monospa
 #problems > .ok { font-size: 11px !important; padding: 4px 0; }
 .summary { padding: 10px 17px; border-top: 1px solid var(--line); font-size: 10px; color: #9aae9f; flex-shrink: 0; line-height: 1.7; background: #1a231d; }
 .summary.ok { color: var(--accent); }
+.run-status { font-size: 10px; color: #9aae9f; }
+.run-status.live { color: var(--accent); }
+.run-status.live::before { content: ""; display: inline-block; width: 5px; height: 5px; margin-right: 6px; border-radius: 50%; background: currentColor; vertical-align: middle; animation: kaviel-pulse 1.1s infinite; }
+@keyframes kaviel-pulse { 0%, 100% { opacity: .3; } 50% { opacity: 1; } }
+.answer-bar, .key-hint { display: flex; gap: 8px; align-items: center; padding: 9px 12px; border-top: 1px solid var(--line); background: #1d2721; flex-shrink: 0; }
+.answer-bar label { font-size: 11px; color: #c4d8ca; max-width: 45%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.answer-bar input { flex: 1; min-width: 0; background: #101915; border: 1px solid #3d5143; color: var(--text); border-radius: 4px; padding: 6px 8px; font-size: 12px; }
+.answer-bar button { border: 1px solid #3d5143; border-radius: 4px; padding: 5px 10px; font-size: 10px; color: #cfe4d6; }
+.answer-bar button:hover { background: #2b3a31; }
+.answer-bar kbd { font-size: 9px; }
+.key-hint { font-size: 11px; color: #c4d8ca; }
+.key-hint kbd { font-size: 12px; color: #1c3524; background: var(--accent); border: 0; padding: 2px 7px; }
+.key-hint.nope { background: #3a2523; }
+.tutorial-layout { display: grid; grid-template-columns: 214px minmax(0, 1fr); gap: 22px; }
+.tutorial-lessons { display: flex; flex-direction: column; gap: 4px; border-right: 1px solid #34483b; padding-right: 14px; }
+.tutorial-lesson { display: flex; gap: 9px; align-items: flex-start; width: 100%; text-align: left; padding: 8px; border: 1px solid transparent; border-radius: 6px; color: #b9c9bf; }
+.tutorial-lesson:hover { background: #212c25; }
+.tutorial-lesson[aria-current="true"] { background: #22302a; border-color: #3a4f41; }
+.lesson-number { font: 10px/1.7 ui-monospace, monospace; color: #7f9a8a; }
+.lesson-title { display: block; font-size: 12px; color: #dbe8df; }
+.tutorial-lesson small { font-size: 10px; color: #8ba192; line-height: 1.5; display: block; margin-top: 2px; }
+.tutorial-step { min-width: 0; }
+.tutorial-step h3 { font-size: 18px; font-weight: 500; letter-spacing: -.4px; color: #dcebe1; margin: 6px 0 8px; }
+.tutorial-text { color: #a9c0b2; font-size: 11.5px; line-height: 1.85; margin: 0 0 12px; }
+.tutorial-code { font: 11px/1.9 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap; background: #111b14; border: 1px solid #2e4033; border-radius: 5px; padding: 13px; color: #c3dbca; margin: 0; }
+.step-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 14px; }
+.step-actions .quiet-button { border: 1px solid #3a4c3f; border-radius: 5px; padding: 5px 10px; font-size: 11px; }
+.step-actions .quiet-button:hover { background: #26332b; color: var(--text); }
+.step-actions button:disabled { opacity: .4; cursor: default; background: transparent; }
+.restore-code { margin-top: 12px; font-size: 10px; color: #9fb8a8; border-bottom: 1px dotted #6d8577; padding: 0; }
+@media (max-width: 720px) {
+  dialog { padding: 20px; max-height: calc(100% - 24px); }
+  .tutorial-layout { grid-template-columns: minmax(0, 1fr); }
+  .tutorial-lessons { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid #34483b; padding: 0 0 12px; }
+  .tutorial-lesson { width: auto; }
+  .tutorial-lesson small { display: none; }
+}
 .workspace-footer { display: flex; align-items: center; gap: 18px; min-height: 43px; font-size: 9px; color: #849b8c; flex-shrink: 0; }
 .workspace-footer #save-state { display: flex; align-items: center; gap: 7px; }
 .workspace-footer .dot { width: 4px; height: 4px; }
@@ -149,7 +192,7 @@ pre.out { margin: 0; font: 12px/1.9 ui-monospace, SFMono-Regular, Menlo, monospa
 .find-bar button { width: 24px; height: 26px; border-radius: 4px; }
 .find-bar button:hover { background: #35483b; }
 #find-count { font-size: 9px; color: #9bb4a3; white-space: nowrap; }
-dialog { background: #1a231d; color: var(--text); border: 1px solid #455b4c; border-radius: 13px; padding: 30px; max-width: 760px; width: calc(100% - 40px); max-height: calc(100% - 50px); box-shadow: 0 30px 100px #0008; }
+dialog { background: #1a231d; color: var(--text); border: 1px solid #455b4c; border-radius: 13px; padding: 30px; max-width: 760px; width: calc(100% - 40px); max-height: calc(100% - 50px); overflow-y: auto; overscroll-behavior: contain; box-shadow: 0 30px 100px #0008; }
 dialog::backdrop { background: #080f0bbf; backdrop-filter: blur(5px); }
 .dialog-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; margin-bottom: 22px; }
 .dialog-head h2 { font-weight: 500; font-size: 23px; line-height: 1.4; letter-spacing: -.7px; margin: 8px 0 0; }

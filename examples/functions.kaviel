@@ -1,0 +1,10 @@
+start
+define greet(name)
+  return "Hello " + name + "!"
+
+define square(n)
+  return n * n
+
+print greet("Ada")
+print ("Six squared is") square(6)
+end

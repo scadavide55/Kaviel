@@ -1,0 +1,12 @@
+start
+define pets = ["cat", "dog", "fox"]
+print ("First:") pets[1]
+print ("All:") pets
+append(pets, "owl")
+print ("Count:") length(pets)
+
+define i = 1
+until i > length(pets)
+  print pets[i]
+  set i = i + 1
+end

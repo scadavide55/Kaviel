@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kaviel — editor</title>
-<link rel="stylesheet" href="editor.css">
+<link rel="stylesheet" href="editor.css?v=3">
 </head>
 <body>
 
@@ -13,7 +13,9 @@
   <span class="top-divider"></span><span class="workspace-label">Workspace</span>
   <span class="local-badge"><span class="dot"></span> Local workspace</span>
   <div class="spacer"></div>
+  <button class="quiet-button" id="tutorials-toggle" aria-expanded="false" aria-controls="tutorial">Tutorials <span class="badge">5</span></button>
   <button class="quiet-button" id="guide-toggle" aria-expanded="false" aria-controls="guide">Language guide <kbd>?</kbd></button>
+  <button class="stop" id="stop" hidden>Stop <kbd>Esc</kbd></button>
   <button class="run" id="run"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 3 8 5-8 5z" fill="currentColor"/></svg>Run <kbd id="run-shortcut">⌘ ↵</kbd></button>
 </header>
 
@@ -21,14 +23,21 @@
   <aside class="explorer" aria-label="Examples and quick reference">
     <div class="section-label">YOUR WORKSPACE</div>
     <div class="workspace-item"><span class="file-icon">K</span><span id="explorer-file">untitled.kaviel</span><span class="dot"></span></div>
-    <div class="section-label examples-heading">GET STARTED <span>06</span></div>
-    <nav class="sample-list" aria-label="Example programs">
+    <div class="section-label examples-heading">START HERE <span>03</span></div>
+    <nav class="sample-list" aria-label="First example programs">
       <button data-example="hello"><span class="sample-symbol">01</span><span>Hello world<small>Your first few lines</small></span><span class="sample-arrow">↗</span></button>
-      <button data-example="dice"><span class="sample-symbol">02</span><span>A little chance<small>Weighted random blocks</small></span><span class="sample-arrow">↗</span></button>
-      <button data-example="rps"><span class="sample-symbol">03</span><span>Rock, paper, scissors<small>Ask, pick and compare</small></span><span class="sample-arrow">↗</span></button>
-      <button data-example="collatz"><span class="sample-symbol">04</span><span>The Collatz sequence<small>Loops and conditions</small></span><span class="sample-arrow">↗</span></button>
-      <button data-example="errors"><span class="sample-symbol">05</span><span>Room for mistakes<small>See how recovery works</small></span><span class="sample-arrow">↗</span></button>
-      <button data-example="questions"><span class="sample-symbol">06</span><span>Two questions<small>Prepare, ask, then answer</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="questions"><span class="sample-symbol">02</span><span>Two questions<small>Prepare, ask, then answer</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="age"><span class="sample-symbol">03</span><span>Under or over<small>Numbers and thresholds</small></span><span class="sample-arrow">↗</span></button>
+    </nav>
+    <div class="section-label examples-heading">NEXT STEPS <span>07</span></div>
+    <nav class="sample-list" aria-label="More example programs">
+      <button data-example="dice"><span class="sample-symbol">04</span><span>A little chance<small>Weighted random blocks</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="collatz"><span class="sample-symbol">05</span><span>The Collatz sequence<small>Loops and conditions</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="rps"><span class="sample-symbol">06</span><span>Rock, paper, scissors<small>Ask, pick and compare</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="functions"><span class="sample-symbol">07</span><span>Your own commands<small>Functions and return</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="lists"><span class="sample-symbol">08</span><span>A list of things<small>Positions, append, length</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="keypress"><span class="sample-symbol">09</span><span>Wait for a key<small>Real keyboard input</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="errors"><span class="sample-symbol">10</span><span>Room for mistakes<small>See how recovery works</small></span><span class="sample-arrow">↗</span></button>
     </nav>
     <div class="sidebar-note"><span class="note-mark">//</span><strong>Make a mistake.<br/>Keep going.</strong><p>A broken line doesn't have to break the whole program.</p></div>
     <div class="sidebar-foot"><span class="dot"></span> Runs in your browser<br/><span>No account. No setup.</span></div>
@@ -36,7 +45,7 @@
 
   <div class="workspace">
     <div class="workspace-heading"><div><div class="eyebrow">A LITTLE CODE. A LOT OF POSSIBILITY.</div><h1>Make something happen<span>.</span></h1><p>Write a few lines. Run them. See where they take you.</p></div><span class="language-pill">Kaviel <span>PLAYGROUND</span></span></div>
-    <div class="mobile-examples"><label for="examples">Start from</label><select id="examples" title="Examples"><option value="">Your code</option><option value="hello">Hello world</option><option value="dice">A little chance</option><option value="rps">Rock, paper, scissors</option><option value="collatz">The Collatz sequence</option><option value="errors">Room for mistakes</option><option value="questions">Two questions</option></select></div>
+    <div class="mobile-examples"><label for="examples">Start from</label><select id="examples" title="Examples"><option value="">Your code</option><option value="hello">Hello world</option><option value="questions">Two questions</option><option value="age">Under or over</option><option value="dice">A little chance</option><option value="collatz">The Collatz sequence</option><option value="rps">Rock, paper, scissors</option><option value="functions">Your own commands</option><option value="lists">A list of things</option><option value="keypress">Wait for a key</option><option value="errors">Room for mistakes</option></select></div>
     <main class="workbench">
       <section class="editor" aria-label="Source editor">
         <div class="editor-head"><div class="file-tab"><span class="file-icon">K</span><span id="file-name">untitled.kaviel</span><span class="tab-dot" title="Local working copy"></span></div><div class="editor-actions"><button id="open-file" class="icon-button" title="Open a .kaviel file" aria-label="Open file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 15.5v-11h5l2 2h8v3m-15 6 2-6h13l-2 6z"/></svg></button><button id="save-file" class="icon-button" title="Download source · Cmd/Ctrl+S" aria-label="Save file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m-4-4 4 4 4-4M3 13v4h14v-4"/></svg></button><span class="toolbar-divider"></span><button id="find-toggle" class="icon-button" title="Find · Cmd/Ctrl+F" aria-label="Find in code"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5"/><path d="m12 12 5 5"/></svg></button></div></div>
@@ -45,7 +54,7 @@
         <div class="editor-foot"><span id="cursor-position">Ln 1, Col 1</span><span class="spacer"></span><span>Spaces: 2</span><span>UTF-8</span><span class="file-language">Kaviel</span></div>
       </section>
       <section class="side" aria-label="Program results">
-        <div class="pane output"><div class="pane-head"><span class="panel-symbol" aria-hidden="true">›_</span><h2>Output</h2><span class="spacer"></span><span id="execution-time"></span><button class="icon-button" id="clear-output" title="Clear output" aria-label="Clear output"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M8 5V3h4v2M6 5l1 12h6l1-12M9 8v6m2-6v6"/></svg></button></div><div class="pane-body output-body"><pre class="out" id="out"></pre><div class="output-placeholder" id="output-placeholder"><span class="empty-terminal" aria-hidden="true">›_</span><strong>Your ideas, in motion.</strong><p>Run your code to see what happens.</p><span class="shortcut-tip">Run <kbd>⌘ / Ctrl</kbd> + <kbd>Enter</kbd></span></div></div></div>
+        <div class="pane output"><div class="pane-head"><span class="panel-symbol" aria-hidden="true">›_</span><h2>Output</h2><span class="spacer"></span><span class="run-status" id="run-status" role="status" aria-live="polite"></span><span id="execution-time"></span><button class="icon-button" id="clear-output" title="Clear output" aria-label="Clear output"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M8 5V3h4v2M6 5l1 12h6l1-12M9 8v6m2-6v6"/></svg></button></div><div class="pane-body output-body"><pre class="out" id="out"></pre><div class="output-placeholder" id="output-placeholder"><span class="empty-terminal" aria-hidden="true">›_</span><strong>Your ideas, in motion.</strong><p>Run your code to see what happens.</p><span class="shortcut-tip">Run <kbd>⌘ / Ctrl</kbd> + <kbd>Enter</kbd></span></div><form class="answer-bar" id="answer-bar" hidden><label for="answer-input" id="answer-prompt">Answer</label><input id="answer-input" autocomplete="off" spellcheck="false" aria-label="Your answer"><button type="submit" id="answer-send">Send <kbd>↵</kbd></button></form><div class="key-hint" id="key-hint" hidden>Press <kbd id="key-name">C</kbd> to continue</div></div></div>
         <div class="pane problems"><div class="pane-head"><span class="panel-symbol" aria-hidden="true">≡</span><h2>Problems</h2><span class="count" id="count"></span><span class="spacer"></span><span class="diagnostic-dot" id="diagnostic-dot"></span></div><div class="pane-body" id="problems"></div><div class="summary" id="summary" role="status">Ready when you are.</div></div>
       </section>
     </main>
@@ -58,6 +67,7 @@
   <div class="guide-grid">
     <section><h3>Say something</h3><pre>start
 print "Hello!"
+# a comment
 end</pre><p>Wrap your program in <code>start</code> and <code>end</code>. Use <code>#</code> for comments.</p></section>
     <section><h3>Keep a value</h3><pre>define score = 0
 set score = score + 1
@@ -66,16 +76,28 @@ print score</pre><p><code>define</code> creates a name. <code>set</code> changes
   print "You made it."
 else
   print "Keep going."</pre><p>Indent the lines inside a block. Two spaces keep things readable.</p></section>
-    <section><h3>Do it again</h3><pre>repeat 3
+    <section><h3>One line, one decision</h3><pre>define age = 16
+if age = under 18 = print "Teenager"
+if age = over 18 = print "Adult"</pre><p><code>under 18</code> means below 18. <code>over 18</code> means 18 or older.</p></section>
+    <section><h3>Do it again</h3><pre>define n = 0
+repeat 3
   print "Again!"
 
-until score = 10
-  set score = score + 1</pre><p><code>repeat</code> counts. <code>until</code> checks before each turn.</p></section>
+until n = 3
+  set n = n + 1</pre><p><code>repeat</code> counts. <code>until</code> checks before each turn.</p></section>
     <section><h3>Ask, then answer</h3><pre>define ask{1} = ("Your name?")
 define ask{2} = ("Your age?")
 ask{1}
 ask{2}
 print ("Hi ") answer{1} ("Age:") answer{2}</pre><p><code>define ask{n}</code> prepares a question. <code>ask{n}</code> asks it. <code>answer{n}</code> holds its latest response as text.</p></section>
+    <section><h3>Your own commands</h3><pre>define greet(name)
+  return "Hello " + name
+
+print greet("Ada")</pre><p>A function keeps a few lines under one name. <code>return</code> sends a value back.</p></section>
+    <section><h3>A list of things</h3><pre>define pets = ["cat", "dog"]
+print pets[1]
+append(pets, "owl")
+print length(pets)</pre><p>Positions start at 1. <code>append</code> adds at the end, <code>length</code> counts.</p></section>
     <section><h3>Leave room for chance</h3><pre>random 67
   print "This one."
 random 33
@@ -83,8 +105,16 @@ random 33
   </div>
   <div class="shortcut-list"><h3>Stay on the keyboard</h3><span>Run <kbd>⌘ / Ctrl + Enter</kbd></span><span>Save file <kbd>⌘ / Ctrl + S</kbd></span><span>Find <kbd>⌘ / Ctrl + F</kbd></span><span>Indent / unindent <kbd>Tab / Shift + Tab</kbd></span></div>
 </dialog>
+<dialog id="tutorial" aria-labelledby="tutorial-title">
+  <div class="dialog-head"><div><span class="eyebrow">STEP BY STEP</span><h2 id="tutorial-title">Learn Kaviel in five short lessons.</h2></div><button class="icon-button" id="tutorial-close" aria-label="Close tutorials">×</button></div>
+  <div class="tutorial-layout">
+    <nav class="tutorial-lessons" id="tutorial-lessons" aria-label="Lessons"></nav>
+    <section class="tutorial-step" id="tutorial-step" aria-live="polite"></section>
+  </div>
+</dialog>
 <div class="toast" id="toast" role="status" hidden></div>
 
+<script src="runtime.js"></script>
 <script src="engine.js"></script>
 <script>
 (function () {
@@ -165,6 +195,49 @@ random 33
 'ask{1}\n' +
 'ask{2}\n' +
 'print ("Hello ") answer{1} ("You are") answer{2} ("Years old.")\n' +
+'end\n',
+
+    age:
+'start\n' +
+'define ask{1} = ("How old are you? ")\n' +
+'ask{1}\n' +
+'if answer{1} = under 18 = print ("You are under 18.")\n' +
+'if answer{1} = over 18 = print ("You are 18 or older.")\n' +
+'end\n',
+
+    functions:
+'start\n' +
+'define greet(name)\n' +
+'  return "Hello " + name + "!"\n' +
+'\n' +
+'define square(n)\n' +
+'  return n * n\n' +
+'\n' +
+'print greet("Ada")\n' +
+'print ("Six squared is") square(6)\n' +
+'end\n',
+
+    lists:
+'start\n' +
+'define pets = ["cat", "dog", "fox"]\n' +
+'print ("First:") pets[1]\n' +
+'print ("All:") pets\n' +
+'append(pets, "owl")\n' +
+'print ("Count:") length(pets)\n' +
+'\n' +
+'define i = 1\n' +
+'until i > length(pets)\n' +
+'  print pets[i]\n' +
+'  set i = i + 1\n' +
+'end\n',
+
+    keypress:
+'start\n' +
+'print ("Press C to continue.")\n' +
+'define keypress{1} = C\n' +
+'define ask{1} = ("What\'s your name? ")\n' +
+'if keypress{1} = ask{1}\n' +
+'print ("Hello ") answer{1}\n' +
 'end\n',
 
     errors:
@@ -255,19 +328,131 @@ random 33
     }
   }
 
-  var running = false;
+  var running = false, controller = null, answerWaiter = null, keyWaiter = null;
+  var runButton = document.getElementById('run');
+  var stopButton = document.getElementById('stop');
+  var runStatus = document.getElementById('run-status');
+  var answerBar = document.getElementById('answer-bar');
+  var answerInput = document.getElementById('answer-input');
+  var answerPrompt = document.getElementById('answer-prompt');
+  var keyHint = document.getElementById('key-hint');
+  var keyName = document.getElementById('key-name');
 
-  function runIt() {
+  function setRunState(state) {
+    document.body.dataset.runState = state;
+    runStatus.textContent = state === 'running' ? 'Running…' : state === 'input' ? 'Waiting for an answer' : state === 'key' ? 'Waiting for a key' : '';
+    runStatus.className = 'run-status' + (state === 'idle' ? '' : ' live');
+    stopButton.hidden = state === 'idle';
+    runButton.setAttribute('aria-busy', state === 'idle' ? 'false' : 'true');
+  }
+
+  function appendOutput(text) {
+    out.textContent += (out.textContent === '' ? '' : '\n') + text;
+    var body = out.parentElement;
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function hideAnswer() {
+    answerBar.hidden = true;
+    answerInput.value = '';
+  }
+
+  function hideKeyHint() {
+    keyHint.hidden = true;
+    keyHint.classList.remove('nope');
+  }
+
+  function askAnswer(question) {
+    return new Promise(function (resolve) {
+      answerWaiter = resolve;
+      answerPrompt.textContent = question || 'Answer';
+      answerInput.value = '';
+      answerBar.hidden = false;
+      answerInput.focus();
+      setRunState('input');
+    });
+  }
+
+  answerBar.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    if (!answerWaiter) return;
+    var done = answerWaiter;
+    answerWaiter = null;
+    var value = answerInput.value;
+    hideAnswer();
+    setRunState('running');
+    code.focus();
+    done(value);
+  });
+
+  function keyFromEvent(ev) {
+    if (ev.key === ' ' || ev.key === 'Spacebar') return ' ';
+    if (ev.key === 'Esc') return 'Escape';
+    return ev.key;
+  }
+
+  function sameKey(received, expected) {
+    if (expected === 'Space') expected = ' ';
+    return expected.length === 1 ? received.toLowerCase() === expected.toLowerCase() : received === expected;
+  }
+
+  function waitKey(expected) {
+    return new Promise(function (resolve) {
+      keyWaiter = {resolve: resolve, expected: expected};
+      keyName.textContent = expected === ' ' ? 'Space' : expected;
+      keyHint.hidden = false;
+      setRunState('key');
+    });
+  }
+
+  document.addEventListener('keydown', function (ev) {
+    if (ev.key === 'Escape' && running) {
+      ev.preventDefault();
+      stopRun();
+      return;
+    }
+    if (!keyWaiter) return;
+    if (['Shift', 'Control', 'Alt', 'Meta', 'CapsLock'].indexOf(ev.key) >= 0) return;
+    ev.preventDefault();
+    var received = keyFromEvent(ev);
+    if (sameKey(received, keyWaiter.expected)) {
+      var done = keyWaiter.resolve;
+      keyWaiter = null;
+      hideKeyHint();
+      setRunState('running');
+      code.focus();
+      done(received);
+      return;
+    }
+    keyHint.classList.add('nope');
+    setTimeout(function () { keyHint.classList.remove('nope'); }, 220);
+  }, true);
+
+  function stopRun() {
+    if (controller) controller.abort();
+  }
+  stopButton.addEventListener('click', stopRun);
+
+  async function runIt() {
     if (running) return;
     running = true;
+    controller = new AbortController();
+    setRunState('running');
     saveSource();
+    out.textContent = '';
+    document.getElementById('execution-time').textContent = '';
+    problemsBox.innerHTML = '<div class="empty">Running…</div>';
+    count.textContent = '';
+    clearGutter();
+    var started = performance.now();
     try {
-      showResult(Kaviel.run(code.value, {
-        input: function (question) {
-          var a = window.prompt(question || 'Answer:', '');
-          return a === null ? '' : a;
-        }
-      }));
+      var result = await Kaviel.runAsync(code.value, {
+        signal: controller.signal,
+        onOutput: appendOutput,
+        input: askAnswer,
+        keypress: waitKey
+      });
+      showResult(result);
     } catch (e) {
       out.textContent = '';
       problemsBox.textContent = 'The editor could not run this program. Your source is unchanged; you can download a copy.';
@@ -277,11 +462,18 @@ random 33
       summary.className = 'summary';
     } finally {
       running = false;
+      controller = null;
+      hideAnswer();
+      hideKeyHint();
+      answerWaiter = null;
+      keyWaiter = null;
+      document.getElementById('execution-time').textContent = Math.max(0.1, performance.now() - started).toFixed(1) + ' ms';
+      setRunState('idle');
+      code.focus();
     }
   }
 
   function showResult(result) {
-    out.textContent = result.output.join('\n');
     problemsBox.innerHTML = '';
     var marks = {};
     for (var i = 0; i < result.problems.length; i++) {
@@ -319,6 +511,7 @@ random 33
       : '';
     summary.textContent = result.summary;
     summary.className = 'summary' + (result.problems.length ? '' : ' ok');
+    code.dispatchEvent(new CustomEvent('kaviel:ran'));
   }
 
   // Restore source without running it: loading a draft must not open prompts.
@@ -331,6 +524,7 @@ random 33
   } else code.value = saved !== null ? saved : SAMPLES.hello;
   code.setSelectionRange(0, 0);
   drawGutter();
+  setRunState('idle');
   problemsBox.innerHTML = '<div class="empty">Run to check your program.</div>';
   code.setAttribute('aria-label', 'Kaviel source code');
   examples.setAttribute('aria-label', 'Load an example');
@@ -384,5 +578,6 @@ random 33
 })();
 </script>
 <script src="editor-ui.js"></script>
+<script src="tutorials.js"></script>
 </body>
 </html>

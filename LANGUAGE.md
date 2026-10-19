@@ -1,7 +1,7 @@
 # Kaviel — project specification
 
-Living document. Every decision taken lives here; what is still open is marked **OPEN**.
-The original hand-written draft is in `draft`, this file replaces it as the reference.
+Living document, v1. Every decision taken lives here; what is still open is marked **OPEN**.
+The hand-written draft is in `draft`; this file is the reference.
 
 ---
 
@@ -9,18 +9,16 @@ The original hand-written draft is in `draft`, this file replaces it as the refe
 
 > The simplest and friendliest programming language in the world: a six-year-old learns it in a few minutes and can write a real program. Errors behave like HTML: the program **never stops**, but **nothing passes in silence**.
 
-Six laws follow from this. If a proposal breaks one of them, the proposal is wrong, not the law.
+Six laws follow. If a proposal breaks one of them, the proposal is wrong, not the law.
 
-| # | Law | What it means in practice |
+| # | Law | What it means |
 |---|---|---|
 | 1 | **It never stops** | a broken line is skipped, the rest runs to `end` |
 | 2 | **Nothing is silent** | every error leaves a visible mark, with line and explanation |
-| 3 | **Few words** | 10 keywords in v1, not one more |
+| 3 | **Few words** | one word per idea, no synonyms; v1 has 14 keywords (§2) |
 | 4 | **One thing, one way** | two syntaxes for the same action are a design bug |
-| 5 | **It reads as it happens** | indentation is the block, `print "hi"` without brackets, `=` is equality |
-| 6 | **The first error is not the last** | you fix every error in one go, not one per run |
-
-Law 6 is what makes the language *fun*: in C you stop at the first error and start again. Here you see at once everything that is wrong, like a browser console.
+| 5 | **It reads as it happens** | indentation is the block, `print "hi"`, `=` is equality, `under 18` reads like English |
+| 6 | **The first error is not the last** | every error is reported in one run, not one per run |
 
 ---
 
@@ -32,53 +30,49 @@ start
 end
 ```
 
-- `start` is the first line, `end` the last. One of each.
-- If they are missing: everything still runs and a **warning** appears (law 1).
-- No other files, no `import` in v1 (see §9).
+- `start` first, `end` last; if missing, everything still runs and a **warning** appears (law 1).
 - Comments: `#` to the end of the line.
-- File extension: `.kaviel`.
+- Extension: `.kaviel`.
+- A program is run from the terminal (`kaviel run file.kaviel`) or in the browser editor (`kaviel.html`).
 
 ---
 
 ## 2. The words (v1)
 
-| Word | What it does | Example |
+| Word | Does | Example |
 |---|---|---|
 | `start` / `end` | open and close the program | `start` |
-| `print` | shows | `print "hello " name` |
-| `define` | creates a thing | `define age = 12` |
-| `set` | changes a thing that exists | `set age = age + 1` |
-| `if` | runs the block when true | `if age > 10` |
-| `else` | otherwise | `else` |
-| `repeat` | repeats N times | `repeat 3` |
-| `until` | repeats while the condition is false | `until n = 1` |
-| `ask` | asks a question, gives back the text | `define name = ask("Your name? ")` |
-| `random` | runs **one** of the blocks, with the chances | `random 67` |
-| `pick` | picks **one value** at random | `define die = pick 1, 2, 3, 4, 5, 6` |
+| `print` | shows values on one line | `print "Hello " name` |
+| `define` | creates a variable, a question, a key or a function | `define age = 12` |
+| `set` | changes a variable or one list item | `set age = age + 1` |
+| `if` / `else` | choose a block | `if age > 10` |
+| `repeat` | repeats a block N times | `repeat 3` |
+| `until` | repeats while a condition is false | `until n = 1` |
+| `ask` | asks a question and gives back text | `define name = ask("Your name? ")` |
+| `random` | runs one of the following blocks | `random 67` |
+| `pick` | chooses one value at random | `define die = pick 1, 2, 3` |
+| `return` | sends a value back from a function | `return n * n` |
+| `break` | leaves the nearest loop | `break` |
 
-Numbers, text in `"..."`, `true` / `false`, `nothing` (the empty value).
+Literals: numbers, text in `"..."`, `true` / `false`, `nothing`, lists `[1, 2, 3]`.
+Operators: `+ - * / %`, comparisons `= != < > <= >=`, logic `and or not`, and the two threshold words `under` / `over` (§7).
 
-Operators: `+ - * / %`, and to compare `= != < > <= >=`.
-`=` is **only** equality, never assignment: `if x = 1` reads the way a child expects. Assigning is done by `define` and `set`, so `=` is free. (`==` is accepted as a synonym, because people arrive from Python and C.)
+`=` is **only** equality, never assignment. `define` and `set` assign. `==` is accepted as a synonym of `=` because people arrive from Python and C.
+
+A keyword cannot name a variable or a function: `define return = 1` is an error, with a hint.
 
 ---
 
 ## 3. Variables and slots `{n}`
 
-The slots idea stays, but **the braces are optional**:
+The braces are optional: `define age = 12` is `define age{1} = 12`.
 
-```
-define age = 12        # the same as:
-define age{1} = 12
-```
+`age` and `age{1}` are the same thing. Braces are needed only for a second value under the same name (`points{1}`, `points{2}`), which is rare.
 
-`age` and `age{1}` are the same thing. Braces are only needed when you want more than one value under the same name (`define points{1}`, `define points{2}`), which is almost never. The cost for a child drops from "you must understand the braces" to zero, and the original syntax survives.
-
-- Reading a name that was never created → **error**, value `nothing`, run continues.
-- `define` on a name that already exists → **warning**, the new value wins.
-- `set` on a name that never existed → **warning** ("it did not exist, I created it") and creates it.
-
-Names: letters, digits, `_`; they start with a letter. Upper and lower case count.
+- Reading a name never created → **error**, value `nothing`, run continues.
+- `define` of an existing name → **warning**, the new value wins.
+- `set` of a name that never existed → **warning** ("it did not exist, I created it") and it is created.
+- Names: letters, digits, `_`, starting with a letter. Case counts.
 
 ---
 
@@ -91,17 +85,25 @@ else
   print "you are small"
 ```
 
-- A block is everything indented to the right of the line above. Spaces (a tab counts as 4 spaces).
-- Indentation that does not match any open level → **error**, and it snaps to the nearest level (it forgives, but it says so).
-- `else` **exists**. Without it, "otherwise" means writing the opposite condition by hand, and a mistake in that negation makes the program do the wrong thing *with no error at all* — the worst case. With `else` the condition is written once.
-- `repeat 3` repeats the block. The counter is not reachable in v1: use a variable with `set`.
-- `until cond` repeats the block while `cond` is false, checking first.
+- A block is everything indented to the right of the line above. A tab counts as 4 spaces.
+- Wrong indentation → **error**, and it snaps to the nearest open level: it forgives, but it says so.
+- `else` **exists**: without it, "otherwise" means writing the opposite condition by hand, and a mistake in that negation silently does the wrong thing.
+- `repeat 3` runs its block 3 times. `until cond` checks before each turn and stops when `cond` holds.
+- `break` leaves the nearest loop; inside a function it cannot leave the caller's loop.
+
+**One line, one action.** When the action is short, `if cond = action` puts it on the same line:
+
+```
+if age = under 18 = print "Teenager"
+if score > 10 = set best = score
+if n = 0 = return 1
+```
+
+`=` after the condition is the separator; inside the condition, `=` still means equality and `>= <=` still work. This is the only place where one `=` does two jobs, and it is unambiguous by position.
 
 ---
 
 ## 5. Random, without slots
-
-The core of the original idea — **chance and behaviour in the same place** — stays, in one single form:
 
 ```
 random 67
@@ -111,19 +113,11 @@ random 33
 ```
 
 - Consecutive `random` lines (with their blocks) form **one draw**: one wins, the others do not run.
-- Two groups separated by any other line = **two independent draws**. This closes the hole in the draft: with `Random{1}` used both as "which random" and "which face", the language could express only one random per program.
-- Chances that do not add up to 100 → **warning**, and they are normalised (it does not stop: law 1).
-- The draw happens once, when execution reaches the `random` lines. The result is frozen: reading it twice cannot give two different outcomes.
+- Two groups separated by any other line are two independent draws.
+- Chances that do not add up to 100 → **warning**, and they are normalised.
+- The draw happens once, when execution reaches the lines. The result is frozen.
 
-**The "one use" rule disappears as an error because it becomes impossible to break**: a face has no name, so there is no way to attach a second block to it. It was the right rule, solved by shape instead of by a message.
-
-`pick` does the other job — choosing a value, all with equal chance:
-
-```
-define die = pick 1, 2, 3
-```
-
-In rock-paper-scissors this is worth a lot: `define cpu = pick "rock", "paper", "scissors"` gives back the word, and the map `1 = rock, 2 = paper, 3 = scissors` disappears.
+`pick` chooses a value, all with equal chance: `pick 1, 2, 3` or `pick items` (a list of choices).
 
 ---
 
@@ -141,342 +135,296 @@ print ("Hello ") answer{1} ("You are") answer{2} ("Years old.")
 end
 ```
 
-With answers `Luca` and `14`, this prints `Hello Luca You are 14 Years old.`
-The runnable example is `examples/questions.kaviel`, also available as **Two questions** in the editor.
+Answers `Luca`, `14` → `Hello Luca You are 14 Years old.`
 
-- `define ask{n} = ("question")` prepares a question without requesting input. In this first implementation its text must be a double-quoted literal; the outer parentheses are accepted but not required.
-- `ask{n}` on its own line asks that question, waits for its response, then continues to the next instruction. Questions run in execution order, not definition order.
-- `answer{n}` reads the response belonging to that same question number. Reading it does not ask again.
-- Numbers are positive safe integers. Question slots, answer slots and ordinary variables are separate; `answer{n}` is an automatic read-only response, while the unindexed name `answer` is still available as an ordinary variable.
-- Responses remain **text**, including numeric-looking responses such as `"14"`. No numeric conversion or new comparison syntax is introduced here.
-- Repeating `ask{n}` requests a new response and replaces only its matching answer. Redefining a question gives a warning and clears its previous answer.
-- Asking an undefined question or reading a response before it exists is an error; only that instruction is skipped. An unsuccessful input attempt clears that question's old response rather than silently reusing it.
-- Pressing Enter with no text stores `""` and gives a warning. Definitions and responses are reset between program runs.
-- With the terminal runner, responses come from stdin. In the editor each executed question opens a prompt dialog.
+- `define ask{n} = ("question")` prepares a question; it does not ask. The text is required: `define ask{1}` without text is a clear error (decided by Davide, 19 Oct 2026).
+- `ask{n}` asks it and waits; then execution continues. Questions run in execution order.
+- `answer{n}` reads that question's latest response. Responses stay **text**, even `"14"`.
+- Slots are positive integers; question slots, answer slots, keys and variables are separate namespaces.
+- Repeating `ask{n}` asks again and replaces only that answer. Redefining a question warns and clears its old answer.
+- Asking an undefined question, or reading an answer before it exists, is an error; only that line is skipped.
+- Enter with no text stores `""` and gives a warning.
+- Definitions and answers are reset at every run.
 
-### Existing expression form (preserved)
+### Threshold words
 
 ```
-define name = ask("Your name? ")
-print "Hello " name
+if answer{1} = under 18 = print "You are under 18."
+if answer{1} = over 18 = print "You are 18 or older."
 ```
 
-`ask("question")` still immediately requests input and returns text. Existing programs continue to work.
-This change does **not** implement `keypress`, `under` / `over`, or same-line condition-to-action links.
+- `under 18` is **< 18**; `over 18` is **>= 18**. So 17 is under, 18 is over. (Decided by Davide.)
+- They read numbers out of the answer, including `" 18 "`, `"17.5"`, `"1e3"`. Text that is not a number → **error** on that line, run continues.
+- They work on both sides: `if 18 = over answer{1}` is the same test.
+- Ordinary comparisons stay strict: `"18" = 18` is `false` with a warning, because one is text and one is a number.
+
+### A key that opens a question
+
+```
+define keypress{1} = C
+define ask{1} = ("What's your name? ")
+if keypress{1} = ask{1}
+print ("Hello ") answer{1}
+```
+
+- `define keypress{n} = C` names one key. One character, or `Enter`, `Space`, `Escape`, `Tab`, `Backspace`, `Delete`, `ArrowUp`, `ArrowDown`, `ArrowLeft`, `ArrowRight`.
+- `if keypress{n} = ask{m}` waits for exactly that key, then asks that question. Wrong keys keep waiting; terminals and the editor wait for a real event, not a simulated prompt.
+- In the browser the editor shows "Press C …" and pauses the run; in the terminal the key is read in raw mode and the terminal is restored afterwards.
+
+### The expression form (preserved)
+
+`define name = ask("Your name? ")` still asks immediately and returns text.
 
 ---
 
-## 7. Values, conversions, types
+## 7. Functions
 
-Four types: number, text, `true`/`false`, `nothing`.
+Decided by Davide (19 Oct 2026): a function is a `define` with parameters, and it sends its result back with `return`.
 
-No declarations: the value decides the type. Conversions are automatic and **generous**, because a child must not have to know what a type is:
+```
+define greet(name)
+  return "Hello " + name + "!"
+
+define square(n)
+  return n * n
+
+print greet("Ada")
+print square(6)
+```
+
+- Head: `define name(param, param)` and nothing after it. The body is the indented block.
+- `return expr` ends the function and sends the value back; `return` alone sends `nothing`.
+- A function without `return` runs and gives `nothing`.
+- Parameters are local names; they shadow outer names of the same kind. A function can read globals and change an existing global with `set`.
+- Functions are defined at the start of the program and may be called before their line; nested definitions are an error.
+- Calling with the wrong number of arguments is an error and **does not evaluate the arguments**.
+- Recursion works up to **128 nested calls**; past that it is an error, not a crash.
+- A function cannot `break` its caller's loop.
+- Built-in names (`length`, `append`, `number`) cannot be redefined.
+
+---
+
+## 8. Lists
+
+Decided by Davide: **positions start at 1**, so `items[1]` is the first item.
+
+```
+define pets = ["cat", "dog", "fox"]
+print pets[1]            # cat
+print pets[length(pets)] # fox
+set pets[2] = "owl"
+append(pets, "bee")
+print pets               # ["cat", "owl", "fox", "bee"]
+```
+
+- `[a, b, c]` builds a list; lists nest (`[[1, 2], [3]]`).
+- `items[i]` reads; `set items[i] = v` changes one item; `set items[1][2] = v` reaches inside.
+- A position must be a whole number from 1 to the length; otherwise an error names the real length.
+- `length(x)` counts items, or characters in text (Unicode-aware).
+- `append(list, value)` adds at the end; `list` is changed in place, so functions receive the same list.
+- `number(text)` converts text to a number, or errors if it is not one.
+- Lists compare by their contents: `[1, [2]] = [1, [2]]` is true.
+- A list cannot contain itself (directly or through nesting): error, and the list is left as it was.
+- Limit: 100 000 items per list.
+
+---
+
+## 9. Values and types
+
+Four kinds of value: number, text, `true`/`false`, `nothing`, plus lists.
 
 | Situation | What happens |
 |---|---|
-| `print 5` | shows `5` |
-| `"hi " + 5` | `hi 5` (a `+` with text glues) |
-| `5 + "5"` | `55` (glues, does not add: predictable and explainable) |
-| `"a" - 1` | **error**, result `nothing`, run continues |
-| `1 / 0` | **error**, result `nothing`, run continues |
-| `"rock" = 1` | `false` + **warning** (comparing different types is almost always a bug) |
-| `print "a " b` | one space between values, and none if one is already there |
+| `print 5` | `5` |
+| `"hi " + 5` | `hi 5` (`+` with a text glues) |
+| `5 + "5"` | `55` (glues, does not add) |
+| `"a" - 1` | **error**, `nothing`, run continues |
+| `1 / 0` | **error**, `nothing`, run continues |
+| `"rock" = 1` | `false` + **warning** (different types are almost always a bug) |
+| `print "a " b` | one space between values, and none where one is already written |
 
-To glue text exactly, with no space added, use `+`: `print "Hi " + name + "!"`.
+To glue text exactly, use `+`: `print "Hi " + name + "!"`.
+
+Truthiness: `false`, `0`, `""` and `nothing` are false; everything else, including `[]`, is true.
 
 ---
 
-## 8. Errors — the part that matters
+## 10. Errors
 
-### Three levels
+### Levels
 
-| Level | When | What the program does | How you see it |
+| Level | When | Program | Seen as |
 |---|---|---|---|
-| **Error** | the line cannot be understood or cannot run | skips the line and moves on | line marked red + message |
-| **Warning** | it runs, but probably not what you wanted | runs | line marked yellow |
-| **Hint** | there is a better way | runs | in the panel only |
-
-### What must never happen
-
-- **The program stops halfway.** Never (except the "endless loop" case below).
-- **The error disappears.** Never, not one.
-- **The error is shown as a traceback.** Never: no `TypeError at line 12`. Only sentences.
+| **Error** | the line cannot be understood or cannot run | skips the line, moves on | red line + message |
+| **Warning** | it runs, probably not what you meant | runs | yellow line |
+| **Hint** | a better way exists | runs | in the panel |
 
 ### The sentences
-
-The message is a sentence, not a code. Fixed shape:
 
 > **line 7** — I do not know `age`. Did you create it with `define`?
 > *Did you mean `age`?*
 
-The "did you mean" is computed by comparing the word written with the keywords and with the names created so far (Levenshtein distance ≤ 2). For a child it is the difference between "wrong" and "I only misspelled it".
+The message is a sentence, never a traceback. "Did you mean" compares the word with keywords and with names created so far.
 
-### What happens, case by case
+### Recovery
 
-| Case | Reaction | Level |
-|---|---|---|
-| unknown word (`prnt`) | line skipped | error |
-| name never created, in a read | value `nothing`, line skipped | error |
-| `define` of a name that exists | the new one wins | warning |
-| `set` of a name that never existed | creates it | warning |
-| indentation out of level | snaps to the nearest level | error |
-| `if` block with no body | the block does nothing | warning |
-| `if` condition that fails | it counts as false, the block does not run, and it says so | error |
-| `random` that does not add up to 100 | normalises | warning |
-| division by zero | result `nothing` | error |
-| operation on incompatible types | result `nothing` | error |
-| empty `ask` | `""` | warning |
-| missing `start` / `end` | runs everything | warning |
-| **more than 1 000 000 steps** | the program stops | error |
-| internal engine error | the program stops | error, with the line |
-
-The last one is the only thing that stops the program, and it is mandatory: a child writes a `repeat` with a wrong `set` and creates an endless loop on the first try. The limit saves them and says what to look at.
-
-### Recovery: how it carries on
-
-The parser does not try to guess inside a broken line: the line becomes a "hole", the error is recorded, and it restarts from the next logical line at the same level or further left.
-
-- If the **header of a block** is broken (`if`, `repeat`, `random`), the whole block is skipped, and it says so: *"I skipped lines 8–10 of the `if` block too"*.
-- If an **expression** inside a line is broken, that line skips its action and the other lines are untouched.
-- An error never interrupts the analysis: every error in the program is collected, shown together, and only then does execution start.
+- A broken **block header** (`if`, `repeat`, `random`, `define ...`) skips its block and says so: "I skipped lines 8–10 of the `if` block too."
+- A broken **expression** skips that line's action only.
+- Every error is collected before execution starts; then the program runs anyway.
+- The only thing that stops a program is the step limit (§11) or Stop in the editor.
 
 ### Where you see them
 
-```
-┌──────────────────────────┬──────────────────────────┐
-│  editor                  │  Output      Problems (3)│
-│  start                   │                          │
-│  define age = 12         │  Hello Davide            │
-│  prnt "hello"  ← red     │  ─────────────────────   │
-│  end                     │  line 3 · error          │
-│                          │  I do not know `prnt`.   │
-│                          │  Did you mean `print`?   │
-└──────────────────────────┴──────────────────────────┘
-```
-
-At the end of every run, one summary line:
-`Done · 3 problems (1 error, 2 warnings)`
-If there are no problems: `Done · no problems`.
+Editor: Output on top, Problems below, click a problem to select its line. Terminal: messages and lines on stderr, output on stdout, exit code 1.
 
 ---
 
-## 9. What is not there, on purpose
+## 11. Limits
 
-| Not there | Why | When it comes back |
+| Limit | Value | On reaching it |
 |---|---|---|
-| `import` | with three built-in commands it is a word to learn for nothing | when real modules exist (v0.4) |
-| user-defined functions | the biggest absence, but it doubles what must be explained | v0.3 |
-| lists | same; rock-paper-scissors shows how much they are missed | v0.3 |
-| `while` | `repeat` covers the first programs, `until` covers the loops with a condition | already there as `until` |
-| `break` | it needs early exit from a loop | v0.3 |
-| `keypress` | it needs event handling, not a concept for the first minutes | v0.2 |
-| `else if` | `else` + an indented `if` does the same | maybe never |
-| objects / classes | out of reach, and not needed for the goal | — |
-| declared types | the value decides the type | — |
+| Steps per run | 1 000 000 | error, program stopped |
+| Nested function calls | 128 | error, the call is skipped |
+| Items in a list | 100 000 | error, `append` refused |
+| Output lines | 10 000 | error, program stopped |
+
+The step limit is the only automatic stop, and it is mandatory: a wrong `set` inside a loop creates an endless loop on the first try.
 
 ---
 
-## 10. Reference examples
+## 12. What is not there, on purpose
 
-They are the tests: each one has an expected output.
+| Not there | Why |
+|---|---|
+| `import` / modules | nothing real to import yet |
+| objects / classes | out of reach and not needed for the goal |
+| `else if` | `else` plus an indented `if` does the same |
+| `while` | `repeat` and `until` cover it |
+| declared types | the value decides the type |
+| `for each` | a counter with `until` is enough for now |
 
-### 10.1 One die and one choice
-
-```
-start
-random 67
-  print "Wow!"
-random 33
-  print "Damn!"
-end
-```
-
-Output: `Wow!` about 67 times out of 100, `Damn!` the rest. **One** output per run.
-
-### 10.2 Rock, paper, scissors
-
-```
-start
-print "Rock, paper or scissors?"
-
-define you = ask("Rock, paper or scissors? ")
-define cpu = pick "rock", "paper", "scissors"
-
-if you = cpu
-  print "Tie."
-
-if you = "rock"
-  if cpu = "paper"
-    print "I chose paper. You lose."
-  if cpu = "scissors"
-    print "I chose scissors. You win!"
-
-if you = "paper"
-  if cpu = "rock"
-    print "I chose rock. You win!"
-  if cpu = "scissors"
-    print "I chose scissors. You lose."
-
-if you = "scissors"
-  if cpu = "rock"
-    print "I chose rock. You lose."
-  if cpu = "paper"
-    print "I chose paper. You win!"
-
-end
-```
-
-If you type `Rock` with a capital letter nothing matches and nothing is printed: **no error**, because for the language it is just two different texts. This is the case where being permissive hurts: from here comes the rule that comparing different types gives a warning.
-
-### 10.3 Collatz, with `else`
-
-```
-start
-define n = 27
-define steps = 1
-
-until n = 1
-  if n % 2 = 0
-    set n = n / 2
-  else
-    set n = n * 3 + 1
-  set steps = steps + 1
-
-print "done in " steps " steps"
-end
-```
-
-With `else` the condition is written once. `until` stops the moment `n` reaches 1, so it prints once instead of 111 times.
+**OPEN:** whether a shorter way to walk a list (`for each item in items`) belongs in v1.1, and whether `import` comes next.
 
 ---
 
-## 11. How it is built
+## 13. How it is built
 
 ```
 source text
    │
    ▼
-[ lexer ]        logical lines → tokens (NEWLINE, INDENT, DEDENT included)
-   │             tab = 4 spaces, brackets and a trailing "\" continue the line
+[ lexer ]        logical lines → tokens (NEWLINE, INDENT, DEDENT)
+   │             tab = 4 spaces, brackets continue the line
    ▼
-[ parser ]       tokens → tree, with recovery: a broken line becomes an "error" node
-   │             errors collected in a list, never thrown
+[ parser ]       tokens → tree, with recovery: a broken line becomes a node
+   │             errors collected, never thrown
    ▼
-[ interpreter ]  walks the tree, never stops: every runtime error is "nothing"
-   │             budget of 1 000 000 steps
+[ runtime ]      generator: one interpreter for synchronous and async hosts
+   │             output callbacks, input/keypress requests, cancel signal
    ▼
 output + problems
 ```
 
-Static files, no dependencies or build step:
+Static files, no dependencies, no build step:
 
 | File | Role |
 |---|---|
-| `engine.js` | lexer + parser + interpreter. **No DOM.** Runs in the browser and in Node |
-| `kaviel.html` | editor layout, source editing and engine integration |
-| `editor.css` | responsive workspace theme, editor overlay and panels |
-| `editor-ui.js` | syntax highlighting, find, local file tools, guide and workspace status |
-| `ide-test.html` | browser integration tests, including local files and responsive layout |
-| `test.js` | runs the §10 examples in Node and compares output and problem counts |
-| `run.js` | runs a `.kaviel` file from the terminal (`node run.js hello.kaviel`) |
-
-`examples/` holds runnable programs. The engine kept apart from the DOM is what makes it possible to really test the language instead of looking at it.
+| `engine.js` | lexer, parser, language metadata; public API `run`, `runAsync`, `tokenize`, `parse` |
+| `runtime.js` | the interpreter: scopes, functions, lists, keys, limits, cancellation |
+| `kaviel.html` | editor window, layout and run integration |
+| `editor.css` | responsive workspace theme |
+| `editor-ui.js` | highlighting, find, local files, guide, status |
+| `tutorials.js` | five step-by-step lessons, opened from the editor |
+| `test.js` | 80 language tests, including the §14 examples |
+| `v1-test.js` | 61 tests: thresholds, functions, lists, keys, async and cancellation |
+| `cli-test.js` | 19 tests of the `kaviel` command through pipes and signals |
+| `ide-test.html` | 93 browser checks: run, input, keys, Stop, tutorials, files, layout |
+| `run.js` | the command: `kaviel run`, `kaviel help`, `kaviel version` |
+| `examples/` | runnable programs, one per idea |
 
 ---
 
-## 12. Roadmap
+## 14. The command
 
-| Version | What | State |
+```
+kaviel run program.kaviel     run a program
+kaviel help                   usage
+kaviel version                version
+node run.js program.kaviel    the same run, older habit
+```
+
+- Output appears line by line while the program runs.
+- Answers are typed and confirmed with Enter; `keypress` waits for the exact key in raw mode, and the terminal is restored afterwards.
+- Ctrl+C stops the program and prints `Stopped by you.`
+- Exit codes: 0 finished, 1 at least one error, 2 file unreadable or command incomplete, 130 stopped.
+
+To have the bare `kaviel` command, symlink `run.js` into `/usr/local/bin` (needs the owner's approval) or run `npm link` in this folder.
+
+---
+
+## 15. The editor
+
+- Run with the button, `Cmd+Enter` or `Ctrl+Enter`. Loading an example or a draft never runs anything.
+- While a program runs: **Stop** (or Escape) cancels it; a question opens an answer bar inside Output; a key shows `Press C …` and waits for the real key.
+- Output streams as it is printed, including before an answer or a key.
+- Problems are buttons; click one to select its source line. Editing clears old marks and marks the output as belonging to the previous run.
+- `Tab` two spaces, `Shift+Tab` up to two back, Enter keeps indentation and opens a block after `if`, `else`, `repeat`, `until`, `random`, `define name(...)`.
+- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Tutorials** opens five lessons with 19 steps, each loadable into the editor, with the previous code kept for restoring.
+- Draft and file name live in `localStorage`; Open reads `.kaviel` up to 1 MB without executing it; Save downloads the exact source; `Cmd/Ctrl+S` saves instead of the page.
+- Everything is local: no account, no upload, no analytics.
+
+---
+
+## 16. State of the implementation (19 October 2026)
+
+| Check | Result |
+|---|---|
+| `node test.js` | 80 passed |
+| `node v1-test.js` | 61 passed |
+| `node cli-test.js` | 19 passed |
+| `ide-test.html` in Brave (headless) | 93 passed |
+| The ten examples in `examples/` | all run without errors except `errors.kaviel`, which is meant to show them |
+| Interactive terminal through a real pty | answers, order and final line verified by hand |
+| Collatz of 27 | reaches 1; counted from 1 it reads 112 |
+
+`node` on this Mac is `/usr/local/bin/node` (v24.19.0), also reachable from a login shell.
+
+---
+
+## 17. Decisions taken while building
+
+| Thing | Choice | Why |
 |---|---|---|
-| v0.1 | `start/end`, `print`, `define`, `set`, `if/else`, `repeat`, numbers and text, every error of §8 | **done** |
-| v0.2 | `ask`, `random`, `pick`, `until`, `keypress` | done except `keypress` |
-| v0.3 | user functions, lists, `break` | to do |
-| v0.4 | `import` with real modules | to do |
-| beta | final name, ready examples, English-only messages and docs | to do |
+| `print` spacing | a space is added only if there is none already | otherwise `print "steps =" steps` printed two spaces |
+| `==` | accepted as `=` | people arrive from Python and C |
+| "I skipped lines 8–10" | a **warning** | the real error is already on the header line |
+| step limit | error + stop | the only case where a program stops |
+| `until` | in v1 | without it, Collatz prints the same line 111 times |
+| functions | `define name(args)` + `return` | **Davide's decision** |
+| list positions | start at 1 | **Davide's decision** |
+| `define ask{1}` with no text | error | **Davide's decision** |
+| `under 18` / `over 18` | `< 18` / `>= 18` | **Davide's decision** |
+| builtins | `length`, `append`, `number` | the three every first program needs; more would be words to learn |
 
 ---
 
-## 13. OPEN
-
-1. **`keypress`** — how it plugs into the page: a keyword that waits for a key press needs the editor to pause the engine midway. It is the only v0.2 item left.
-
-Everything else that was open is closed: the name is **Kaviel**, `random` uses consecutive lines, `pick` stays, and the whole project (code, messages, docs, page) is in English.
-
----
-
-## 14. The differences from the original draft
+## 18. Differences from the original draft
 
 | Original draft | Now | Why |
 |---|---|---|
-| `define Random value{1} = 67` + `Random{1} = print(...)` | `random 67` + block | two steps to say one thing; and `{n}` did two jobs |
-| `Random{1}` usable only once → error | impossible to break | the shape forbids it; a whole class of errors disappears |
-| `define N value{1} = 27` / `N{1} = 27` / `set steps{1} = ...` | `define n = 27` / `set n = 28` | two ways to assign; braces are now optional |
-| `if` without `else` | `if` / `else` | a hand-written negation is the source of silent bugs |
-| `print ("x")` and `print "x"` | `print "x"` | one single form |
-| `= 67%` | `67` | the `%` was syntax dressed as a comment |
-| `if keypress{1} = Ask{1}` | comparing different types → warning | in the draft that error passed in silence |
+| `define Random value{1} = 67` + `Random{1} = print(...)` | `random 67` + block | two steps to say one thing |
+| `Random{1}` usable once → error | impossible to break | the shape forbids it |
+| `N{1} = 27` / `set steps{1}` | `define n = 27` / `set n = 28` | one way to assign; braces optional |
+| `if` without `else` | `if` / `else` | a hand-written negation hides bugs |
+| `print ("x")` and `print "x"` | `print "x"` | one form |
+| `= 67%` | `67` | `%` was syntax dressed as a comment |
 | `import Random` | no import in v1 | one word less until it loads something real |
-| English-only, from the first file | everywhere | the language, the errors, the page and the docs speak the same language |
 | `end` | `end` | it stays: it is the edge of the program |
 
 ---
 
-## 15. State of the implementation (19 October 2026)
+## 19. OPEN
 
-The engine exists and runs. It is not a mock-up: `engine.js` is a real lexer + parser + interpreter.
-
-### How to use it
-
-```
-node test.js                          # every case of §8
-node run.js examples/collatz.kaviel     # runs a file, reads answers from stdin
-open kaviel.html                        # editor with Output and Problems
-```
-
-`node` on this Mac sits in `/usr/local/bin/node`, which is not on the shell PATH: either type the whole path or add `/usr/local/bin` to PATH.
-
-### Editor controls and checks
-
-- Run with the button, `Cmd+Enter` or `Ctrl+Enter`. Restoring a draft or loading an example does not run it automatically.
-- `Tab` inserts two spaces; with a selection it indents the selected lines. `Shift+Tab` removes up to two leading spaces. Enter keeps indentation and adds two spaces after a block header.
-- Source changes, including indentation, are saved to `localStorage`. Editing clears old problem links and marks output as belonging to the previous run.
-- Problems are buttons: click one, or focus it and press Enter, to select its source line.
-- Pasted indentation tabs become four spaces, matching the engine. Tabs inside text remain unchanged.
-- Output and Problems stay visible, including on narrow screens. The desktop explorer loads the same examples as the compact example menu.
-- Syntax highlighting is a presentation-only overlay: it escapes HTML, preserves source text and follows both scroll directions. It does not change the parser.
-- `Cmd/Ctrl+F` searches case-insensitively. Enter moves forward, Shift+Enter backward, Escape closes search.
-- Open reads a local `.kaviel` file up to 1 MB. It replaces the working copy without executing it; download your current work first if you want to keep it separately. A read in progress cannot overwrite newer edits.
-- Save or `Cmd/Ctrl+S` downloads the exact source as `.kaviel`, not the editor HTML. No upload is involved.
-- The footer shows cursor position and whether local draft saving succeeded. A blocked `localStorage` is reported rather than silently claiming success.
-- Language guide opens a built-in reference and keyboard shortcuts. Timing beside Output is elapsed wall time, including time spent answering any input prompts.
-
-For the browser checks, serve this folder locally (`python3 -m http.server 8765 --bind 127.0.0.1`) and open `http://127.0.0.1:8765/ide-test.html`. The page runs 67 checks and restores the previous saved source and filename afterward. Do not edit another editor tab while these checks run.
-
-### What has been verified
-
-| Check | Result |
-|---|---|
-| 80 tests in `test.js` | all passing, including numbered questions and compatibility |
-| §10 examples (dice, rock-paper-scissors, Collatz) | expected output |
-| Collatz of 27 | reaches 1 in 111 computation steps; counted from 1 it reads 112 |
-| `random 67/33` over 1000 runs | 600–750 successes (expected ~670) |
-| `kaviel.html` in headless Brave | runs, marks the right lines, reaches `end`, shows 3 problems |
-| `run.js` with `ask` from stdin | reads the line and carries on |
-
-### Decisions taken while building (they were not in the spec)
-
-| Thing | Choice | Why |
-|---|---|---|
-| `print "steps = " steps` | a space is added only if there is none already | otherwise it printed `steps =  112` with two spaces; this is the line people write most |
-| `==` | accepted as `=` | people arrive from Python and C; refusing it is an error for nothing |
-| "I skipped lines 8–10" | a **warning**, not an error | the real error is already marked on the header line; two errors for one slip is noise |
-| `if` whose condition fails | one single message (the expression's) | two messages on one line is noise |
-| the 1 000 000 step limit | error + program stopped | the only case where a program stops, §8 |
-| `until` | implemented early | without it, Collatz prints the same line 111 times |
-| `+` with text next to `print` | `+` glues exactly, `print` adds spaces | gives the writer full control with two simple rules |
-
-### What is missing for v1
-
-1. `keypress`.
-2. User functions and lists (v0.3): without lists, rock-paper-scissors stays long.
-3. `break`, or some way to leave a `repeat` before the end.
+1. A shorter way to walk a list (`for each`) — v1.1?
+2. `import` with real modules — v1.1 or v2?
+3. Whether `nothing` should print as an empty string instead of the word `nothing`.

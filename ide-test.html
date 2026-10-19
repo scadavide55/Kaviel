@@ -15,7 +15,19 @@
   var passed = 0, failed = 0, log = [];
   var original = localStorage.getItem('kaviel.source');
   var originalName = localStorage.getItem('kaviel.filename');
+  var originalTutorial = localStorage.getItem('kaviel.tutorial.position');
+  var originalBackup = localStorage.getItem('kaviel.tutorial.backup');
   function settle() { return new Promise(function (resolve) { setTimeout(resolve, 30); }); }
+  function until(condition, timeout) {
+    var started = Date.now();
+    return new Promise(function (resolve, reject) {
+      (function poll() {
+        if (condition()) return resolve(true);
+        if (Date.now() - started > (timeout || 5000)) return reject(new Error('Timed out waiting for the editor'));
+        setTimeout(poll, 10);
+      })();
+    });
+  }
   function check(name, condition) {
     if (condition) passed++; else failed++;
     log.push((condition ? 'PASS ' : 'FAIL ') + name);
@@ -37,6 +49,21 @@
     code.setSelectionRange(start === undefined ? text.length : start, end === undefined ? (start === undefined ? text.length : start) : end);
     return code;
   }
+  function state(doc) { return doc.body.dataset.runState; }
+  function idle(doc) { return until(function () { return state(doc) === 'idle'; }); }
+  async function answer(doc, win, text) {
+    await until(function () { return state(doc) === 'input'; });
+    var input = doc.getElementById('answer-input');
+    input.value = text;
+    doc.getElementById('answer-bar').dispatchEvent(new win.Event('submit', {bubbles: true, cancelable: true}));
+  }
+  async function runWith(doc, win, answers) {
+    doc.getElementById('run').click();
+    for (var i = 0; i < (answers ? answers.length : 0); i++) {
+      await answer(doc, win, answers[i]);
+    }
+    await idle(doc);
+  }
   try {
     localStorage.setItem('kaviel.source', 'start\nprint "saved"\nend');
     await load();
@@ -44,13 +71,16 @@
     var code = doc.getElementById('code');
     check('Restores saved source', code.value.includes('"saved"'));
     check('Does not run restored source automatically', doc.getElementById('out').textContent === '');
+    check('Run starts idle with Stop hidden', state(doc) === 'idle' && doc.getElementById('stop').hidden);
     check('Both panels visible before Run', doc.querySelector('.pane.output').clientHeight > 0 && doc.querySelector('.pane.problems').clientHeight > 0);
-    doc.getElementById('run').click();
+    await runWith(doc, win);
     check('Run displays output', doc.getElementById('out').textContent === 'saved');
     check('Successful run displays empty Problems state', doc.getElementById('problems').textContent === 'No problems.');
+    check('Run returns to idle', state(doc) === 'idle' && doc.getElementById('stop').hidden);
 
     code = setSource('start\nprnt "bad"\nprint "alive"\nend');
     key(code, 'Enter', {ctrlKey: true});
+    await idle(doc);
     check('Ctrl+Enter runs and continues after a language error', doc.getElementById('out').textContent === 'alive');
     var problem = doc.querySelector('button.problem');
     check('Problem is keyboard-focusable', !!problem && problem.tabIndex === 0);
@@ -88,45 +118,76 @@
 
     var examples = doc.getElementById('examples');
     examples.value = 'rps';
-    var prompts = 0;
-    win.prompt = function () { prompts++; return 'rock'; };
     examples.dispatchEvent(new win.Event('change'));
-    check('Selecting example loads and saves without prompting', prompts === 0 && code.value.includes('ask(') && localStorage.getItem('kaviel.source') === code.value);
+    check('Selecting example loads and saves without running', code.value.includes('ask(') && localStorage.getItem('kaviel.source') === code.value);
     check('Selecting example clears unrelated output', doc.getElementById('out').textContent === '');
-    var run = win.Kaviel.run;
-    win.Kaviel.run = function () { throw new Error('Test editor failure'); };
+    var asyncRun = win.Kaviel.runAsync;
+    win.Kaviel.runAsync = function () { throw new Error('Test editor failure'); };
     doc.getElementById('run').click();
+    await settle();
     check('Unexpected failure leaves readable message', doc.getElementById('summary').textContent.includes('Editor error'));
-    win.Kaviel.run = run;
+    win.Kaviel.runAsync = asyncRun;
     setSource('start\nprint "recovered"\nend');
-    doc.getElementById('run').click();
+    await runWith(doc, win);
     check('Run works again after unexpected failure', doc.getElementById('out').textContent === 'recovered');
 
-    var numberedPrompts = [], numberedInputs = ['Luca', '14'];
-    win.prompt = function (question) { numberedPrompts.push(question); return numberedInputs.shift(); };
+    var askedPrompts = [];
     examples.value = 'questions';
     examples.dispatchEvent(new win.Event('change'));
-    check('Numbered question example loads without asking for input', numberedPrompts.length === 0 && doc.getElementById('file-name').textContent === 'questions.kaviel');
+    check('Numbered question example loads without asking for input', askedPrompts.length === 0 && doc.getElementById('file-name').textContent === 'questions.kaviel');
     var fixtureResponse = await fetch('examples/questions.kaviel');
     check('Numbered question example matches the runnable source file', fixtureResponse.ok && code.value === await fixtureResponse.text());
     doc.getElementById('run').click();
-    check('Numbered questions open the expected dialogs in order', JSON.stringify(numberedPrompts) === JSON.stringify(["What's your name? ", 'How old are you? ']));
+    await until(function () { return state(doc) === 'input'; });
+    askedPrompts.push(doc.getElementById('answer-prompt').textContent);
+    await answer(doc, win, 'Luca');
+    await until(function () { return state(doc) === 'input'; });
+    askedPrompts.push(doc.getElementById('answer-prompt').textContent);
+    await answer(doc, win, '14');
+    await idle(doc);
+    check('Numbered questions open the expected prompts in order', JSON.stringify(askedPrompts) === JSON.stringify(["What's your name? ", 'How old are you? ']));
     check('Numbered answers appear in the requested sentence', doc.getElementById('out').textContent === 'Hello Luca You are 14 Years old.');
     check('Numbered example completes without problems', doc.getElementById('problems').textContent === 'No problems.');
     check('Numbered answers are highlighted as built-in values', Array.from(doc.querySelectorAll('#highlight .tok-value')).filter(function (span) { return span.textContent === 'answer'; }).length === 2);
-    numberedInputs = ['Ada', '21'];
-    doc.getElementById('run').click();
-    check('Running again asks again and uses only the new responses', numberedPrompts.length === 4 && doc.getElementById('out').textContent === 'Hello Ada You are 21 Years old.');
+    await runWith(doc, win, ['Ada', '21']);
+    check('Running again asks again and uses only the new responses', doc.getElementById('out').textContent === 'Hello Ada You are 21 Years old.');
+    check('The answer bar hides when the run ends', doc.getElementById('answer-bar').hidden && state(doc) === 'idle');
     code = setSource('start\nprint answer{9}\nprint "alive"\nend');
-    doc.getElementById('run').click();
+    await runWith(doc, win);
     doc.querySelector('button.problem').click();
     check('Missing numbered answers remain clickable diagnostics and do not stop output', doc.getElementById('out').textContent === 'alive' && code.value.slice(code.selectionStart, code.selectionEnd) === 'print answer{9}');
+
+    code = setSource('start\nprint "ready"\ndefine keypress{1} = C\ndefine ask{1} = ("Name? ")\nif keypress{1} = ask{1}\nprint ("Hi ") answer{1}\nend');
+    doc.getElementById('run').click();
+    await until(function () { return state(doc) === 'key'; });
+    check('Key hint names the expected key', !doc.getElementById('key-hint').hidden && doc.getElementById('key-name').textContent === 'C');
+    check('Output is shown while the program waits', doc.getElementById('out').textContent === 'ready');
+    doc.dispatchEvent(new win.KeyboardEvent('keydown', {key: 'x', bubbles: true, cancelable: true}));
+    await settle();
+    check('A wrong key keeps waiting', state(doc) === 'key' && !doc.getElementById('key-hint').hidden);
+    doc.dispatchEvent(new win.KeyboardEvent('keydown', {key: 'c', bubbles: true, cancelable: true}));
+    await until(function () { return state(doc) === 'input'; });
+    check('The right key hides the hint and asks the question', doc.getElementById('key-hint').hidden);
+    await answer(doc, win, 'Ada');
+    await idle(doc);
+    check('Keypress program prints both lines', doc.getElementById('out').textContent === 'ready\nHi Ada');
+    check('Keypress program ends without problems', doc.getElementById('problems').textContent === 'No problems.');
+
+    code = setSource('start\nuntil false\n  define x = 1\nend');
+    doc.getElementById('run').click();
+    await until(function () { return state(doc) === 'running'; });
+    doc.getElementById('stop').click();
+    await idle(doc);
+    check('Stop ends a runaway loop', doc.getElementById('summary').textContent.includes('Stopped by you'));
+    check('Stop hides itself when the run ends', doc.getElementById('stop').hidden && state(doc) === 'idle');
 
     code = setSource('start\n# print 42\ndefine n = 27\nprint "<img src=x onerror=alert(1)>"\nend');
     check('Highlighter preserves the exact source', doc.getElementById('highlight').textContent === code.value + '\n');
     check('Keywords, strings, comments and numbers get distinct tokens', doc.querySelector('.tok-keyword') && doc.querySelector('.tok-string') && doc.querySelector('.tok-comment') && doc.querySelector('.tok-number'));
     check('Source markup is escaped, never inserted as HTML', !doc.querySelector('#highlight img') && doc.querySelector('.tok-string').textContent.includes('<img'));
     check('Comments are not re-tokenized as keywords', doc.querySelector('.tok-comment').textContent === '# print 42' && !doc.querySelector('.tok-comment .tok-keyword'));
+    var newWords = setSource('start\ndefine f(x)\n  return x\nprint f(2)\nif true and not false = print "ok"\nend');
+    check('Function and logic words are highlighted', Array.from(doc.querySelectorAll('#highlight .tok-keyword')).map(function (s) { return s.textContent; }).join(' ').includes('return'));
     var css = win.getComputedStyle(code), overlayCSS = win.getComputedStyle(doc.getElementById('highlight'));
     check('Highlight and input have identical text geometry', css.fontSize === overlayCSS.fontSize && css.lineHeight === overlayCSS.lineHeight && css.padding === overlayCSS.padding && css.tabSize === overlayCSS.tabSize);
 
@@ -156,16 +217,67 @@
     check('Guide examples contain real line breaks', Array.from(doc.querySelectorAll('.guide-grid pre')).every(function (pre) { return pre.textContent.includes('\n') && !pre.textContent.includes('\\n'); }));
     check('Guide examples run without language errors', Array.from(doc.querySelectorAll('.guide-grid pre')).every(function (pre, i) {
       var source = i === 0 ? pre.textContent : 'start\ndefine score = 5\n' + pre.textContent + '\nend';
-      return win.Kaviel.run(source, {input: function () { return 'test'; }, rng: function () { return 0.5; }}).errors === 0;
+      return win.Kaviel.run(source, {input: function () { return 'test'; }, keypress: function (wanted) { return wanted === 'Space' ? ' ' : wanted; }, rng: function () { return 0.5; }}).errors === 0;
     }));
     doc.getElementById('guide-close').click();
     await settle();
     check('Language guide closes and restores its expanded state', !doc.getElementById('guide').open && doc.getElementById('guide-toggle').getAttribute('aria-expanded') === 'false');
 
+    localStorage.removeItem('kaviel.tutorial.position');
+    localStorage.removeItem('kaviel.tutorial.backup');
+    doc.getElementById('tutorials-toggle').click();
+    check('Tutorials open as a modal', doc.getElementById('tutorial').open && doc.getElementById('tutorials-toggle').getAttribute('aria-expanded') === 'true');
+    check('Five lessons are listed', doc.querySelectorAll('.tutorial-lesson').length === 5);
+    check('The first step explains itself and shows code', doc.querySelector('.tutorial-step h3').textContent === 'Make the computer talk' && doc.querySelector('.tutorial-code').textContent.includes('Hello, Kaviel!'));
+    doc.querySelectorAll('.tutorial-lesson')[3].click();
+    check('Choosing a lesson shows its first step', doc.querySelector('.tutorial-step h3').textContent === 'A command of your own');
+    doc.querySelector('.step-actions .quiet-button:last-of-type').click();
+    check('Next step moves forward inside the lesson', doc.querySelectorAll('.tutorial-step .eyebrow')[0].textContent.includes('STEP 2 OF 5'));
+    var sourceBeforeTutorial = setSource('start\nprint "mine"\nend').value;
+    doc.getElementById('tutorial-step').querySelector('.run.small').click();
+    check('Opening a step loads its code and closes the dialog', !doc.getElementById('tutorial').open && code.value.includes('define area(width, height)'));
+    check('The previous code is kept for restoring', localStorage.getItem('kaviel.tutorial.backup') === sourceBeforeTutorial);
+    check('Tutorial progress is remembered', JSON.parse(localStorage.getItem('kaviel.tutorial.position')).lesson === 3);
+    doc.getElementById('tutorials-toggle').click();
+    doc.querySelector('.restore-code').click();
+    check('Restore brings the previous code back', code.value === sourceBeforeTutorial);
+    doc.getElementById('tutorial-close').click();
+    await settle();
+    check('Tutorials close and drop their expanded state', !doc.getElementById('tutorial').open && doc.getElementById('tutorials-toggle').getAttribute('aria-expanded') === 'false');
+    var tutorialSources = [];
+    for (var lessonIndex = 0; lessonIndex < 5; lessonIndex++) {
+      doc.querySelectorAll('.tutorial-lesson')[lessonIndex].click();
+      var lessonLabel = 'LESSON ' + (lessonIndex + 1) + ' ·';
+      while (doc.querySelector('.tutorial-step .eyebrow').textContent.indexOf(lessonLabel) === 0) {
+        tutorialSources.push(doc.querySelector('.tutorial-code').textContent);
+        var nextStep = doc.querySelectorAll('.step-actions .quiet-button')[1];
+        if (nextStep.disabled) break;
+        nextStep.click();
+      }
+    }
+    check('Every tutorial step runs without language errors', tutorialSources.length === 19 && tutorialSources.every(function (source) {
+      return win.Kaviel.run(source, {input: function () { return '14'; }, keypress: function (wanted) { return wanted === 'Space' ? ' ' : wanted; }, rng: function () { return 0.5; }}).errors === 0;
+    }));
+
+    var pairs = [['hello', 'hello.kaviel'], ['questions', 'questions.kaviel'], ['age', 'age.kaviel'], ['dice', 'dice.kaviel'], ['collatz', 'collatz.kaviel'], ['rps', 'rock_paper_scissors.kaviel'], ['functions', 'functions.kaviel'], ['lists', 'lists.kaviel'], ['keypress', 'keypress.kaviel'], ['errors', 'errors.kaviel']];
+    var inSync = true, examplesRun = true;
+    for (var pair = 0; pair < pairs.length; pair++) {
+      examples.value = pairs[pair][0];
+      examples.dispatchEvent(new win.Event('change'));
+      var file = await (await fetch('examples/' + pairs[pair][1])).text();
+      if (code.value !== file) inSync = false;
+      if (pairs[pair][0] !== 'errors') {
+        var outcome = win.Kaviel.run(code.value, {input: function () { return '14'; }, keypress: function (wanted) { return wanted === 'Space' ? ' ' : wanted; }, rng: function () { return 0.5; }});
+        if (outcome.errors !== 0) examplesRun = false;
+      }
+    }
+    check('Every example in the explorer matches its source file', inSync);
+    check('Every example runs without language errors', examplesRun);
+
     doc.querySelector('[data-example="collatz"]').click();
     check('Explorer examples load source and update the file name', code.value.includes('define n = 27') && doc.getElementById('file-name').textContent === 'collatz.kaviel');
     check('Explorer identifies the selected example', doc.querySelector('[data-example="collatz"]').getAttribute('aria-current') === 'true');
-    doc.getElementById('run').click();
+    await runWith(doc, win);
     check('Elapsed time appears after Run', /ms$/.test(doc.getElementById('execution-time').textContent));
     await settle();
     check('Output placeholder hides after printing', doc.getElementById('output-placeholder').hidden);
@@ -240,6 +352,9 @@
     frame.style.width = '390px';
     doc = frame.contentDocument;
     check('Narrow layout keeps editor and both panels visible', doc.getElementById('code').clientHeight > 0 && doc.querySelector('.pane.output').clientHeight > 0 && doc.querySelector('.pane.problems').clientHeight > 0 && doc.documentElement.scrollWidth <= 390);
+    doc.getElementById('tutorials-toggle').click();
+    check('Tutorials stay usable on a narrow screen', doc.getElementById('tutorial').open && doc.querySelectorAll('.tutorial-lesson').length === 5);
+    doc.getElementById('tutorial-close').click();
   } catch (error) {
     failed++;
     log.push('FAIL test runner: ' + error.stack);
@@ -248,6 +363,10 @@
     else localStorage.setItem('kaviel.source', original);
     if (originalName === null) localStorage.removeItem('kaviel.filename');
     else localStorage.setItem('kaviel.filename', originalName);
+    if (originalTutorial === null) localStorage.removeItem('kaviel.tutorial.position');
+    else localStorage.setItem('kaviel.tutorial.position', originalTutorial);
+    if (originalBackup === null) localStorage.removeItem('kaviel.tutorial.backup');
+    else localStorage.setItem('kaviel.tutorial.backup', originalBackup);
     results.textContent = passed + ' passed, ' + failed + ' failed\n' + log.join('\n');
     document.title = failed ? 'FAIL — Kaviel IDE tests' : 'PASS — Kaviel IDE tests';
     document.body.dataset.failed = String(failed);

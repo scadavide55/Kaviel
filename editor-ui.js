@@ -4,9 +4,9 @@
   var $ = function (id) { return document.getElementById(id); };
   var code = $('code'), highlight = $('highlight'), out = $('out');
   var filename = 'untitled.kaviel', toastTimer, lastRun = false;
-  var keywords = new Set('start end print define set if else repeat until ask random pick'.split(' '));
+  var keywords = new Set('start end print define set if else repeat until ask random pick return break and or not keypress'.split(' '));
   var values = new Set(['true', 'false', 'nothing']);
-  var names = {hello: 'hello.kaviel', dice: 'dice.kaviel', rps: 'rock_paper_scissors.kaviel', collatz: 'collatz.kaviel', errors: 'errors.kaviel', questions: 'questions.kaviel'};
+  var names = {hello: 'hello.kaviel', dice: 'dice.kaviel', rps: 'rock_paper_scissors.kaviel', collatz: 'collatz.kaviel', errors: 'errors.kaviel', questions: 'questions.kaviel', age: 'age.kaviel', functions: 'functions.kaviel', lists: 'lists.kaviel', keypress: 'keypress.kaviel'};
 
   function escapeHTML(text) {
     return text.replace(/[&<>"']/g, function (c) { return {'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'}[c]; });
@@ -66,6 +66,8 @@
     $('toast').hidden = false;
     toastTimer = setTimeout(function () { $('toast').hidden = true; }, 3200);
   }
+
+  document.addEventListener('kaviel:notice', function (ev) { toast(String(ev.detail || '')); });
 
   function saveFile() {
     var url = URL.createObjectURL(new Blob([code.value], {type: 'text/plain;charset=utf-8'}));
@@ -212,19 +214,13 @@
     toast('Output cleared. Your code is unchanged.');
   });
 
-  // Capture starts before the existing synchronous Run handler, then render time afterward.
-  var runStarted = 0;
-  function startTiming() { runStarted = performance.now(); }
-  function endTiming() {
+  // The editor reports the real duration when a run finishes; this file only
+  // mirrors the result into the placeholder text.
+  code.addEventListener('kaviel:ran', function () {
     lastRun = true;
-    $('execution-time').textContent = Math.max(0.1, performance.now() - runStarted).toFixed(1) + ' ms';
     updateOutput();
     syncScroll();
-  }
-  $('run').addEventListener('click', startTiming, true);
-  $('run').addEventListener('click', endTiming);
-  code.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' && (ev.metaKey || ev.ctrlKey)) startTiming(); }, true);
-  code.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' && (ev.metaKey || ev.ctrlKey)) endTiming(); });
+  });
   code.addEventListener('kaviel:source', function () { paint(); collectMatches(); markExample(); });
   code.addEventListener('input', markExample);
   code.addEventListener('scroll', syncScroll);
@@ -242,6 +238,8 @@
   window.addEventListener('resize', syncScroll);
   document.addEventListener('keydown', function (ev) {
     if (guide.open) return;
+    var tutorial = document.getElementById('tutorial');
+    if (tutorial && tutorial.open) return;
     if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === 's') { ev.preventDefault(); saveFile(); }
     else if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === 'f') { ev.preventDefault(); openFind(); }
     else if (ev.key === '?' && !ev.metaKey && !ev.ctrlKey && !ev.altKey && !/^(TEXTAREA|INPUT|SELECT)$/.test(document.activeElement.tagName)) { ev.preventDefault(); openGuide(); }

@@ -208,15 +208,16 @@ The built-in commands `length`, `append`, `number` can be shadowed by a variable
 
 ---
 
-## C. Speed
+## C. Speed — solved in 1.5
 
-| Measurement | Result |
-|---|---|
-| The citadel, terminal | **1.7 s** |
-| The citadel, editor in the browser | **18 s** |
-| `fib(16)`, 3193 calls, terminal | 0.2 s |
+| Measurement | Before | After |
+|---|---|---|
+| The Kaviel machine, terminal | 0.31 s | 0.02 s |
+| The Kaviel machine, editor | **0.97 s** | **0.025 s** |
+| The citadel, editor | 18 s (old measurement) | **0.034 s** |
+| `runAsync` against `run`, same program | 250 ms vs 17 ms | 16 ms vs 16 ms |
 
-The browser is about ten times slower. The editor rebuilds the output element on every line; profile before the next release, because a beginner seeing 18 s thinks the program is broken.
+The cause was in `runAsync`: on every checkpoint, every 256 steps, it waited for a timer of 0 ms, which a browser rounds up to about 4 ms. A program with sixty checkpoints lost a quarter of a second doing nothing. Now it pauses only when 12 ms of real work have passed since the last pause, so the page still draws and Stop still arrives.
 
 ---
 

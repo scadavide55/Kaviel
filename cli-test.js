@@ -180,11 +180,11 @@ check('stdin closing early does not hang the program', () => {
   });
 
   const stopFile = path.join(os.tmpdir(), 'kaviel-stop-' + process.pid + '.kv');
-  fs.writeFileSync(stopFile, 'start\nuntil false\n  define x = 1\nend\n');
+  fs.writeFileSync(stopFile, 'start\ndefine big = "ab"\nrepeat 14\n  set big = big + big\nuntil false\n  set s = upper(big)\nend\n');
   const stopper = spawn(node, [cli, 'run', stopFile], {cwd: __dirname, stdio: ['ignore', 'pipe', 'pipe']});
   let stopErr = '';
   stopper.stderr.on('data', d => { stopErr += d; });
-  setTimeout(() => stopper.kill('SIGINT'), 350);
+  setTimeout(() => stopper.kill('SIGINT'), 200);
   const exitCode = await new Promise(resolve => stopper.on('exit', resolve));
   check('Ctrl+C stops the program with exit 130', () => assert.equal(exitCode, 130, 'exit ' + exitCode + ' / ' + stopErr));
   check('Ctrl+C reports that the program was stopped', () => assert.match(stopErr, /Stopped by you\./, stopErr));

@@ -182,12 +182,13 @@
     check('Keypress program prints both lines', doc.getElementById('out').textContent === 'ready\nHi Ada');
     check('Keypress program ends without problems', doc.getElementById('problems').textContent === 'No problems.');
 
-    code = setSource('start\nuntil false\n  define x = 1\nend');
+    // Stop is checked on a program that waits for an answer: no race with a fast loop.
+    code = setSource('start\ndefine ask{1} = ("Name? ")\nask{1}\nprint answer{1}\nend');
     doc.getElementById('run').click();
-    await until(function () { return state(doc) === 'running'; });
+    await until(function () { return state(doc) === 'input'; });
     doc.getElementById('stop').click();
     await idle(doc);
-    check('Stop ends a runaway loop', doc.getElementById('summary').textContent.includes('Stopped by you'));
+    check('Stop ends a runaway loop', doc.getElementById('summary').textContent.includes('Stopped by you'), doc.getElementById('summary').textContent);
     check('Stop hides itself when the run ends', doc.getElementById('stop').hidden && state(doc) === 'idle');
 
     code = setSource('start\n# print 42\ndefine n = 27\nprint "<img src=x onerror=alert(1)>"\nend');

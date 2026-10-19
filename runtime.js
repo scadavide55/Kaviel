@@ -482,6 +482,12 @@
   }
   async function runAsync(source, options = {}) {
     const state = prepare(source, options); let response, thrown = false;
+    // A checkpoint gives the page time to draw. Doing it at every checkpoint was
+    // the slowest thing here: a timer of 0 still waits about 4 ms, so a program
+    // with sixty checkpoints lost a quarter of a second for nothing.
+    // Instead: draw only when some time has really passed since the last pause.
+    const SLICE = 12;
+    let lastBreak = Date.now();
     try {
       for (;;) {
         if (options.signal && options.signal.aborted) { state.interpreter.stopped = state.interpreter.cancelled = true; break; }
@@ -490,8 +496,12 @@
         if (step.done) break;
         const request = step.value;
         try {
-          if (request.type === 'checkpoint') await cancellable(new Promise(resolve => setTimeout(resolve, 0)), options.signal);
-          else {
+          if (request.type === 'checkpoint') {
+            if (Date.now() - lastBreak >= SLICE) {
+              await cancellable(new Promise(resolve => setTimeout(resolve, 0)), options.signal);
+              lastBreak = Date.now();
+            }
+          } else {
             const handler = options[request.type];
             response = await cancellable(handler ? handler(request.type === 'input' ? request.question : request.key, options.signal) : undefined, options.signal);
           }

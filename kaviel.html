@@ -4,174 +4,83 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kaviel — editor</title>
-<style>
-  :root {
-    --bg: #0e1014;
-    --panel: #14171d;
-    --line: #232833;
-    --text: #e6e9ef;
-    --quiet: #8b93a3;
-    --accent: #7cc4ff;
-    --err: #ff6b6b;
-    --warn: #e8c15a;
-    --ok: #67d98b;
-  }
-  * { box-sizing: border-box; }
-  html, body { height: 100%; margin: 0; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--line);
-    flex: none;
-  }
-  header h1 { font-size: 15px; font-weight: 700; margin: 0; letter-spacing: .04em; }
-  header .tag { font-size: 12px; color: var(--quiet); margin-left: 2px; }
-  header .spacer { flex: 1; }
-  button, select {
-    background: #1b2029;
-    color: var(--text);
-    border: 1px solid var(--line);
-    border-radius: 7px;
-    padding: 6px 11px;
-    font: inherit;
-    font-size: 13px;
-    cursor: pointer;
-  }
-  button:hover, select:hover { border-color: #39414f; }
-  button.run { background: #1d3b53; border-color: #2b5a7d; color: #d8ecff; font-weight: 600; }
-  main { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 42%); overflow: hidden; }
-
-  .editor { display: flex; min-width: 0; border-right: 1px solid var(--line); background: #0c0e12; }
-  .gutter {
-    flex: none;
-    width: 52px;
-    padding: 12px 8px 40px 0;
-    text-align: right;
-    font: 13px/22px ui-monospace, SFMono-Regular, Menlo, monospace;
-    color: #39404e;
-    overflow: hidden;
-    user-select: none;
-    background: #0a0c10;
-    border-right: 1px solid #181c24;
-  }
-  .gutter div { position: relative; }
-  .gutter div.error { color: var(--err); font-weight: 700; }
-  .gutter div.warning { color: var(--warn); font-weight: 700; }
-  textarea {
-    flex: 1;
-    min-width: 0;
-    border: 0;
-    outline: 0;
-    resize: none;
-    background: transparent;
-    color: var(--text);
-    padding: 12px 16px 40px 12px;
-    font: 13px/22px ui-monospace, SFMono-Regular, Menlo, monospace;
-    tab-size: 2;
-    white-space: pre;
-    overflow: auto;
-  }
-
-  .side { display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
-  .pane { display: flex; flex-direction: column; min-height: 0; }
-  .pane.output { flex: 1 1 46%; border-bottom: 1px solid var(--line); }
-  .pane.problems { flex: 1 1 54%; }
-  .pane-head {
-    display: flex; align-items: center; gap: 8px;
-    padding: 8px 14px;
-    font-size: 11px; text-transform: uppercase; letter-spacing: .08em;
-    color: var(--quiet);
-    border-bottom: 1px solid var(--line);
-    flex: none;
-  }
-  .pane-head .count { color: var(--quiet); text-transform: none; letter-spacing: 0; font-size: 12px; }
-  .pane-body { overflow: auto; padding: 10px 14px 16px; flex: 1; }
-  pre.out {
-    margin: 0;
-    font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
-    white-space: pre-wrap;
-    word-break: break-word;
-    color: #dfe4ec;
-  }
-  pre.out:empty::after { content: "nothing to show"; color: #3f4653; }
-  .problem {
-    display: grid;
-    grid-template-columns: 58px 1fr;
-    gap: 10px;
-    padding: 7px 0;
-    border-bottom: 1px dashed #1c212a;
-    cursor: pointer;
-  }
-  button.problem { width: 100%; text-align: left; background: transparent; border: 0; border-bottom: 1px dashed #1c212a; border-radius: 0; }
-  .problem:last-child { border-bottom: 0; }
-  button:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-  .empty { color: var(--quiet); font-size: 13px; }
-  @media (max-width: 700px) {
-    header { flex-wrap: wrap; gap: 8px; }
-    header .tag { display: none; }
-    main { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(160px, 1fr) minmax(180px, 1fr); }
-    .editor { border-right: 0; border-bottom: 1px solid var(--line); }
-    .side { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-    .pane.output { border-bottom: 0; border-right: 1px solid var(--line); }
-  }
-  .problem .where {
-    font: 12px/1.6 ui-monospace, Menlo, monospace;
-    color: var(--quiet);
-  }
-  .problem.error .where { color: var(--err); }
-  .problem.warning .where { color: var(--warn); }
-  .problem .msg { font-size: 13px; }
-  .problem .hint { color: var(--quiet); font-size: 12px; margin-top: 2px; }
-  .problem .kind { font-size: 10px; text-transform: uppercase; letter-spacing: .07em; color: var(--quiet); }
-  .ok { color: var(--ok); }
-  .summary { padding: 8px 14px; border-top: 1px solid var(--line); font-size: 12px; color: var(--quiet); flex: none; }
-</style>
+<link rel="stylesheet" href="editor.css">
 </head>
 <body>
 
-<header>
-  <h1>Kaviel</h1>
-  <span class="tag">the language that speaks</span>
-  <select id="examples" title="Examples">
-    <option value="">Examples…</option>
-    <option value="hello">Hello</option>
-    <option value="dice">Dice 67 / 33</option>
-    <option value="rps">Rock, paper, scissors</option>
-    <option value="collatz">Collatz</option>
-    <option value="errors">Tour of errors</option>
-  </select>
+<header class="topbar">
+  <a class="brand" href="kaviel.html" aria-label="Kaviel workspace"><span class="brand-mark" aria-hidden="true">k<span>.</span></span><span>Kaviel</span></a>
+  <span class="top-divider"></span><span class="workspace-label">Workspace</span>
+  <span class="local-badge"><span class="dot"></span> Local workspace</span>
   <div class="spacer"></div>
-  <button class="run" id="run">Run ⌘↵</button>
+  <button class="quiet-button" id="guide-toggle" aria-expanded="false" aria-controls="guide">Language guide <kbd>?</kbd></button>
+  <button class="run" id="run"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m5 3 8 5-8 5z" fill="currentColor"/></svg>Run <kbd id="run-shortcut">⌘ ↵</kbd></button>
 </header>
 
-<main>
-  <section class="editor">
-    <div class="gutter" id="gutter"></div>
-    <textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
-  </section>
+<div class="app-shell">
+  <aside class="explorer" aria-label="Examples and quick reference">
+    <div class="section-label">YOUR WORKSPACE</div>
+    <div class="workspace-item"><span class="file-icon">K</span><span id="explorer-file">untitled.kaviel</span><span class="dot"></span></div>
+    <div class="section-label examples-heading">GET STARTED <span>05</span></div>
+    <nav class="sample-list" aria-label="Example programs">
+      <button data-example="hello"><span class="sample-symbol">01</span><span>Hello world<small>Your first few lines</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="dice"><span class="sample-symbol">02</span><span>A little chance<small>Weighted random blocks</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="rps"><span class="sample-symbol">03</span><span>Rock, paper, scissors<small>Ask, pick and compare</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="collatz"><span class="sample-symbol">04</span><span>The Collatz sequence<small>Loops and conditions</small></span><span class="sample-arrow">↗</span></button>
+      <button data-example="errors"><span class="sample-symbol">05</span><span>Room for mistakes<small>See how recovery works</small></span><span class="sample-arrow">↗</span></button>
+    </nav>
+    <div class="sidebar-note"><span class="note-mark">//</span><strong>Make a mistake.<br/>Keep going.</strong><p>A broken line doesn't have to break the whole program.</p></div>
+    <div class="sidebar-foot"><span class="dot"></span> Runs in your browser<br/><span>No account. No setup.</span></div>
+  </aside>
 
-  <section class="side">
-    <div class="pane output">
-      <div class="pane-head">Output</div>
-      <div class="pane-body"><pre class="out" id="out"></pre></div>
-    </div>
-    <div class="pane problems">
-      <div class="pane-head">Problems <span class="count" id="count"></span></div>
-      <div class="pane-body" id="problems"></div>
-      <div class="summary" id="summary">Press Run to start.</div>
-    </div>
-  </section>
-</main>
+  <div class="workspace">
+    <div class="workspace-heading"><div><div class="eyebrow">A LITTLE CODE. A LOT OF POSSIBILITY.</div><h1>Make something happen<span>.</span></h1><p>Write a few lines. Run them. See where they take you.</p></div><span class="language-pill">Kaviel <span>PLAYGROUND</span></span></div>
+    <div class="mobile-examples"><label for="examples">Start from</label><select id="examples" title="Examples"><option value="">Your code</option><option value="hello">Hello world</option><option value="dice">A little chance</option><option value="rps">Rock, paper, scissors</option><option value="collatz">The Collatz sequence</option><option value="errors">Room for mistakes</option></select></div>
+    <main class="workbench">
+      <section class="editor" aria-label="Source editor">
+        <div class="editor-head"><div class="file-tab"><span class="file-icon">K</span><span id="file-name">untitled.kaviel</span><span class="tab-dot" title="Local working copy"></span></div><div class="editor-actions"><button id="open-file" class="icon-button" title="Open a .kaviel file" aria-label="Open file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 15.5v-11h5l2 2h8v3m-15 6 2-6h13l-2 6z"/></svg></button><button id="save-file" class="icon-button" title="Download source · Cmd/Ctrl+S" aria-label="Save file"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m-4-4 4 4 4-4M3 13v4h14v-4"/></svg></button><span class="toolbar-divider"></span><button id="find-toggle" class="icon-button" title="Find · Cmd/Ctrl+F" aria-label="Find in code"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5"/><path d="m12 12 5 5"/></svg></button></div></div>
+        <form id="find-bar" class="find-bar" hidden role="search"><input id="find-query" aria-label="Find text" placeholder="Find in this file…" autocomplete="off"><span id="find-count" aria-live="polite"></span><button type="button" id="find-prev" aria-label="Previous match">↑</button><button type="submit" aria-label="Next match">↓</button><button type="button" id="find-close" aria-label="Close search">×</button></form>
+        <div class="editor-body"><div class="gutter" id="gutter" aria-hidden="true"></div><div class="code-stack"><div class="active-line" id="active-line" aria-hidden="true"></div><pre id="highlight" aria-hidden="true"></pre><textarea id="code" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Kaviel source code"></textarea></div></div>
+        <div class="editor-foot"><span id="cursor-position">Ln 1, Col 1</span><span class="spacer"></span><span>Spaces: 2</span><span>UTF-8</span><span class="file-language">Kaviel</span></div>
+      </section>
+      <section class="side" aria-label="Program results">
+        <div class="pane output"><div class="pane-head"><span class="panel-symbol" aria-hidden="true">›_</span><h2>Output</h2><span class="spacer"></span><span id="execution-time"></span><button class="icon-button" id="clear-output" title="Clear output" aria-label="Clear output"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 5h12M8 5V3h4v2M6 5l1 12h6l1-12M9 8v6m2-6v6"/></svg></button></div><div class="pane-body output-body"><pre class="out" id="out"></pre><div class="output-placeholder" id="output-placeholder"><span class="empty-terminal" aria-hidden="true">›_</span><strong>Your ideas, in motion.</strong><p>Run your code to see what happens.</p><span class="shortcut-tip">Run <kbd>⌘ / Ctrl</kbd> + <kbd>Enter</kbd></span></div></div></div>
+        <div class="pane problems"><div class="pane-head"><span class="panel-symbol" aria-hidden="true">≡</span><h2>Problems</h2><span class="count" id="count"></span><span class="spacer"></span><span class="diagnostic-dot" id="diagnostic-dot"></span></div><div class="pane-body" id="problems"></div><div class="summary" id="summary" role="status">Ready when you are.</div></div>
+      </section>
+    </main>
+    <footer class="workspace-footer"><span id="save-state"><span class="dot"></span> Local draft</span><span class="footer-hint">Small language. Real possibilities.</span><span class="spacer"></span><button id="shortcuts-toggle">Keyboard shortcuts <kbd>?</kbd></button></footer>
+  </div>
+</div>
+<input type="file" id="file-input" accept=".kaviel,text/plain" hidden>
+<dialog id="guide" aria-labelledby="guide-title">
+  <div class="dialog-head"><div><span class="eyebrow">THE ESSENTIALS</span><h2 id="guide-title">A language that reads like you think.</h2></div><button class="icon-button" id="guide-close" aria-label="Close guide">×</button></div>
+  <div class="guide-grid">
+    <section><h3>Say something</h3><pre>start
+print "Hello!"
+end</pre><p>Wrap your program in <code>start</code> and <code>end</code>. Use <code>#</code> for comments.</p></section>
+    <section><h3>Keep a value</h3><pre>define score = 0
+set score = score + 1
+print score</pre><p><code>define</code> creates a name. <code>set</code> changes its value.</p></section>
+    <section><h3>Make a choice</h3><pre>if score > 10
+  print "You made it."
+else
+  print "Keep going."</pre><p>Indent the lines inside a block. Two spaces keep things readable.</p></section>
+    <section><h3>Do it again</h3><pre>repeat 3
+  print "Again!"
+
+until score = 10
+  set score = score + 1</pre><p><code>repeat</code> counts. <code>until</code> checks before each turn.</p></section>
+    <section><h3>Ask and choose</h3><pre>define name = ask("Your name?")
+define die = pick 1, 2, 3
+print "Hi " + name</pre><p><code>ask</code> returns text. <code>pick</code> chooses a value.</p></section>
+    <section><h3>Leave room for chance</h3><pre>random 67
+  print "This one."
+random 33
+  print "Or this one."</pre><p>Consecutive random blocks form one draw. The weights add up to 100.</p></section>
+  </div>
+  <div class="shortcut-list"><h3>Stay on the keyboard</h3><span>Run <kbd>⌘ / Ctrl + Enter</kbd></span><span>Save file <kbd>⌘ / Ctrl + S</kbd></span><span>Find <kbd>⌘ / Ctrl + F</kbd></span><span>Indent / unindent <kbd>Tab / Shift + Tab</kbd></span></div>
+</dialog>
+<div class="toast" id="toast" role="status" hidden></div>
 
 <script src="engine.js"></script>
 <script>
@@ -266,13 +175,15 @@
   }
 
   function saveSource() {
-    try { localStorage.setItem(STORE, code.value); } catch (e) {}
+    var saved = true;
+    try { localStorage.setItem(STORE, code.value); } catch (e) { saved = false; }
+    code.dispatchEvent(new CustomEvent('kaviel:saved', { detail: saved }));
   }
 
   function sourceChanged() {
+    examples.value = '';
     drawGutter();
     saveSource();
-    examples.value = '';
     problemsBox.innerHTML = '<div class="empty">Source changed. Run to check it.</div>';
     count.textContent = '';
     summary.textContent = 'Source changed. Output is from the previous run.';
@@ -310,6 +221,7 @@
     for (var i = 1; i <= n; i++) html += '<div>' + i + '</div>';
     gutter.innerHTML = html;
     gutter.scrollTop = code.scrollTop;
+    code.dispatchEvent(new Event('kaviel:source'));
   }
 
   function clearGutter() {
@@ -324,7 +236,7 @@
     var end = start + (lines[line - 1] ? lines[line - 1].length : 0);
     code.focus();
     code.setSelectionRange(start, end);
-    var lineHeight = 22, top = (line - 1) * lineHeight;
+    var lineHeight = parseFloat(getComputedStyle(code).lineHeight), top = (line - 1) * lineHeight;
     if (top < code.scrollTop || top > code.scrollTop + code.clientHeight - 60) {
       code.scrollTop = Math.max(0, top - code.clientHeight / 3);
       gutter.scrollTop = code.scrollTop;
@@ -346,7 +258,7 @@
       }));
     } catch (e) {
       out.textContent = '';
-      problemsBox.textContent = 'The editor could not run this program. Your source is still saved.';
+      problemsBox.textContent = 'The editor could not run this program. Your source is unchanged; you can download a copy.';
       count.textContent = '';
       clearGutter();
       summary.textContent = 'Editor error. You can try Run again.';
@@ -405,6 +317,7 @@
     code.value = SAMPLES[fromHash];
     examples.value = fromHash;
   } else code.value = saved !== null ? saved : SAMPLES.hello;
+  code.setSelectionRange(0, 0);
   drawGutter();
   problemsBox.innerHTML = '<div class="empty">Run to check your program.</div>';
   code.setAttribute('aria-label', 'Kaviel source code');
@@ -458,5 +371,6 @@
   });
 })();
 </script>
+<script src="editor-ui.js"></script>
 </body>
 </html>

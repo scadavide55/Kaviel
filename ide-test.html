@@ -14,6 +14,8 @@
   var results = document.getElementById('results');
   var passed = 0, failed = 0, log = [];
   var original = localStorage.getItem('kaviel.source');
+  var originalName = localStorage.getItem('kaviel.filename');
+  function settle() { return new Promise(function (resolve) { setTimeout(resolve, 30); }); }
   function check(name, condition) {
     if (condition) passed++; else failed++;
     log.push((condition ? 'PASS ' : 'FAIL ') + name);
@@ -100,8 +102,114 @@
     doc.getElementById('run').click();
     check('Run works again after unexpected failure', doc.getElementById('out').textContent === 'recovered');
 
+    code = setSource('start\n# print 42\ndefine n = 27\nprint "<img src=x onerror=alert(1)>"\nend');
+    check('Highlighter preserves the exact source', doc.getElementById('highlight').textContent === code.value + '\n');
+    check('Keywords, strings, comments and numbers get distinct tokens', doc.querySelector('.tok-keyword') && doc.querySelector('.tok-string') && doc.querySelector('.tok-comment') && doc.querySelector('.tok-number'));
+    check('Source markup is escaped, never inserted as HTML', !doc.querySelector('#highlight img') && doc.querySelector('.tok-string').textContent.includes('<img'));
+    check('Comments are not re-tokenized as keywords', doc.querySelector('.tok-comment').textContent === '# print 42' && !doc.querySelector('.tok-comment .tok-keyword'));
+    var css = win.getComputedStyle(code), overlayCSS = win.getComputedStyle(doc.getElementById('highlight'));
+    check('Highlight and input have identical text geometry', css.fontSize === overlayCSS.fontSize && css.lineHeight === overlayCSS.lineHeight && css.padding === overlayCSS.padding && css.tabSize === overlayCSS.tabSize);
+
+    code = setSource('print "one"\nprint "two"\nprint "one"');
+    doc.getElementById('find-toggle').click();
+    var query = doc.getElementById('find-query');
+    query.value = 'ONE';
+    query.dispatchEvent(new win.Event('input', {bubbles: true}));
+    check('Find is case-insensitive and selects the first match', doc.getElementById('find-count').textContent === '1 / 2' && code.value.slice(code.selectionStart, code.selectionEnd) === 'one');
+    doc.getElementById('find-bar').dispatchEvent(new win.Event('submit', {bubbles: true, cancelable: true}));
+    check('Find moves to the next match', doc.getElementById('find-count').textContent === '2 / 2');
+    doc.getElementById('find-bar').dispatchEvent(new win.Event('submit', {bubbles: true, cancelable: true}));
+    check('Find wraps at the last match', doc.getElementById('find-count').textContent === '1 / 2');
+    doc.getElementById('find-prev').click();
+    check('Find previous wraps backward', doc.getElementById('find-count').textContent === '2 / 2');
+    query.value = 'missing';
+    query.dispatchEvent(new win.Event('input', {bubbles: true}));
+    check('Find reports no matches', doc.getElementById('find-count').textContent === 'No matches');
+    query.dispatchEvent(new win.KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true}));
+    check('Escape closes search and returns focus to source', doc.getElementById('find-bar').hidden && doc.activeElement === code);
+    code.dispatchEvent(new win.KeyboardEvent('keydown', {key: 'f', ctrlKey: true, bubbles: true, cancelable: true}));
+    check('Ctrl+F opens the editor search', !doc.getElementById('find-bar').hidden && doc.activeElement === query);
+    doc.getElementById('find-close').click();
+
+    doc.getElementById('guide-toggle').click();
+    check('Language guide opens as a modal', doc.getElementById('guide').open && doc.getElementById('guide-toggle').getAttribute('aria-expanded') === 'true');
+    check('Guide examples contain real line breaks', Array.from(doc.querySelectorAll('.guide-grid pre')).every(function (pre) { return pre.textContent.includes('\n') && !pre.textContent.includes('\\n'); }));
+    check('Guide examples run without language errors', Array.from(doc.querySelectorAll('.guide-grid pre')).every(function (pre, i) {
+      var source = i === 0 ? pre.textContent : 'start\ndefine score = 5\n' + pre.textContent + '\nend';
+      return win.Kaviel.run(source, {input: function () { return 'test'; }, rng: function () { return 0.5; }}).errors === 0;
+    }));
+    doc.getElementById('guide-close').click();
+    await settle();
+    check('Language guide closes and restores its expanded state', !doc.getElementById('guide').open && doc.getElementById('guide-toggle').getAttribute('aria-expanded') === 'false');
+
+    doc.querySelector('[data-example="collatz"]').click();
+    check('Explorer examples load source and update the file name', code.value.includes('define n = 27') && doc.getElementById('file-name').textContent === 'collatz.kaviel');
+    check('Explorer identifies the selected example', doc.querySelector('[data-example="collatz"]').getAttribute('aria-current') === 'true');
+    doc.getElementById('run').click();
+    check('Elapsed time appears after Run', /ms$/.test(doc.getElementById('execution-time').textContent));
+    await settle();
+    check('Output placeholder hides after printing', doc.getElementById('output-placeholder').hidden);
+    var sourceBeforeClear = code.value;
+    doc.getElementById('clear-output').click();
+    check('Clear output does not change source', doc.getElementById('out').textContent === '' && code.value === sourceBeforeClear);
+    check('Cursor position is updated', (function () { code.setSelectionRange(6, 6); code.dispatchEvent(new win.Event('click')); return doc.getElementById('cursor-position').textContent === 'Ln 2, Col 1'; })());
+    code = setSource(Array.from({length: 100}, function (_, i) { return 'print "' + i + ' ' + 'x'.repeat(200) + '"'; }).join('\n'));
+    code.scrollTop = 240;
+    code.scrollLeft = 100;
+    code.dispatchEvent(new win.Event('scroll'));
+    check('Horizontal and vertical highlight scrolling follow source', doc.getElementById('highlight').scrollTop === code.scrollTop && doc.getElementById('highlight').scrollLeft === code.scrollLeft && doc.getElementById('gutter').scrollTop === code.scrollTop);
+
+    var download = null, savedBlob = null;
+    var originalClick = win.HTMLAnchorElement.prototype.click, originalURL = win.URL.createObjectURL;
+    win.HTMLAnchorElement.prototype.click = function () { download = this.download; };
+    win.URL.createObjectURL = function (blob) { savedBlob = blob; return originalURL.call(win.URL, blob); };
+    doc.getElementById('save-file').click();
+    var savedText = await savedBlob.text();
+    check('Save prepares a .kaviel download with exact source bytes', download === 'collatz.kaviel' && savedText === code.value);
+    download = null;
+    code.dispatchEvent(new win.KeyboardEvent('keydown', {key: 's', ctrlKey: true, bubbles: true, cancelable: true}));
+    check('Ctrl+S saves source rather than the HTML page', download === 'collatz.kaviel');
+    win.HTMLAnchorElement.prototype.click = originalClick;
+    win.URL.createObjectURL = originalURL;
+
+    async function importFile(file) {
+      var transfer = new win.DataTransfer();
+      transfer.items.add(file);
+      var previousToast = doc.getElementById('toast').textContent;
+      doc.getElementById('file-input').files = transfer.files;
+      doc.getElementById('file-input').dispatchEvent(new win.Event('change'));
+      for (var wait = 0; wait < 100 && doc.getElementById('toast').textContent === previousToast; wait++) await settle();
+    }
+    await importFile(new win.File(['\uFEFFstart\r\nprint "imported"\r\nend'], 'imported.kaviel', {type: 'text/plain'}));
+    check('Open imports local source and normalizes BOM and CRLF', code.value === 'start\nprint "imported"\nend' && doc.getElementById('file-name').textContent === 'imported.kaviel');
+    check('Imported files are saved locally without execution', localStorage.getItem('kaviel.source') === code.value && doc.getElementById('out').textContent === '');
+    var importedSource = code.value;
+    await importFile(new win.File(['not source'], 'invalid.png'));
+    check('Open rejects unsupported file types without replacing source', code.value === importedSource && doc.getElementById('toast').textContent.includes('.kaviel'));
+    await importFile(new win.File(['x'.repeat(1024 * 1024 + 1)], 'large.kaviel'));
+    check('Open rejects oversized files without replacing source', code.value === importedSource && doc.getElementById('toast').textContent.includes('1 MB'));
+    var fileText = win.File.prototype.text, finishRead;
+    win.File.prototype.text = function () { return new Promise(function (resolve) { finishRead = resolve; }); };
+    var delayed = new win.DataTransfer();
+    delayed.items.add(new win.File(['unused'], 'delayed.kaviel'));
+    doc.getElementById('file-input').files = delayed.files;
+    doc.getElementById('file-input').dispatchEvent(new win.Event('change'));
+    setSource('start\nprint "newer edit"\nend');
+    finishRead('start\nprint "older file"\nend');
+    await settle();
+    check('Async file reads do not overwrite newer source edits', code.value.includes('newer edit') && doc.getElementById('toast').textContent.includes('source changed'));
+    win.File.prototype.text = fileText;
+    var storageSet = win.Storage.prototype.setItem;
+    win.Storage.prototype.setItem = function () { throw new Error('Storage unavailable'); };
+    setSource('start\nprint "not saved"\nend');
+    check('Storage failures are shown instead of claiming the draft was saved', doc.getElementById('save-state').textContent.includes('Not saved'));
+    win.Storage.prototype.setItem = storageSet;
+    setSource('start\nprint "recovered"\nend');
+
+    var savedNameBeforeHash = localStorage.getItem('kaviel.filename');
     await load('#collatz');
     check('Hash loads the requested example', frame.contentDocument.getElementById('code').value.includes('define n = 27'));
+    check('Loading a hash example does not rename the saved draft', localStorage.getItem('kaviel.filename') === savedNameBeforeHash);
     await load('#%');
     check('Malformed hash does not break editor initialization', frame.contentDocument.getElementById('gutter').children.length > 0);
     await load('#toString');
@@ -118,6 +226,8 @@
   } finally {
     if (original === null) localStorage.removeItem('kaviel.source');
     else localStorage.setItem('kaviel.source', original);
+    if (originalName === null) localStorage.removeItem('kaviel.filename');
+    else localStorage.setItem('kaviel.filename', originalName);
     results.textContent = passed + ' passed, ' + failed + ' failed\n' + log.join('\n');
     document.title = failed ? 'FAIL — Kaviel IDE tests' : 'PASS — Kaviel IDE tests';
     document.body.dataset.failed = String(failed);

@@ -343,12 +343,15 @@ source text
 output + problems
 ```
 
-Four files, no dependencies:
+Static files, no dependencies or build step:
 
 | File | Role |
 |---|---|
 | `engine.js` | lexer + parser + interpreter. **No DOM.** Runs in the browser and in Node |
-| `kaviel.html` | editor, Output panel, Problems panel, line marks |
+| `kaviel.html` | editor layout, source editing and engine integration |
+| `editor.css` | responsive workspace theme, editor overlay and panels |
+| `editor-ui.js` | syntax highlighting, find, local file tools, guide and workspace status |
+| `ide-test.html` | browser integration tests, including local files and responsive layout |
 | `test.js` | runs the §10 examples in Node and compares output and problem counts |
 | `run.js` | runs a `.kaviel` file from the terminal (`node run.js hello.kaviel`) |
 
@@ -414,9 +417,15 @@ open kaviel.html                        # editor with Output and Problems
 - Source changes, including indentation, are saved to `localStorage`. Editing clears old problem links and marks output as belonging to the previous run.
 - Problems are buttons: click one, or focus it and press Enter, to select its source line.
 - Pasted indentation tabs become four spaces, matching the engine. Tabs inside text remain unchanged.
-- Output and Problems stay visible, including on narrow screens.
+- Output and Problems stay visible, including on narrow screens. The desktop explorer loads the same examples as the compact example menu.
+- Syntax highlighting is a presentation-only overlay: it escapes HTML, preserves source text and follows both scroll directions. It does not change the parser.
+- `Cmd/Ctrl+F` searches case-insensitively. Enter moves forward, Shift+Enter backward, Escape closes search.
+- Open reads a local `.kaviel` file up to 1 MB. It replaces the working copy without executing it; download your current work first if you want to keep it separately. A read in progress cannot overwrite newer edits.
+- Save or `Cmd/Ctrl+S` downloads the exact source as `.kaviel`, not the editor HTML. No upload is involved.
+- The footer shows cursor position and whether local draft saving succeeded. A blocked `localStorage` is reported rather than silently claiming success.
+- Language guide opens a built-in reference and keyboard shortcuts. Timing beside Output is elapsed wall time, including time spent answering any input prompts.
 
-For the browser checks, serve this folder locally (`python3 -m http.server 8765 --bind 127.0.0.1`) and open `http://127.0.0.1:8765/ide-test.html`. The page runs 27 checks and restores the previous saved source afterward. Do not edit another editor tab while these checks run.
+For the browser checks, serve this folder locally (`python3 -m http.server 8765 --bind 127.0.0.1`) and open `http://127.0.0.1:8765/ide-test.html`. The page runs 59 checks and restores the previous saved source and filename afterward. Do not edit another editor tab while these checks run.
 
 ### What has been verified
 

@@ -18,13 +18,15 @@ Open `kaviel.html` (or `index.html`, which does the same). Nothing to install: t
 
 ## The desktop app
 
-`application/` holds the installer for each system:
+The installers are published with each release, not stored in the repository (each one is over 100 MB):
 
 | System | File |
 |---|---|
 | macOS (Intel and Apple silicon) | `Kaviel-1.0.0-beta-universal.dmg` |
 | Windows 10 and 11 | `Kaviel-1.0.0-beta-setup.exe` |
 | Linux (64-bit) | `Kaviel-1.0.0-beta-linux-x64.tar.gz` |
+
+To build them yourself, see "Building the installers" below.
 
 The app is the same editor as the one in the browser, with the lessons and examples. It works with no internet connection and sends nothing anywhere.
 
@@ -60,7 +62,6 @@ node run.js version
 | `run.js` | the command line |
 | `examples/` | 14 small programs |
 | `test.js`, `v1-test.js`, `cli-test.js`, `ide-test.html` | the tests |
-| `application/` | the installers for the three systems |
 | `electron/`, `build/` | the desktop app and its icon |
 
 Run the tests with `node test.js && node v1-test.js && node cli-test.js`. The page tests run on a local server: `python3 -m http.server 8765 --bind 127.0.0.1`, then open `http://127.0.0.1:8765/ide-test.html`.

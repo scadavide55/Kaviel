@@ -499,18 +499,31 @@
     check('A symbol replaces selected text', code.value === 'print (' && code.selectionStart === 7);
     check('Using a symbol marks the file as edited', doc.getElementById('edited').hidden === false);
     var download = doc.getElementById('download');
-    check('The download button points at the installer for this system', !!download && /application\/Kaviel-.+\.(dmg|exe|tar\.gz)$/.test(download.getAttribute('href')) && download.hasAttribute('download'));
+    var downloadHref = download.getAttribute('href');
+    check('The download button points at the installer for this system', !!download && /application\/Kaviel-.+\.(dmg|exe|tar\.gz)$/.test(downloadHref) && download.hasAttribute('download'));
     doc.documentElement.dataset.desktop = '1';
     check('The desktop app hides the download button', win.getComputedStyle(download).display === 'none');
     delete doc.documentElement.dataset.desktop;
 
-    var missingReported = false;
+    // The installers are not kept in the repository, so the page is checked twice:
+    // with the file present it must download, without it must say so instead of opening a broken page.
+    var installerHere = false;
     try {
-      download.click();
-      await until(function () { return !doc.getElementById('toast').hidden; }, 3000);
-      missingReported = doc.getElementById('toast-text').textContent.indexOf('Kaviel-1.0.0-beta-') > 0;
-    } catch (e) { missingReported = false; }
-    check('A missing installer is reported instead of opening a broken page', missingReported);
+      installerHere = (await fetch(downloadHref, {method: 'HEAD'})).ok;
+    } catch (e) { installerHere = false; }
+    if (installerHere) {
+      var clickedDownload = doc.getElementById('download');
+      clickedDownload.click();
+      check('An installer that exists is downloaded, not reported as missing', doc.getElementById('toast').hidden || doc.getElementById('toast-text').textContent.indexOf('Kaviel-1.0.0-beta-') < 0);
+    } else {
+      var missingReported = false;
+      try {
+        doc.getElementById('download').click();
+        await until(function () { return !doc.getElementById('toast').hidden; }, 3000);
+        missingReported = doc.getElementById('toast-text').textContent.indexOf('Kaviel-1.0.0-beta-') > 0;
+      } catch (e) { missingReported = false; }
+      check('A missing installer is reported instead of opening a broken page', missingReported);
+    }
 
     frame.style.width = '390px';
     doc = frame.contentDocument;

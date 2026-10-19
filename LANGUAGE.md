@@ -1,7 +1,7 @@
 # Kaviel — project specification
 
 Living document, v1. Every decision taken lives here; what is still open is marked **OPEN**.
-The hand-written draft is in `draft`; this file is the reference.
+This file is the reference for the language; where it and the code disagree, the code and the tests win.
 
 ---
 

@@ -320,7 +320,7 @@ dialog::backdrop { background: #2b242088; }
 
 .lang { padding: 6px 8px; background: var(--card); border: 2px solid var(--line); border-radius: 9px; font-weight: 600; }
 .lang:hover { border-color: var(--edge); }
-@media (max-width: 460px) { .lang { max-width: 74px; } }
+@media (max-width: 460px) { .lang { padding: 6px 4px; } }
 
 /* Lesson step blocks */
 .block-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 4px; }
@@ -341,3 +341,14 @@ dialog::backdrop { background: #2b242088; }
 .tutorial-code { font: 14px/1.5 var(--ui); white-space: normal; overflow: hidden; }
 .code-row .note { white-space: normal; overflow-wrap: anywhere; font-family: var(--ui); }
 .code-row .note::before { font-family: var(--ui); }
+
+/* The lesson list opens with where you are and what to do next. */
+.lesson-summary { margin-bottom: 12px; padding: 12px; border: 2px solid var(--line); border-radius: 12px; background: var(--bg); }
+.lesson-summary .summary-text { font-weight: 600; }
+.lesson-summary .meter { height: 8px; margin: 8px 0 10px; border-radius: 99px; background: var(--line); overflow: hidden; }
+.lesson-summary .meter i { display: block; height: 100%; background: var(--go); border-radius: 99px; transition: width .3s; }
+.lesson-summary .continue { width: 100%; height: auto; min-height: 38px; padding: 8px 14px; text-align: left; justify-content: flex-start; }
+.lesson-summary.finished { border-color: var(--go); }
+.lesson-summary .finish-title { display: block; font-size: 17px; }
+.lesson-summary p { margin: 4px 0 10px; color: var(--muted); }
+.start-lessons { margin-top: 12px; }

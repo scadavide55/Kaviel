@@ -709,6 +709,24 @@
     panel.hidden = !open;
     toggle.setAttribute('aria-expanded', String(open));
     if (!open) silence();
+    showStartHere();
+  }
+  // In the empty output, a newcomer sees where to begin: the lessons are otherwise one small icon.
+  function showStartHere() {
+    var spot = $('output-placeholder');
+    if (!spot) return;
+    var button = spot.querySelector('.start-lessons');
+    var wanted = !done.length && panel.hidden;
+    if (!wanted) { if (button) button.remove(); return; }
+    if (button) return;
+    button = element('button', 'btn start-lessons', UI.startLessons || 'New here? Start with lesson 1');
+    button.type = 'button';
+    button.addEventListener('click', function () {
+      showTab('lessons');
+      setOpen(true);
+      goTo(resumePoint());
+    });
+    spot.appendChild(button);
   }
   function showTab(name) {
     var lessons = name === 'lessons';
@@ -734,8 +752,58 @@
     if (showingStep) drawStep();
   }
 
+  function fill(text, values) {
+    return String(text).replace(/\{(\w+)\}/g, function (_, key) { return values[key]; });
+  }
+  function firstUndone() {
+    for (var i = 0; i < TUTORIALS.length; i++) if (done.indexOf(i) < 0) return i;
+    return -1;
+  }
+  // Where "Continue" leads: the step you were on, unless that lesson is finished.
+  function resumePoint() {
+    if (done.indexOf(position.lesson) < 0) return {lesson: position.lesson, step: position.step};
+    return {lesson: Math.max(firstUndone(), 0), step: 0};
+  }
+  function goTo(point) {
+    position = {lesson: point.lesson, step: point.step};
+    showingStep = true;
+    write(STORE, position);
+    render();
+  }
+
+  function drawSummary() {
+    var total = TUTORIALS.length;
+    var box = element('div', 'lesson-summary');
+    box.appendChild(element('div', 'summary-text', fill(UI.lessonsDone || '{done} of {total} lessons done', {done: done.length, total: total})));
+    var meter = element('div', 'meter');
+    meter.setAttribute('aria-hidden', 'true');
+    var fillBar = element('i');
+    fillBar.style.width = Math.round(100 * done.length / total) + '%';
+    meter.appendChild(fillBar);
+    box.appendChild(meter);
+    if (done.length >= total) {
+      box.className += ' finished';
+      box.appendChild(element('strong', 'finish-title', UI.allDoneTitle || 'You know the whole language!'));
+      box.appendChild(element('p', null, UI.allDoneText || 'Now open the examples, change them, and make a program of your own.'));
+      var examples = element('button', 'btn primary', UI.seeExamples || 'See the examples');
+      examples.type = 'button';
+      examples.addEventListener('click', function () { showTab('examples'); });
+      box.appendChild(examples);
+    } else {
+      var point = resumePoint();
+      var label = done.length || point.step ? fill(UI.continueLesson || 'Continue: lesson {n}', {n: point.lesson + 1}) + ' · ' + TUTORIALS[point.lesson].title
+        : (UI.startLessons || 'New here? Start with lesson 1');
+      var go = element('button', 'btn primary continue', label);
+      go.type = 'button';
+      go.addEventListener('click', function () { goTo(point); });
+      box.appendChild(go);
+    }
+    lessonsBox.appendChild(box);
+  }
+
   function drawLessons() {
     lessonsBox.innerHTML = '';
+    drawSummary();
     TUTORIALS.forEach(function (lesson, index) {
       var button = element('button', 'tutorial-lesson' + (done.indexOf(index) >= 0 ? ' done' : ''));
       button.type = 'button';
@@ -758,6 +826,7 @@
 
   function markDone(lessonIndex) {
     if (done.indexOf(lessonIndex) < 0) { done.push(lessonIndex); write(DONE, done); }
+    showStartHere();
   }
 
   function drawStep() {
@@ -899,4 +968,5 @@
   var first = true;
   try { first = localStorage.getItem(VISITED) === null; localStorage.setItem(VISITED, '1'); } catch (e) {}
   if (first && window.innerWidth > 900) setOpen(true);
+  showStartHere();
 })();

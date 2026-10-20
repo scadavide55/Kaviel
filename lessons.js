@@ -8,7 +8,9 @@ window.KavielLessons = {
       lesson: 'Lesson', step: 'step', of: 'of', steps: 'steps',
       lineByLine: 'Line by line', see: 'What you will see', turn: 'Your turn', slip: 'Watch out',
       typeIt: 'Type it yourself', putIt: 'Put it in the editor', typeNote: 'Empty page ready. Type the lines you see in the lesson, then press Run.',
-      listen: 'Listen', stopReading: 'Stop reading'
+      listen: 'Listen', stopReading: 'Stop reading',
+      startLessons: 'New here? Start with lesson 1', continueLesson: 'Continue: lesson {n}', lessonsDone: '{done} of {total} lessons done',
+      allDoneTitle: 'You know the whole language!', allDoneText: 'Now open the examples, change them, and make a program of your own.', seeExamples: 'See the examples'
     },
     explain: {
       start: 'The program begins here.',
@@ -413,7 +415,9 @@ When you are happy, press Save to keep your game as a .kv file. Show it to your 
       lesson: 'Lezione', step: 'passo', of: 'di', steps: 'passi',
       lineByLine: 'Riga per riga', see: 'Cosa vedrai', turn: 'Tocca a te', slip: 'Attenzione',
       typeIt: 'Scrivilo tu', putIt: 'Mettilo nell\'editor', typeNote: 'Pagina vuota pronta. Scrivi le righe che vedi nella lezione, poi premi Esegui.',
-      listen: 'Ascolta', stopReading: 'Ferma la lettura'
+      listen: 'Ascolta', stopReading: 'Ferma la lettura',
+      startLessons: 'Sei nuovo? Inizia dalla lezione 1', continueLesson: 'Continua: lezione {n}', lessonsDone: '{done} lezioni su {total} fatte',
+      allDoneTitle: 'Conosci tutto il linguaggio!', allDoneText: 'Ora apri gli esempi, cambiali e crea un programma tutto tuo.', seeExamples: 'Vedi gli esempi'
     },
     explain: {
       start: 'Il programma inizia qui.',
@@ -818,7 +822,9 @@ Quando sei contento, premi Salva per tenere il gioco come file .kv. Mostralo all
       lesson: 'Leçon', step: 'étape', of: 'sur', steps: 'étapes',
       lineByLine: 'Ligne par ligne', see: 'Ce que tu verras', turn: 'À toi', slip: 'Attention',
       typeIt: 'Écris-le toi-même', putIt: 'Mets-le dans l\'éditeur', typeNote: 'Page vide prête. Écris les lignes que tu vois dans la leçon, puis appuie sur Lancer.',
-      listen: 'Écouter', stopReading: 'Arrêter la lecture'
+      listen: 'Écouter', stopReading: 'Arrêter la lecture',
+      startLessons: 'Tu débutes ? Commence par la leçon 1', continueLesson: 'Continue : leçon {n}', lessonsDone: '{done} leçons sur {total} faites',
+      allDoneTitle: 'Tu connais tout le langage !', allDoneText: 'Ouvre maintenant les exemples, change-les et crée ton propre programme.', seeExamples: 'Voir les exemples'
     },
     explain: {
       start: 'Le programme commence ici.',

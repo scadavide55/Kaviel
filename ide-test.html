@@ -273,6 +273,11 @@
     check('Putting a step in the editor loads its code and keeps the panel open', !doc.getElementById('tutorial').hidden && code.value.includes('define area(width, height)'));
     check('The previous code is kept for restoring', localStorage.getItem('kaviel.tutorial.backup') === sourceBeforeTutorial);
     check('Tutorial progress is remembered', JSON.parse(localStorage.getItem('kaviel.tutorial.position')).lesson === commandLesson);
+    doc.querySelector('.back-link').click();
+    var summaryBox = doc.querySelector('.lesson-summary');
+    check('The lesson list says how far you are', !!summaryBox && /\d+ of \d+ lessons done/.test(summaryBox.textContent), summaryBox ? summaryBox.textContent : 'no summary');
+    var continueButton = summaryBox && summaryBox.querySelector('.continue');
+    check('Continue leads back to the step you were on', !!continueButton && (continueButton.click(), doc.querySelector('.tutorial-step .step-count').textContent.indexOf('Lesson ' + (commandLesson + 1) + ':') === 0));
     doc.querySelector('.restore-code').click();
     check('Restore brings the previous code back', code.value === sourceBeforeTutorial);
     doc.getElementById('tab-examples').click();

@@ -17,7 +17,7 @@ export PATH="/usr/local/bin:$PATH"   # node is not on the default PATH on this m
 
 node test.js        # 117  language behaviour and the error table
 node v1-test.js     # 72   thresholds, functions, lists, keys, async, cancellation
-node cli-test.js    # 37   the command through pipes and signals, and every example
+node cli-test.js    # 38   the command through pipes and signals, and every example
 ```
 
 The browser suite needs a local server:
@@ -28,7 +28,7 @@ python3 -m http.server 8765 --bind 127.0.0.1 &
   --no-sandbox --dump-dom "http://127.0.0.1:8765/ide-test.html" --virtual-time-budget=150000
 ```
 
-138 checks must pass. The result is printed at the end of the page as `N passed, M failed`; a single failing check prints its name and, when the check was written with a detail argument, what it saw.
+142 checks must pass. The result is printed at the end of the page as `N passed, M failed`; a single failing check prints its name and, when the check was written with a detail argument, what it saw.
 
 Other tools:
 

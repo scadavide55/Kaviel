@@ -351,7 +351,7 @@ Static files, no dependencies, no build step:
 | `kaviel.html` | editor window, layout and run integration |
 | `editor.css` | responsive workspace theme |
 | `editor-ui.js` | highlighting, find, local files, guide, status |
-| `tutorials.js` | 19 lessons (67 steps) in a side panel next to the editor, texts in `lessons.js` (en, it, fr) |
+| `tutorials.js` | 19 lessons (72 steps) in a side panel next to the editor, texts in `lessons.js` (en, it, fr) |
 | `test.js` | 112 language tests, including the §14 examples |
 | `v1-test.js` | 72 tests: thresholds, functions, lists, keys, async and cancellation |
 | `cli-test.js` | 20 tests of the `kaviel` command through pipes and signals |

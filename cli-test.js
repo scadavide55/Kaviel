@@ -206,6 +206,33 @@ check('stdin closing early does not hang the program', () => {
     });
   }
 
+  await acheck('a program that never asks ends even when stdin stays open', async () => {
+    const file = path.join(os.tmpdir(), 'kaviel-open-stdin.kv');
+    fs.writeFileSync(file, 'print "hi"\nend\n');
+    const child = spawn(process.execPath, [path.join(__dirname, 'run.js'), 'run', file], {stdio: ['pipe', 'pipe', 'pipe']});
+    let out = '';
+    child.stdout.on('data', d => { out += d; });
+    const code = await new Promise(resolve => {
+      const timer = setTimeout(() => { child.kill('SIGKILL'); resolve('hung'); }, 5000);
+      child.on('exit', c => { clearTimeout(timer); resolve(c); });
+    });
+    fs.unlinkSync(file);
+    assert.equal(code, 0);
+    assert.equal(out, 'hi\n');
+  });
+
+  check('every label and tooltip in the page has an Italian and a French translation', () => {
+    const page = fs.readFileSync(path.join(__dirname, 'kaviel.html'), 'utf8').replace(/<script[\s\S]*?<\/script>/g, '').replace(/<pre[\s\S]*?<\/pre>/g, '');
+    const dictionary = fs.readFileSync(path.join(__dirname, 'i18n.js'), 'utf8') + fs.readFileSync(path.join(__dirname, 'strings.js'), 'utf8');
+    const wanted = new Set();
+    for (const m of page.matchAll(/\b(?:title|aria-label|placeholder)="([^"]+)"/g)) wanted.add(m[1]);
+    for (const m of page.matchAll(/<(?:button|h2|h3|label|option|strong|small|a)\b[^>]*>([^<>]+)</g)) wanted.add(m[1].replace(/\s+/g, ' ').trim());
+    const names = new Set(['Kaviel', 'beta', 'English', 'Italiano', 'Français', 'Cmd/Ctrl + Enter', 'Cmd/Ctrl + S', 'Cmd/Ctrl + F']);
+    const quoted = text => "'" + text.replace(/\\/g, '\\\\').replace(/'/g, "\\'") + "'";
+    const missing = [...wanted].filter(text => /[A-Za-z]{3}/.test(text) && !names.has(text) && !/^(Cmd|Esc|Tab|Shift)/.test(text) && !/^\W+$/.test(text) && !/^&\w+;$/.test(text) && !dictionary.includes(quoted(text)));
+    assert.deepEqual(missing, []);
+  });
+
   check('the download button names files that the release really holds', () => {
     const page = fs.readFileSync(path.join(__dirname, 'kaviel.html'), 'utf8');
     const version = /version: '([^']+)'/.exec(page)[1];

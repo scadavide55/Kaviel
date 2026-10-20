@@ -166,7 +166,8 @@ function terminalHost(stdout, stdin, onInterrupt) {
    appears while the pipe is open. A key comes as the first letter of a line. */
 function pipeHost(stdin, stdout) {
   const readline = require('readline');
-  const lines = readline.createInterface({input: stdin, crlfDelay: Infinity})[Symbol.asyncIterator]();
+  const reader = readline.createInterface({input: stdin, crlfDelay: Infinity});
+  const lines = reader[Symbol.asyncIterator]();
   let closed = false;
   async function next() {
     const {value, done} = await lines.next();
@@ -193,7 +194,8 @@ function pipeHost(stdin, stdout) {
       }
       return undefined;
     },
-    stop() { if (!closed) closed = true; }
+    // Stop listening: a program that never asked must not keep the command waiting on an open pipe.
+    stop() { closed = true; reader.close(); stdin.pause(); }
   };
 }
 

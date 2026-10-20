@@ -3,6 +3,9 @@
 ## 1.6.0 — 20 October 2026
 
 - **`start` is no longer needed.** A program is just its lines and a closing `end`. A program that still begins with `start` runs exactly as before and says nothing, so older programs and saved files keep working. The lessons, the examples, the editor's empty page and the quick help no longer write it, and the three languages of the first lesson explain `end` alone.
+- Fixed: `kaviel run` waited forever after a program that never asks when its input stayed open. It now ends as soon as the program does.
+- The editor highlights `under`, `over`, `is`, `for`, `true`, `false` and `nothing`. The cursor position (`Ln`, `Col`) and six screen-reader labels are translated, and a test keeps every label of the page translated.
+- The page has a description, share tags, a favicon and a hidden heading for screen readers.
 - A program without `start` no longer gets the warning "A program should start with `start`". The warning for a missing `end` stays.
 
 ## 1.5.1 — 20 October 2026

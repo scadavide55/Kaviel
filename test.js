@@ -168,18 +168,18 @@ end`,
 
 test('print joins values with a space',
   `start
-define name = "Davide"
+define name = "Ada"
 print "Hello " name "!"
 print "age:" 14
 end`,
-  { output: ['Hello Davide!', 'age: 14'], errors: 0, warnings: 0 });
+  { output: ['Hello Ada!', 'age: 14'], errors: 0, warnings: 0 });
 
 test('+ glues exactly, no space added',
   `start
-define name = "Davide"
+define name = "Ada"
 print "Hello " + name + "!"
 end`,
-  { output: ['Hello Davide!'], errors: 0, warnings: 0 });
+  { output: ['Hello Ada!'], errors: 0, warnings: 0 });
 
 test('define and set',
   `start
@@ -461,7 +461,7 @@ print q
 define q2 = ask("age? ")
 print q2
 end`,
-  { output: ['Davide', '14'], errors: 0, warnings: 0, input: ['Davide', '14'] });
+  { output: ['Ada', '14'], errors: 0, warnings: 0, input: ['Ada', '14'] });
 
 test('empty program: only the missing end is reported',
   ``,

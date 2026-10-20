@@ -364,9 +364,9 @@ Static files, no dependencies, no build step:
 | `editor.css` | responsive workspace theme |
 | `editor-ui.js` | highlighting, find, local files, guide, status |
 | `tutorials.js` | 20 lessons (81 steps) in a side panel next to the editor, texts in `lessons.js` (en, it, fr) |
-| `test.js` | 112 language tests, including the §14 examples |
-| `v1-test.js` | 72 tests: thresholds, functions, lists, keys, async and cancellation |
-| `cli-test.js` | 20 tests of the `kaviel` command through pipes and signals |
+| `test.js` | 119 language tests, including the §14 examples |
+| `v1-test.js` | 89 tests: thresholds, functions, lists, keys, async and cancellation |
+| `cli-test.js` | 40 tests of the `kaviel` command through pipes and signals |
 | `i18n.js` | Italian and French interface (the language itself stays English) |
 | `strings.js` | translations of the text inside quotes in lessons, examples and help; keywords never change |
 | `ide-test.html` | 137 browser checks: run, input, keys, Stop, lessons, symbols, files, drag and drop, layout |
@@ -423,10 +423,10 @@ The `kaviel` command comes with the desktop app: on first launch the app writes 
 
 | Check | Result |
 |---|---|
-| `node test.js` | 112 passed |
-| `node v1-test.js` | 72 passed |
-| `node cli-test.js` | 20 passed |
-| `ide-test.html` in Brave (headless) | 136 passed |
+| `node test.js` | 119 passed |
+| `node v1-test.js` | 89 passed |
+| `node cli-test.js` | 40 passed |
+| `ide-test.html` in Brave (headless) | 145 passed |
 | `npm start` (the real window, Electron 44.9.0) | page, `localStorage`, Run and the hidden Download button verified in the window |
 | The built `Kaviel-1.0.0-beta-universal.dmg`, mounted and launched | the same checks pass from `app.asar`, console clean |
 | The sixteen examples in `examples/` | all run without errors except `errors.kv`, which is meant to show them |

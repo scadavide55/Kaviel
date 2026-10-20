@@ -51,6 +51,17 @@ Each line was run or read, not remembered.
 | I5 | not checked yet |
 | E4 | still open: nothing checks that every label in `kaviel.html` has a translation |
 
+## Checked and fixed for 1.6.0 (20 October 2026)
+
+| Item | Result |
+|---|---|
+| new | `kaviel run` did not exit after a program that never asked, when stdin stayed open (a pipe or a terminal wrapper): the line reader kept the process alive. It is closed now, and a test covers it |
+| E4 | fixed: a test checks that every label, tooltip and button text of `kaviel.html` has an Italian and a French entry. Seven were missing (`Answer`, `Language`, `Version`, `Results`, `Kaviel program`, `Kaviel, start page`, and the `Ln`/`Col` of the cursor) and were added |
+| I5 | fixed: `under`, `over`, `is`, `for`, `true`, `false` and `nothing` are highlighted |
+| I4 | not a defect any more: New and the examples offer Undo (a browser test covers it) |
+| page | a description, share tags and a favicon were missing; the page has a hidden heading for screen readers |
+| privacy | a personal path in `tools/check-desktop-lesson.js` and the owner's first name in test data were replaced by neutral ones |
+
 ## Still open after 1.5
 
 | Item | Why it is still open |

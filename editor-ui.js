@@ -5,7 +5,7 @@
   var t = (window.KavielI18n && window.KavielI18n.t) || function (text) { return text; };
   var code = $('code'), highlight = $('highlight'), out = $('out');
   var filename = 'untitled.kv', toastTimer, lastRun = false, dirty = false;
-  var keywords = new Set('start end print define set if else repeat until ask random pick return break and or not keypress'.split(' '));
+  var keywords = new Set('start end print define set if else repeat until for ask random pick return break and or not under over is true false nothing keypress'.split(' '));
   var values = new Set(['true', 'false', 'nothing']);
   var names = {hello: 'hello.kv', dice: 'dice.kv', rps: 'rock_paper_scissors.kv', collatz: 'collatz.kv', errors: 'errors.kv', questions: 'questions.kv', age: 'age.kv', functions: 'functions.kv', lists: 'lists.kv', keypress: 'keypress.kv', guess: 'guess.kv', timestable: 'timestable.kv', quiz: 'quiz.kv', treasure: 'treasure_hunt.kv', foreach: 'foreach.kv', machine: 'machine.kv', citadel: 'citadel.kv'};
 
@@ -45,7 +45,7 @@
     var before = code.value.slice(0, code.selectionStart);
     var line = before.split('\n').length;
     var column = before.length - before.lastIndexOf('\n');
-    $('cursor-position').textContent = 'Ln ' + line + ', Col ' + column;
+    $('cursor-position').textContent = t('Ln') + ' ' + line + ', ' + t('Col') + ' ' + column;
     var style = getComputedStyle(code);
     $('active-line').style.top = (parseFloat(style.paddingTop) + (line - 1) * parseFloat(style.lineHeight) - code.scrollTop) + 'px';
   }

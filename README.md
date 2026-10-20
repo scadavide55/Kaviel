@@ -68,9 +68,9 @@ The installers are published with each release, not stored in the repository (ea
 
 | System | File |
 |---|---|
-| macOS (Intel and Apple silicon) | `Kaviel-1.5.1-beta-universal.dmg` |
-| Windows 10 and 11 | `Kaviel-1.5.1-beta-setup.exe` |
-| Linux (64-bit) | `Kaviel-1.5.1-beta-linux-x64.tar.gz` |
+| macOS (Intel and Apple silicon) | `Kaviel-1.6.0-beta-universal.dmg` |
+| Windows 10 and 11 | `Kaviel-1.6.0-beta-setup.exe` |
+| Linux (64-bit) | `Kaviel-1.6.0-beta-linux-x64.tar.gz` |
 
 The app is the same editor as the one in the browser, with the lessons and examples, plus one extra lesson about the terminal. It works with no internet connection and sends nothing anywhere. On first launch it also installs the `kaviel` command (see below).
 

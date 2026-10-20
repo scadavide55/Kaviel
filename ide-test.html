@@ -259,8 +259,15 @@
     doc.querySelectorAll('.tutorial-lesson')[plainLesson].click();
     check('Choosing a lesson shows its first step', doc.querySelector('.tutorial-step h3').textContent === 'Make a command' && doc.querySelector('.tutorial-code').textContent.includes('define greet(name)') && !!doc.querySelector('.code-row .note') && !!doc.querySelector('.see-box'));
     doc.querySelectorAll('.nav-row .btn')[1].click();
-    check('Next step moves forward inside the lesson', doc.querySelector('.tutorial-step .step-count').textContent.includes('step 2 of 4'));
+    check('Next step moves forward inside the lesson', doc.querySelector('.tutorial-step .step-count').textContent.includes('step 2 of ' + T[plainLesson].steps.length));
     check('Steps give the reader a small job', !!doc.querySelector('.your-turn'));
+    var cmdSteps = T[plainLesson].steps.length;
+    for (var jump = 2; jump < cmdSteps; jump++) doc.querySelectorAll('.nav-row .btn')[1].click();
+    var callRows = Array.prototype.slice.call(doc.querySelectorAll('.tutorial-code .code-row'));
+    var inlineCall = callRows.filter(function (r) { return /^if birthday = cheer/.test(r.querySelector('.src').textContent); })[0];
+    check('A one-line if with a command is explained as an action', !!inlineCall && /same line/.test(inlineCall.querySelector('.note').textContent), inlineCall ? inlineCall.textContent : 'row missing');
+    check('Every line of the last commands step has a note', callRows.every(function (r) { return !!r.querySelector('.note'); }));
+    for (var back = 1; back < cmdSteps - 1; back++) doc.querySelectorAll('.nav-row .btn')[0].click();
     var sourceBeforeTutorial = setSource('start\nprint "mine"\nend').value;
     doc.querySelector('.step-actions .put-code').click();
     check('Putting a step in the editor loads its code and keeps the panel open', !doc.getElementById('tutorial').hidden && code.value.includes('define area(width, height)'));

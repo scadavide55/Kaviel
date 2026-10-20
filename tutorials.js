@@ -41,6 +41,12 @@
           text: 'A line that starts with # is a note. The computer skips it. Notes help people understand the code later.',
           code: 'start\n# This line is only a note\nprint "The note above is invisible."\nend',
           turn: 'Write your own note with a # at the start.'
+        },
+        {
+          title: 'An empty line',
+          text: '',
+          code: 'start\nprint "Hello!"\nprint nothing\nprint "Bye!"\nend',
+          turn: ''
         }
       ]
     },
@@ -101,6 +107,12 @@
           text: 'Answers are always text, even when you type digits. number() turns text into a real number, so you can do maths with it.',
           code: 'start\ndefine ask{1} = ("Pick a number: ")\nask{1}\ndefine n = number(answer{1})\nprint "Double is" n * 2\nprint "Plus ten is" n + 10\nend',
           turn: 'Make it print the number times 100.'
+        },
+        {
+          title: 'A question in one line',
+          text: '',
+          code: 'start\ndefine name = ask("What is your name? ")\nprint "Hello" name\nend',
+          turn: ''
         }
       ]
     },
@@ -245,6 +257,12 @@
           text: 'A function may call itself, as long as it gets closer to an end. This is called recursion. 5! means 5 x 4 x 3 x 2 x 1.',
           code: 'start\ndefine factorial(n)\n  if n = 0 = return 1\n  return n * factorial(n - 1)\nprint "5! is" factorial(5)\nend',
           turn: 'Try factorial(10).'
+        },
+        {
+          title: 'A command that does something',
+          text: '',
+          code: 'start\ndefine cheer(name)\n  print "Hooray for" name\ndefine birthday = true\ndefine sleeping = false\nif birthday = cheer("Ada")\nif sleeping = cheer("Luca")\nprint "The end"\nend',
+          turn: ''
         }
       ]
     },
@@ -281,6 +299,12 @@
           text: 'A box can collect a total while the loop visits every number.',
           code: 'start\ndefine prices = [3, 5, 2, 10]\ndefine total = 0\ndefine i = 1\nuntil i > length(prices)\n  set total = total + prices[i]\n  set i = i + 1\nprint "Total:" total\nend',
           turn: 'Add another price.'
+        },
+        {
+          title: 'Pick from a list',
+          text: '',
+          code: 'start\ndefine pets = ["cat", "dog", "fox"]\ndefine friend = pick pets\nprint "Today you are a" friend\nend',
+          turn: ''
         }
       ]
     },
@@ -329,6 +353,12 @@
           text: 'split breaks a text wherever it finds a separator, and gives you a list. join does the opposite: it takes a list and a piece of text, and glues the pieces with that text in between.\n\nTwo words, one idea: pieces and whole. It is how a chat turns a sentence into words.',
           code: 'start\ndefine letters = "a,b,c"\ndefine pieces = split(letters, ",")\nprint pieces\nprint join(pieces, "-")\nprint length(pieces)\nend',
           turn: 'Split your own sentence on the space and join it with a plus sign.'
+        },
+        {
+          title: 'New lines and quotes',
+          text: '',
+          code: 'start\nprint "Ada\\nLuca"\nprint "\\"Kaviel\\""\nend',
+          turn: ''
         }
       ]
     },
@@ -549,7 +579,7 @@
   }
 
   // One short sentence for each line of code, so the child knows what every line does.
-  function explain(line) {
+  function explain(line, next) {
     var t = line.trim(), m, e = EXPLAIN;
     if (!t || !e.start) return '';
     if (t === 'start') return e.start;
@@ -568,6 +598,9 @@
     if (/^define\s+\w+\s*=\s*\[\[/.test(t) && e.nestedList) return e.nestedList;
     if (/^append\([^,]+,\s*\[/.test(t) && e.appendRow) return e.appendRow;
     if (/\w+\[\d+\]\[\d+\]/.test(t) && e.twice) return e.twice;
+    if (/^define\s+\w+\s*=\s*ask\(/.test(t) && e.askNow) return e.askNow;
+    if (/^if\s+.+\s=\s+\w+\(.*\)\s*$/.test(t) && e.ifCall && !(next && /^\s/.test(next))) return e.ifCall;
+    if (/^print\b.*\\n/.test(t) && e.newLine) return e.newLine;
     if (/^print\s*$/.test(t)) return e.printEmpty;
     if (/^print\b/.test(t)) return e.print;
     if ((m = t.match(/^define\s+ask\{(\d+)\}/))) return e.askDef.replace('{n}', m[1]);
@@ -753,11 +786,12 @@
 
     stepBox.appendChild(element('div', 'block-title', UI.lineByLine || 'Line by line'));
     var rows = element('div', 'tutorial-code');
-    step.code.split('\n').forEach(function (line) {
+    var codeLines = step.code.split('\n');
+    codeLines.forEach(function (line, lineIndex) {
       if (!line.trim()) return;
       var row = element('div', 'code-row');
       row.appendChild(element('pre', 'src', line));
-      var note = explain(line);
+      var note = explain(line, codeLines[lineIndex + 1]);
       if (note) row.appendChild(element('div', 'note', note));
       rows.appendChild(row);
     });

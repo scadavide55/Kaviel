@@ -25,6 +25,9 @@ window.KavielLessons = {
       define: 'Makes a box called {name} and puts a value in it.',
       set: 'Puts a new value in the box. The old value is gone.',
       ifInline: 'If the check is true, do the action on the same line.',
+      askNow: 'Asks the question now, and puts the answer in the box.',
+      ifCall: 'If the check is true, runs the command on the same line.',
+      newLine: 'The \\n inside the text starts a new line.',
       ifBlock: 'Checks something. The pushed-in lines below only run if it is true.',
       else: 'Otherwise: these lines run when the check above was false.',
       repeat: 'Does the pushed-in lines below again and again, this many times.',
@@ -79,7 +82,12 @@ Numbers are different. They do not need quotes. And the computer can do sums for
 5`, `Change the 7 to your age. Then try print 100 - 1.`, `If you forget the quotes, like print Hello, Kaviel thinks Hello is the name of a box and tells you to use quotes.`],
         ['Notes for people', `Sometimes you want to leave a message inside the code, for yourself or for a friend, without the computer reading it. Start the line with # and the computer skips it.
 
-Good programmers write notes all the time, so that later they remember why they wrote something.`, `The note above is invisible.`, `Write your own note with a # at the start. Run it: the output does not change.`, ``]
+Good programmers write notes all the time, so that later they remember why they wrote something.`, `The note above is invisible.`, `Write your own note with a # at the start. Run it: the output does not change.`, ``],
+        ['An empty line', `Sometimes you want a gap between two things you say, like the space between two paragraphs. print nothing makes the computer say an empty line.
+
+nothing is a word of the language that means "no value". You will meet it again in lesson 6.`, `Hello!
+
+Bye!`, `Add an empty line between your own two lines.`, `Do not write print alone on a line: Kaviel says that print needs something to show. Write print nothing.`]
       ]],
       ['Names and boxes', 'Remember things for later', [
         ['A box with a name', `Imagine a box with a label on it. You can put something inside, and later you ask for it by reading the label. The word define makes a new box.
@@ -124,7 +132,11 @@ number() turns text into a real number. After that the maths works properly.
 
 For comparing you do not need it: = reads the number out of the text, so answer{1} = 18 works.`, `Type 4:
 Double is 8
-Plus ten is 14`, `Make it print the number times 100.`, `number() only works when the text really is a number.`]
+Plus ten is 14`, `Make it print the number times 100.`, `number() only works when the text really is a number.`],
+        ['A question in one line', `So far a question took three lines. When you have only one question, there is a shorter way: ask with brackets asks right away, and gives you back what the person typed.
+
+The answer is always text, even when the person types a number.`, `What is your name? Ada
+Hello Ada`, `Ask for a favourite colour and say it back.`, `The question goes between quotes, like any text. End it with a space so the answer does not touch it.`]
       ]],
       ['Make choices', 'Let the program decide', [
         ['If this, then that', `A program can choose. if looks at something and only runs the lines under it when it is true. Those lines are pushed to the right by two spaces. The Tab key does that for you.
@@ -211,7 +223,11 @@ A 10 by 10 field is 100`, `Find the area of a 25 by 8 garden.`, `Give the right 
 Here quadruple uses double two times: 5 becomes 10, and 10 becomes 20.`, `20`, `Make a command that triples a number.`, ``],
         ['A command that calls itself', `A command can call itself, a bit like standing between two mirrors.
 
-It only works if every call gets closer to an end. Here factorial(5) is 5 times factorial(4), and so on, down to factorial(0), which is simply 1. That is the end.`, `5! is 120`, `Try factorial(10).`, `Always have an ending case. Without it the command would call itself forever. Kaviel stops it after 128 calls.`]
+It only works if every call gets closer to an end. Here factorial(5) is 5 times factorial(4), and so on, down to factorial(0), which is simply 1. That is the end.`, `5! is 120`, `Try factorial(10).`, `Always have an ending case. Without it the command would call itself forever. Kaviel stops it after 128 calls.`],
+        ['A command that does something', `A command does not have to give an answer back. It can just do things, like print. Then there is no return.
+
+You can call it from the one-line if: if birthday = cheer("Ada") runs the command only when birthday is true. This works when the line has no indented lines under it.`, `Hooray for Ada
+The end`, `Make birthday false and run again. What changes?`, `If you put indented lines under the if, the = becomes a comparison instead. A line alone means: do this.`]
       ]],
       ['Lists', 'Many things in one place', [
         ['A list of things', `A box can hold one thing. A list is a box with many places, one after another. You make one with square brackets and commas.
@@ -233,7 +249,11 @@ dog
 owl`, `Add a fourth animal. Notice that nothing else has to change.`, ``],
         ['Add up a list', `A box can collect a total while the loop visits every number. total starts at 0. Each turn, the current price is added to it.
 
-It is the same idea as a shop till adding up what you buy.`, `Total: 20`, `Add another price to the list.`, ``]
+It is the same idea as a shop till adding up what you buy.`, `Total: 20`, `Add another price to the list.`, ``],
+        ['Pick from a list', `In lesson 8, pick chose between things you wrote one by one. When the things are already in a list, write pick and the name of the list.
+
+Every item has the same chance, and every run can give a different answer.`, `Today you are a dog
+(it could be a cat or a fox: it changes each time)`, `Add two more pets to the list and run it five times.`, `Write pick pets with no quotes: pets is the name of the box that holds the list.`]
       ]],
       ['Lists inside lists', 'A table in a list', [
         ['A list of lists', `A list can hold anything, even other lists. Two brackets make a row, and a list of rows makes a table.
@@ -261,7 +281,12 @@ iel`, 'Print the first four letters of the word.', `If you ask for a position bi
 
 Two words, one idea: pieces and whole. It is how a chat turns a sentence into words.`, `["a", "b", "c"]
 a-b-c
-3`, 'Split your own sentence on the space and join it with a plus sign.', `The separator must be at least one character, so split(text, "") is an error.`]
+3`, 'Split your own sentence on the space and join it with a plus sign.', `The separator must be at least one character, so split(text, "") is an error.`],
+        ['New lines and quotes', `Two little tricks live inside a text. \\n means "start a new line here", so one print can show two lines. And \\" puts a real quote mark inside a text without ending it.
+
+The backslash \\ tells Kaviel that the next letter is special. It leans the other way from the slash /.`, `Ada
+Luca
+"Kaviel"`, `Print your name and your age on two lines with only one print.`, `The backslash leans to the left: \\ . A slash / does nothing special.`]
       ]],
       ['Numbers that stay whole', 'Without a comma', [
         ['Two slashes', `A division with one slash gives the exact answer, and it can have a part after the point: 7 / 2 is 3.5.
@@ -405,6 +430,9 @@ When you are happy, press Save to keep your game as a .kv file. Show it to your 
       define: 'Crea una scatola chiamata {name} e ci mette un valore.',
       set: 'Mette un nuovo valore nella scatola. Il vecchio valore sparisce.',
       ifInline: 'Se il controllo è vero, fa l\'azione sulla stessa riga.',
+      askNow: 'Fa subito la domanda e mette la risposta nella scatola.',
+      ifCall: 'Se il controllo è vero, fa girare il comando sulla stessa riga.',
+      newLine: 'Il \\n dentro il testo va a capo.',
       ifBlock: 'Controlla qualcosa. Le righe spostate a destra sotto vengono eseguite solo se è vero.',
       else: 'Altrimenti: queste righe vengono eseguite se il controllo sopra era falso.',
       repeat: 'Fa le righe spostate a destra qui sotto ancora e ancora, tante volte.',
@@ -459,7 +487,12 @@ I numeri sono diversi. Non vogliono le virgolette. E il computer sa fare i conti
 5`, `Cambia il 7 con la tua età. Poi prova print 100 - 1.`, `Se dimentichi le virgolette, come in print Ciao, Kaviel pensa che Ciao sia il nome di una scatola e ti dice di usare le virgolette.`],
         ['Note per le persone', `A volte vuoi lasciare un messaggio dentro il codice, per te o per un amico, senza che il computer lo legga. Inizia la riga con # e il computer la salta.
 
-I bravi programmatori scrivono note di continuo, per ricordarsi dopo perché hanno scritto qualcosa.`, `La nota qui sopra è invisibile.`, `Scrivi una tua nota con # all'inizio. Eseguilo: il risultato non cambia.`, ``]
+I bravi programmatori scrivono note di continuo, per ricordarsi dopo perché hanno scritto qualcosa.`, `La nota qui sopra è invisibile.`, `Scrivi una tua nota con # all'inizio. Eseguilo: il risultato non cambia.`, ``],
+        ['Una riga vuota', `A volte vuoi uno spazio tra due cose che dici, come tra due paragrafi. print nothing fa dire al computer una riga vuota.
+
+nothing è una parola del linguaggio e vuol dire "nessun valore". La ritroverai nella lezione 6.`, `Ciao!
+
+A presto!`, `Metti una riga vuota tra due righe tue.`, `Non scrivere print da solo su una riga: Kaviel dice che print ha bisogno di qualcosa da mostrare. Scrivi print nothing.`]
       ]],
       ['Nomi e scatole', 'Ricorda le cose per dopo', [
         ['Una scatola con un nome', `Immagina una scatola con un'etichetta. Puoi metterci dentro qualcosa e dopo chiederla leggendo l'etichetta. La parola define crea una scatola nuova.
@@ -504,7 +537,11 @@ number() trasforma il testo in un vero numero. Dopo, la matematica funziona bene
 
 Per confrontare non serve: = legge il numero dentro il testo, quindi answer{1} = 18 funziona.`, `Scrivi 4:
 Il doppio è 8
-Più dieci fa 14`, `Fai stampare il numero per 100.`, `number() funziona solo se il testo è davvero un numero.`]
+Più dieci fa 14`, `Fai stampare il numero per 100.`, `number() funziona solo se il testo è davvero un numero.`],
+        ['Una domanda in una riga', `Finora una domanda occupava tre righe. Quando hai una domanda sola c'è una via più corta: ask con le parentesi fa la domanda subito e ti restituisce quello che la persona ha scritto.
+
+La risposta è sempre testo, anche se la persona scrive un numero.`, `Come ti chiami? Ada
+Ciao Ada`, `Chiedi il colore preferito e ripetilo.`, `La domanda va tra virgolette, come ogni testo. Finiscila con uno spazio, così la risposta non la tocca.`]
       ]],
       ['Fai scelte', 'Lascia decidere il programma', [
         ['Se questo, allora quello', `Un programma può scegliere. if guarda qualcosa ed esegue le righe sotto solo se è vero. Quelle righe sono spostate a destra di due spazi. Il tasto Tab lo fa per te.
@@ -591,7 +628,11 @@ Un campo 10 per 10 misura 100`, `Trova l'area di un giardino 25 per 8.`, `Dai il
 Qui quadruple usa double due volte: 5 diventa 10, e 10 diventa 20.`, `20`, `Crea un comando che triplica un numero.`, ``],
         ['Un comando che richiama se stesso', `Un comando può richiamare se stesso, un po' come stare tra due specchi.
 
-Funziona solo se ogni chiamata si avvicina a una fine. Qui factorial(5) è 5 per factorial(4), e così via fino a factorial(0), che fa semplicemente 1. Quella è la fine.`, `5! fa 120`, `Prova factorial(10).`, `Metti sempre un caso finale. Senza, il comando si richiamerebbe per sempre. Kaviel lo ferma dopo 128 chiamate.`]
+Funziona solo se ogni chiamata si avvicina a una fine. Qui factorial(5) è 5 per factorial(4), e così via fino a factorial(0), che fa semplicemente 1. Quella è la fine.`, `5! fa 120`, `Prova factorial(10).`, `Metti sempre un caso finale. Senza, il comando si richiamerebbe per sempre. Kaviel lo ferma dopo 128 chiamate.`],
+        ['Un comando che fa qualcosa', `Un comando non deve per forza restituire una risposta. Può anche solo fare cose, come print. Allora non c'è return.
+
+Puoi chiamarlo dall'if su una riga: if birthday = cheer("Ada") fa girare il comando solo quando birthday è vero. Funziona quando sotto la riga non ci sono righe rientrate.`, `Evviva Ada
+Fine`, `Metti birthday a false e riesegui. Cosa cambia?`, `Se sotto l'if metti righe rientrate, il = diventa un confronto. Una riga da sola vuol dire: fai questo.`]
       ]],
       ['Liste', 'Tante cose in un posto', [
         ['Una lista di cose', `Una scatola può tenere una cosa. Una lista è una scatola con tanti posti, uno dopo l'altro. Si fa con le parentesi quadre e le virgole.
@@ -613,7 +654,11 @@ dog
 owl`, `Aggiungi un quarto animale. Nota che non cambia nient'altro.`, ``],
         ['Somma una lista', `Una scatola può raccogliere un totale mentre il ciclo visita ogni numero. total parte da 0. A ogni giro gli viene aggiunto il prezzo corrente.
 
-È la stessa idea di una cassa del negozio che somma quello che compri.`, `Totale: 20`, `Aggiungi un altro prezzo alla lista.`, ``]
+È la stessa idea di una cassa del negozio che somma quello che compri.`, `Totale: 20`, `Aggiungi un altro prezzo alla lista.`, ``],
+        ['Scegli da una lista', `Nella lezione 8 pick sceglieva tra cose scritte una per una. Quando le cose sono già in una lista, scrivi pick e il nome della lista.
+
+Ogni elemento ha la stessa possibilità, e a ogni esecuzione la risposta può cambiare.`, `Oggi sei un cane
+(potrebbe essere un gatto o una volpe: cambia ogni volta)`, `Aggiungi altri due animali alla lista e riesegui cinque volte.`, `Scrivi pick pets senza virgolette: pets è il nome della scatola che contiene la lista.`]
       ]],
       ['Liste dentro le liste', 'Una tabella in una lista', [
         ['Una lista di liste', `Una lista può contenere qualsiasi cosa, anche altre liste. Due parentesi fanno una riga, e una lista di righe fa una tabella.
@@ -641,7 +686,12 @@ iel`, 'Stampa le prime quattro lettere della parola.', `Se chiedi una posizione 
 
 Due parole, un’idea sola: i pezzi e il tutto. È così che una chat trasforma una frase in parole.`, `["a", "b", "c"]
 a-b-c
-3`, 'Dividi una tua frase sullo spazio e riuniscila con un segno più.', `Il separatore deve essere almeno un carattere, quindi split(text, "") è un errore.`]
+3`, 'Dividi una tua frase sullo spazio e riuniscila con un segno più.', `Il separatore deve essere almeno un carattere, quindi split(text, "") è un errore.`],
+        ['A capo e virgolette', `Dentro un testo vivono due piccoli trucchi. \\n vuol dire "vai a capo qui", così un solo print può mostrare due righe. E \\" mette un vero segno di virgolette dentro il testo senza chiuderlo.
+
+La barra rovesciata \\ dice a Kaviel che la lettera dopo è speciale. Pende dall'altra parte rispetto alla barra normale /.`, `Ada
+Luca
+"Kaviel"`, `Stampa il tuo nome e la tua età su due righe con un solo print.`, `La barra rovesciata pende a sinistra: \\ . La barra normale / non fa niente di speciale.`]
       ]],
       ['Numeri interi', 'Senza virgola', [
         ['Due barre', `Una divisione con una barra dà la risposta esatta, e può avere una parte dopo la virgola: 7 / 2 fa 3,5.
@@ -785,6 +835,9 @@ Quando sei contento, premi Salva per tenere il gioco come file .kv. Mostralo all
       define: 'Crée une boîte appelée {name} et y met une valeur.',
       set: 'Met une nouvelle valeur dans la boîte. L\'ancienne disparaît.',
       ifInline: 'Si le test est vrai, fait l\'action sur la même ligne.',
+      askNow: 'Pose tout de suite la question et met la réponse dans la boîte.',
+      ifCall: 'Si le test est vrai, lance la commande sur la même ligne.',
+      newLine: 'Le \\n dans le texte va à la ligne.',
       ifBlock: 'Vérifie quelque chose. Les lignes poussées à droite en dessous ne s\'exécutent que si c\'est vrai.',
       else: 'Sinon : ces lignes s\'exécutent si le test du dessus était faux.',
       repeat: 'Fait les lignes poussées à droite en dessous encore et encore, ce nombre de fois.',
@@ -839,7 +892,12 @@ Les nombres sont différents. Ils n'ont pas besoin de guillemets. Et l'ordinateu
 5`, `Change le 7 en ton âge. Puis essaie print 100 - 1.`, `Si tu oublies les guillemets, comme dans print Salut, Kaviel pense que Salut est le nom d'une boîte et te dit d'utiliser des guillemets.`],
         ['Des notes pour les humains', `Parfois tu veux laisser un message dans le code, pour toi ou pour un ami, sans que l'ordinateur le lise. Commence la ligne par # et l'ordinateur la saute.
 
-Les bons programmeurs écrivent des notes tout le temps, pour se rappeler plus tard pourquoi ils ont écrit quelque chose.`, `La note au-dessus est invisible.`, `Écris ta propre note avec un # au début. Lance : le résultat ne change pas.`, ``]
+Les bons programmeurs écrivent des notes tout le temps, pour se rappeler plus tard pourquoi ils ont écrit quelque chose.`, `La note au-dessus est invisible.`, `Écris ta propre note avec un # au début. Lance : le résultat ne change pas.`, ``],
+        ['Une ligne vide', `Parfois tu veux un vide entre deux choses que tu dis, comme entre deux paragraphes. print nothing fait dire une ligne vide à l'ordinateur.
+
+nothing est un mot du langage qui veut dire « aucune valeur ». Tu le retrouveras dans la leçon 6.`, `Salut!
+
+À bientôt!`, `Mets une ligne vide entre deux lignes à toi.`, `N'écris pas print tout seul sur une ligne : Kaviel dit que print a besoin de quelque chose à montrer. Écris print nothing.`]
       ]],
       ['Noms et boîtes', 'Retenir des choses pour plus tard', [
         ['Une boîte avec un nom', `Imagine une boîte avec une étiquette. Tu peux mettre quelque chose dedans, et plus tard tu le demandes en lisant l'étiquette. Le mot define crée une nouvelle boîte.
@@ -884,7 +942,11 @@ number() transforme le texte en vrai nombre. Ensuite les maths marchent bien.
 
 Pour comparer, ce n'est pas la peine : = lit le nombre dans le texte, donc answer{1} = 18 marche.`, `Tape 4 :
 Le double est 8
-Plus dix fait 14`, `Fais afficher le nombre fois 100.`, `number() ne marche que si le texte est vraiment un nombre.`]
+Plus dix fait 14`, `Fais afficher le nombre fois 100.`, `number() ne marche que si le texte est vraiment un nombre.`],
+        ['Une question en une ligne', `Jusqu'ici une question prenait trois lignes. Quand tu n'as qu'une question, il y a plus court : ask avec des parenthèses pose la question tout de suite et te rend ce que la personne a tapé.
+
+La réponse est toujours du texte, même si la personne tape un nombre.`, `Comment tu t'appelles ? Ada
+Salut Ada`, `Demande une couleur préférée et répète-la.`, `La question va entre guillemets, comme tout texte. Termine-la par une espace pour que la réponse ne la touche pas.`]
       ]],
       ['Fais des choix', 'Laisse le programme décider', [
         ['Si ceci, alors cela', `Un programme peut choisir. if regarde quelque chose et n'exécute les lignes en dessous que si c'est vrai. Ces lignes sont poussées vers la droite de deux espaces. La touche Tab le fait pour toi.
@@ -971,7 +1033,11 @@ Un champ de 10 sur 10 mesure 100`, `Trouve l'aire d'un jardin de 25 sur 8.`, `Do
 Ici quadruple utilise double deux fois : 5 devient 10, et 10 devient 20.`, `20`, `Crée une commande qui triple un nombre.`, ``],
         ['Une commande qui s\'appelle elle-même', `Une commande peut s'appeler elle-même, un peu comme être entre deux miroirs.
 
-Ça ne marche que si chaque appel se rapproche d'une fin. Ici factorial(5) est 5 fois factorial(4), et ainsi de suite jusqu'à factorial(0), qui fait simplement 1. C'est la fin.`, `5! fait 120`, `Essaie factorial(10).`, `Mets toujours un cas de fin. Sans lui, la commande s'appellerait pour toujours. Kaviel l'arrête après 128 appels.`]
+Ça ne marche que si chaque appel se rapproche d'une fin. Ici factorial(5) est 5 fois factorial(4), et ainsi de suite jusqu'à factorial(0), qui fait simplement 1. C'est la fin.`, `5! fait 120`, `Essaie factorial(10).`, `Mets toujours un cas de fin. Sans lui, la commande s'appellerait pour toujours. Kaviel l'arrête après 128 appels.`],
+        ['Une commande qui fait quelque chose', `Une commande n'a pas besoin de rendre une réponse. Elle peut juste faire des choses, comme print. Alors il n'y a pas de return.
+
+Tu peux l'appeler depuis le if sur une ligne : if birthday = cheer("Ada") lance la commande seulement quand birthday est vrai. Ça marche quand la ligne n'a pas de lignes décalées dessous.`, `Hourra pour Ada
+Fin`, `Mets birthday à false et relance. Qu'est-ce qui change ?`, `Si tu mets des lignes décalées sous le if, le = devient une comparaison. Une ligne seule veut dire : fais ceci.`]
       ]],
       ['Listes', 'Plein de choses au même endroit', [
         ['Une liste de choses', `Une boîte peut tenir une chose. Une liste est une boîte avec plein de places, l'une après l'autre. On la fait avec des crochets et des virgules.
@@ -993,7 +1059,11 @@ dog
 owl`, `Ajoute un quatrième animal. Remarque que rien d'autre ne change.`, ``],
         ['Additionne une liste', `Une boîte peut collecter un total pendant que la boucle visite chaque nombre. total commence à 0. À chaque tour, le prix courant lui est ajouté.
 
-C'est la même idée qu'une caisse de magasin qui additionne ce que tu achètes.`, `Total: 20`, `Ajoute un autre prix à la liste.`, ``]
+C'est la même idée qu'une caisse de magasin qui additionne ce que tu achètes.`, `Total: 20`, `Ajoute un autre prix à la liste.`, ``],
+        ['Choisir dans une liste', `Dans la leçon 8, pick choisissait parmi des choses écrites une par une. Quand les choses sont déjà dans une liste, écris pick et le nom de la liste.
+
+Chaque élément a la même chance, et chaque lancement peut donner une autre réponse.`, `Aujourd'hui tu es un chien
+(ce pourrait être un chat ou un renard : ça change à chaque fois)`, `Ajoute deux autres animaux à la liste et relance cinq fois.`, `Écris pick pets sans guillemets : pets est le nom de la boîte qui contient la liste.`]
       ]],
       ['Des listes dans des listes', 'Un tableau dans une liste', [
         ['Une liste de listes', `Une liste peut contenir n’importe quoi, même d’autres listes. Deux crochets font une ligne, et une liste de lignes fait un tableau.
@@ -1021,7 +1091,12 @@ iel`, 'Affiche les quatre premières lettres du mot.', `Si tu demandes une posit
 
 Deux mots, une seule idée : les morceaux et le tout. C’est ainsi qu’un chat transforme une phrase en mots.`, `["a", "b", "c"]
 a-b-c
-3`, 'Sépare une de tes phrases sur l’espace et réunis-la avec un signe plus.', `Le séparateur doit faire au moins un caractère, donc split(text, "") est une erreur.`]
+3`, 'Sépare une de tes phrases sur l’espace et réunis-la avec un signe plus.', `Le séparateur doit faire au moins un caractère, donc split(text, "") est une erreur.`],
+        ['Retours à la ligne et guillemets', `Deux petits trucs vivent dans un texte. \\n veut dire « va à la ligne ici », donc un seul print peut montrer deux lignes. Et \\" met un vrai guillemet dans le texte sans le fermer.
+
+La barre oblique inverse \\ dit à Kaviel que la lettre suivante est spéciale. Elle penche de l'autre côté que la barre normale /.`, `Ada
+Luca
+"Kaviel"`, `Affiche ton prénom et ton âge sur deux lignes avec un seul print.`, `La barre oblique inverse penche vers la gauche : \\ . La barre normale / n'a rien de spécial.`]
       ]],
       ['Nombres entiers', 'Sans virgule', [
         ['Deux barres', `Une division avec une barre donne la réponse exacte, et elle peut avoir une partie après la virgule : 7 / 2 fait 3,5.

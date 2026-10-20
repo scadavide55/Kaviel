@@ -256,11 +256,11 @@
     var valuesLesson = T.findIndex(function (l) { return l.title === 'True, false and nothing'; });
     doc.querySelectorAll('.tutorial-lesson')[valuesLesson].click();
     var valueRows = Array.prototype.slice.call(doc.querySelectorAll('.tutorial-code .code-row'));
-    check('Every line of the true/false lesson has a note', valueRows.length === 5 && valueRows.every(function (r) { return !!r.querySelector('.note'); }), JSON.stringify(valueRows.map(function (r) { return [r.querySelector('.src').textContent, (r.querySelector('.note') || {}).textContent || '']; })));
+    check('Every line of the true/false lesson has a note', valueRows.length === 4 && valueRows.every(function (r) { return !!r.querySelector('.note'); }), JSON.stringify(valueRows.map(function (r) { return [r.querySelector('.src').textContent, (r.querySelector('.note') || {}).textContent || '']; })));
     var recordLesson = T.findIndex(function (l) { return l.title === 'Things with parts'; });
     doc.querySelectorAll('.tutorial-lesson')[recordLesson].click();
     var recordRows = Array.prototype.slice.call(doc.querySelectorAll('.tutorial-code .code-row'));
-    check('The records lesson explains a part and every line has a note', recordRows.length > 0 && recordRows.every(function (r) { return !!r.querySelector('.note'); }) && /part called name/.test(recordRows[1].textContent), recordRows.map(function (r) { return r.textContent; }).join(' | '));
+    check('The records lesson explains a part and every line has a note', recordRows.length > 0 && recordRows.every(function (r) { return !!r.querySelector('.note'); }) && /part called name/.test(recordRows[0].textContent), recordRows.map(function (r) { return r.textContent; }).join(' | '));
     var luckLesson = T.findIndex(function (l) { return l.title === 'Luck'; });
     doc.querySelectorAll('.tutorial-lesson')[luckLesson].click();
     for (var toRandom = 0; toRandom < T[luckLesson].steps.length - 4; toRandom++) doc.querySelectorAll('.nav-row .btn')[1].click();
@@ -328,7 +328,7 @@
     var typeButton = doc.querySelector('.step-actions .type-it');
     var keepSource = setSource('start\nprint "mine"\nend').value;
     typeButton.click();
-    check('Type it yourself gives an empty page ready to type in', code.value === 'start\n\nend\n' && code.selectionStart === 6 && localStorage.getItem('kaviel.tutorial.backup') === keepSource);
+    check('Type it yourself gives an empty page ready to type in', code.value === '\nend\n' && code.selectionStart === 0 && localStorage.getItem('kaviel.tutorial.backup') === keepSource);
     var finalStep = T[T.length - 1].steps[T[T.length - 1].steps.length - 1];
     check('The last lesson ends with the full treasure game', finalStep.code.indexOf('until day > 3') > 0 && finalStep.code.indexOf('random 70') > 0);
 
@@ -368,7 +368,7 @@
     var sourceBeforeClear = code.value;
     doc.getElementById('clear-output').click();
     check('Clear output does not change source', doc.getElementById('out').textContent === '' && code.value === sourceBeforeClear);
-    check('Cursor position is updated', (function () { code.setSelectionRange(6, 6); code.dispatchEvent(new win.Event('click')); return doc.getElementById('cursor-position').textContent === 'Ln 2, Col 1'; })());
+    check('Cursor position is updated', (function () { setSource('a\nb\nend'); code.setSelectionRange(2, 2); code.dispatchEvent(new win.Event('click')); return doc.getElementById('cursor-position').textContent === 'Ln 2, Col 1'; })());
     code = setSource(Array.from({length: 100}, function (_, i) { return 'print "' + i + ' ' + 'x'.repeat(200) + '"'; }).join('\n'));
     code.scrollTop = 240;
     code.scrollLeft = 100;
@@ -427,7 +427,7 @@
     setSource('start\nprint "keep me"\nend');
     check('Typing shows the edited marker', !doc.getElementById('edited').hidden);
     doc.getElementById('new-file').click();
-    check('New starts an empty program with a start and end', code.value === 'start\n\nend\n' && doc.getElementById('file-name').value === 'untitled.kv' && doc.getElementById('edited').hidden);
+    check('New starts an empty program ready to type above end', code.value === '\nend\n' && doc.getElementById('file-name').value === 'untitled.kv' && doc.getElementById('edited').hidden);
     check('New offers Undo and Undo brings the old code back', !doc.getElementById('toast-action').hidden);
     doc.getElementById('toast-action').click();
     check('Undo restores the previous program', code.value === 'start\nprint "keep me"\nend');
@@ -474,7 +474,7 @@
       var TT = win.KavielTutorials;
       check(langCode + ': the page language and selector follow the choice', doc.documentElement.lang === langCode && doc.getElementById('lang').value === langCode);
       check(langCode + ': the interface is translated', doc.getElementById('run').textContent.trim() !== 'Run' && doc.getElementById('tutorials-toggle').textContent.trim() !== 'Lessons');
-      check(langCode + ': lesson code keeps English keywords and translates the quoted text', TT[1].steps[0].code.indexOf('print "') > 0 && TT[1].steps[0].code.indexOf('Hello') < 0);
+      check(langCode + ': lesson code keeps English keywords and translates the quoted text', TT[1].steps[0].code.indexOf('print "') >= 0 && TT[1].steps[0].code.indexOf('Hello') < 0);
       check(langCode + ': every lesson step still runs as intended', TT.every(function (lesson) { return lesson.steps.every(function (step) {
         var asked = 0;
         var outcome = win.Kaviel.run(step.code, {input: function () { return String(asked++ % 10 + 1); }, keypress: function (wanted) { return wanted === 'Space' ? ' ' : wanted; }, rng: function () { return 0.5; }});

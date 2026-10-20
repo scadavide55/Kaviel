@@ -11,7 +11,7 @@ app.whenReady().then(async function () {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
-      additionalArguments: ['--kaviel-version=1.5.1', '--kaviel-cli=' + JSON.stringify({ ok: true, dir: '/Users/davide/.local/bin', onPath: true, platform: 'darwin' })]
+      additionalArguments: ['--kaviel-version=1.6.0', '--kaviel-cli=' + JSON.stringify({ ok: true, dir: '/Users/davide/.local/bin', onPath: true, platform: 'darwin' })]
     }
   });
   await win.loadFile(path.join(__dirname, '..', 'kaviel.html'));

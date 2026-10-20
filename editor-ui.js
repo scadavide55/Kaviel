@@ -172,7 +172,7 @@
     });
   })();
 
-  var NEW_SOURCE = 'start\n\nend\n';
+  var NEW_SOURCE = '\nend\n';
   $('new-file').addEventListener('click', function () {
     var before = code.value, beforeName = filename;
     code.value = NEW_SOURCE;
@@ -182,8 +182,8 @@
     out.textContent = '';
     lastRun = false;
     $('execution-time').textContent = '';
-    $('summary').textContent = 'New empty program. Write something between start and end.';
-    code.setSelectionRange(6, 6);
+    $('summary').textContent = 'New empty program. Write something above end.';
+    code.setSelectionRange(0, 0);
     code.scrollTop = 0;
     code.focus();
     setDirty(false);

@@ -13,6 +13,6 @@ let cli = { ok: false };
 try { cli = JSON.parse(arg('kaviel-cli', '{}')); } catch (e) { cli = { ok: false }; }
 
 contextBridge.exposeInMainWorld('kavielDesktop', {
-  version: arg('kaviel-version', '1.5.1'),
+  version: arg('kaviel-version', '1.6.0'),
   cli: cli
 });

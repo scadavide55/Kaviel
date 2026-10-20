@@ -6,7 +6,6 @@ A very small programming language, made to teach **how code thinks** before anyo
 [Download the desktop app](https://github.com/scadavide55/Kaviel/releases/latest)
 
 ```
-start
 define pets = ["cat", "dog", "fox"]
 for each pet in pets
   print upper(pet)
@@ -29,7 +28,7 @@ Being honest about this matters more than selling it:
 
 - It has **no libraries**, no packages and no way to talk to the internet or to files yet. Python is far more useful for real work, and it is the right language to learn next.
 - It has **not been tested with real beginners yet**. The lessons were written for a child to follow alone, but nobody has done that while someone watched and took notes. Until then "easy to learn" is a goal, not a result. If you try it with someone, please [open an issue](https://github.com/scadavide55/Kaviel/issues) and say where they got stuck.
-- Some choices are open to debate, for example the words `define` and `start`. They are listed in [ISSUES.md](ISSUES.md) and in the "OPEN" part of [LANGUAGE.md](LANGUAGE.md).
+- Some choices are open to debate, for example the word `define`. They are listed in [ISSUES.md](ISSUES.md) and in the "OPEN" part of [LANGUAGE.md](LANGUAGE.md).
 
 ## How it is made
 
@@ -38,7 +37,6 @@ The design (the rules of the language, what to include and what to leave out) is
 ## A taste of the language
 
 ```
-start
 define ask{1} = ("What is your name? ")
 ask{1}
 define name = answer{1}

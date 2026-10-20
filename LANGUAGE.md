@@ -25,12 +25,12 @@ Six laws follow. If a proposal breaks one of them, the proposal is wrong, not th
 ## 1. Shape of a program
 
 ```
-start
   ...lines...
 end
 ```
 
-- `start` first, `end` last; if missing, everything still runs and a **warning** appears (law 1).
+- `end` comes last; if it is missing, everything still runs and a **warning** appears (law 1).
+- `start` is **no longer needed** (1.6, decided by Davide, 20 October 2026). A program that begins with `start` still runs, in silence, so older programs and files keep working. Nothing in the lessons, the examples or the editor writes it any more.
 - Comments: `#` to the end of the line.
 - Extension: `.kv`.
 - A program is run from the terminal (`kaviel run file.kv`) or in the browser editor (`kaviel.html`).
@@ -41,7 +41,8 @@ end
 
 | Word | Does | Example |
 |---|---|---|
-| `start` / `end` | open and close the program | `start` |
+| `end` | closes the program | `end` |
+| `start` | optional, and ignored: older programs begin with it | `start` |
 | `print` | shows values on one line | `print "Hello " name` |
 | `define` | creates a variable, a question, a key or a function | `define age = 12` |
 | `set` | changes a variable or one list item | `set age = age + 1` |
@@ -145,7 +146,6 @@ random 33
 ### Numbered questions
 
 ```
-start
 define ask{1} = ("What's your name? ")
 define ask{2} = ("How old are you? ")
 ask{1}

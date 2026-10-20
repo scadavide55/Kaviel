@@ -1,5 +1,10 @@
 # Changes
 
+## 1.6.0 — 20 October 2026
+
+- **`start` is no longer needed.** A program is just its lines and a closing `end`. A program that still begins with `start` runs exactly as before and says nothing, so older programs and saved files keep working. The lessons, the examples, the editor's empty page and the quick help no longer write it, and the three languages of the first lesson explain `end` alone.
+- A program without `start` no longer gets the warning "A program should start with `start`". The warning for a missing `end` stays.
+
 ## 1.5.1 — 20 October 2026
 
 - The version (`v1.5.1`) sits beside the name, read from the engine so it cannot drift. The footer no longer carries a hand-written engine version.

@@ -15,7 +15,7 @@ The repository is public. Nothing personal about the owner goes into it.
 ```sh
 export PATH="/usr/local/bin:$PATH"   # node is not on the default PATH on this machine
 
-node test.js        # 117  language behaviour and the error table
+node test.js        # 119  language behaviour and the error table
 node v1-test.js     # 89   thresholds, functions, lists, keys, async, cancellation
 node cli-test.js    # 38   the command through pipes and signals, and every example
 ```

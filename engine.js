@@ -310,13 +310,6 @@
     var statements = parseStatements();
     mainEndLine = lastProgramLine(statements);
 
-    if (!sawStart) {
-      problems.push({
-        line: 1, col: 1, kind: 'warning',
-        message: 'A program should start with `start`.',
-        hint: 'I ran everything anyway.'
-      });
-    }
     if (!sawEnd) {
       var last = tokens[tokens.length - 1];
       problems.push({
@@ -1047,7 +1040,7 @@
   function runAsync(src, options) { return getRuntime().runAsync(src, options); }
 
   return {
-    VERSION: '1.5.1-beta',
+    VERSION: '1.6.0-beta',
     run: run,
     runAsync: runAsync,
     tokenize: tokenize,

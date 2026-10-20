@@ -73,7 +73,9 @@ If you get stuck, nothing breaks. Kaviel never crashes: it tells you what is wro
       ['Say hello', 'Your very first program', [
         ['Make the computer talk', `Computers do exactly what you tell them, one instruction after another, from the top to the bottom. Every instruction is one line.
 
-Every Kaviel program starts with the word start and finishes with the word end, like a sandwich with bread on both sides. In the middle, the word print tells the computer to show something on the screen.`, `Hello!`, `Run it. Then change Hello! to your own word and run it again.`, `Spell print correctly. If you write prnt, Kaviel tells you and skips that line.`],
+A Kaviel program finishes with the word end, like the full stop at the end of a sentence. Before it, the word print tells the computer to show something on the screen.
+
+You may meet programs that begin with the word start. They still work, but you do not need it.`, `Hello!`, `Run it. Then change Hello! to your own word and run it again.`, `Spell print correctly. If you write prnt, Kaviel tells you and skips that line.`],
         ['Say more than one thing', `Each print line shows one new line of text. The computer does them in order, the way you read a book from top to bottom.
 
 The order matters. If you swap two lines, the words come out swapped too.`, `Hello!
@@ -510,7 +512,9 @@ Se ti blocchi non si rompe niente. Kaviel non si blocca mai: ti dice cosa non va
       ['Saluta', 'Il tuo primo programma', [
         ['Fai parlare il computer', `I computer fanno esattamente quello che dici loro, un'istruzione dopo l'altra, dall'alto verso il basso. Ogni istruzione è una riga.
 
-Ogni programma Kaviel inizia con la parola start e finisce con la parola end, come un panino con il pane da entrambi i lati. In mezzo, la parola print dice al computer di mostrare qualcosa sullo schermo.`, `Ciao!`, `Eseguilo. Poi cambia Ciao! con una tua parola e riesegui.`, `Scrivi bene print. Se scrivi prnt, Kaviel te lo dice e salta quella riga.`],
+Un programma Kaviel finisce con la parola end, come il punto alla fine di una frase. Prima, la parola print dice al computer di mostrare qualcosa sullo schermo.
+
+Potresti incontrare programmi che iniziano con la parola start. Funzionano ancora, ma non serve.`, `Ciao!`, `Eseguilo. Poi cambia Ciao! con una tua parola e riesegui.`, `Scrivi bene print. Se scrivi prnt, Kaviel te lo dice e salta quella riga.`],
         ['Di\' più di una cosa', `Ogni riga print mostra una nuova riga di testo. Il computer le fa in ordine, come quando leggi un libro dall'alto in basso.
 
 L'ordine conta. Se scambi due righe, anche le parole escono scambiate.`, `Ciao!
@@ -947,7 +951,9 @@ Si tu es coincé, rien ne casse. Kaviel ne plante jamais : il te dit ce qui ne v
       ['Dire bonjour', 'Ton tout premier programme', [
         ['Fais parler l\'ordinateur', `Les ordinateurs font exactement ce que tu leur dis, une instruction après l'autre, de haut en bas. Chaque instruction est une ligne.
 
-Chaque programme Kaviel commence par le mot start et finit par le mot end, comme un sandwich avec du pain des deux côtés. Au milieu, le mot print dit à l'ordinateur de montrer quelque chose à l'écran.`, `Salut!`, `Lance-le. Puis change Salut! en un mot à toi et relance.`, `Écris bien print. Si tu écris prnt, Kaviel te le dit et saute cette ligne.`],
+Un programme Kaviel finit par le mot end, comme le point à la fin d'une phrase. Avant, le mot print dit à l'ordinateur de montrer quelque chose à l'écran.
+
+Tu peux croiser des programmes qui commencent par le mot start. Ils marchent encore, mais ce n'est pas nécessaire.`, `Salut!`, `Lance-le. Puis change Salut! en un mot à toi et relance.`, `Écris bien print. Si tu écris prnt, Kaviel te le dit et saute cette ligne.`],
         ['Dis plusieurs choses', `Chaque ligne print montre une nouvelle ligne de texte. L'ordinateur les fait dans l'ordre, comme tu lis un livre de haut en bas.
 
 L'ordre compte. Si tu échanges deux lignes, les mots sortent aussi échangés.`, `Salut!

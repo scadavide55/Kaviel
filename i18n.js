@@ -88,7 +88,7 @@
     ['You changed the code. The output is from the previous run.', 'Hai cambiato il codice. Il risultato è dell\'esecuzione precedente.', 'Tu as changé le code. Le résultat vient de l\'exécution précédente.'],
     ['Example opened. Press Run to try it.', 'Esempio aperto. Premi Esegui per provarlo.', 'Exemple ouvert. Appuie sur Lancer pour l\'essayer.'],
     ['File opened. Press Run to try it.', 'File aperto. Premi Esegui per provarlo.', 'Fichier ouvert. Appuie sur Lancer pour l\'essayer.'],
-    ['New empty program. Write something between start and end.', 'Nuovo programma vuoto. Scrivi qualcosa tra start e end.', 'Nouveau programme vide. Écris quelque chose entre start et end.'],
+    ['New empty program. Write something above end.', 'Nuovo programma vuoto. Scrivi qualcosa sopra end.', 'Nouveau programme vide. Écris quelque chose au-dessus de end.'],
     ['Something went wrong inside the editor, not in your program. Your code is safe. Try Run again, or press Save to keep a copy.', 'Qualcosa è andato storto nell\'editor, non nel tuo programma. Il codice è al sicuro. Riprova Esegui o premi Salva per tenere una copia.', 'Un problème est survenu dans l\'éditeur, pas dans ton programme. Ton code est en sécurité. Réessaie Lancer ou appuie sur Enregistrer pour garder une copie.'],
     ['Editor error. You can try Run again.', 'Errore dell\'editor. Puoi riprovare Esegui.', 'Erreur de l\'éditeur. Tu peux réessayer Lancer.'],
     ['error', 'errore', 'erreur'], ['warning', 'avviso', 'avertissement'], ['hint', 'suggerimento', 'astuce'],
@@ -128,9 +128,9 @@
     ['Comma', 'Virgola', 'Virgule']
   ];
   var GUIDE = [
-    ['A program begins with <code>start</code> and finishes with <code>end</code>. Words in quotes are text. A line that begins with <code>#</code> is a note for people; the computer skips it.',
-     'Un programma inizia con <code>start</code> e finisce con <code>end</code>. Le parole tra virgolette sono testo. Una riga che inizia con <code>#</code> è una nota per le persone: il computer la salta.',
-     'Un programme commence par <code>start</code> et finit par <code>end</code>. Les mots entre guillemets sont du texte. Une ligne qui commence par <code>#</code> est une note pour les humains : l\'ordinateur la saute.'],
+    ['A program finishes with <code>end</code>. Words in quotes are text. A line that begins with <code>#</code> is a note for people; the computer skips it.',
+     'Un programma finisce con <code>end</code>. Le parole tra virgolette sono testo. Una riga che inizia con <code>#</code> è una nota per le persone: il computer la salta.',
+     'Un programme finit par <code>end</code>. Les mots entre guillemets sont du texte. Une ligne qui commence par <code>#</code> est une note pour les humains : l\'ordinateur la saute.'],
     ['<code>define</code> makes a new name. <code>set</code> gives it a new value.',
      '<code>define</code> crea un nuovo nome. <code>set</code> gli dà un nuovo valore.',
      '<code>define</code> crée un nouveau nom. <code>set</code> lui donne une nouvelle valeur.'],

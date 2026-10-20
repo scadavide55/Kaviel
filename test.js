@@ -388,9 +388,17 @@ until x = 2
 end`,
   { errors: 1, stopped: true, contains: ['used its'] });
 
-test('missing start and end: warnings, everything runs',
+test('a program does not need start: only the missing end is reported',
   `print "hello"`,
-  { output: ['hello'], errors: 0, warnings: 2, contains: ['`start`', '`end`'] });
+  { output: ['hello'], errors: 0, warnings: 1, contains: ['`end`'] });
+
+test('start is still accepted, in silence, so older programs keep working',
+  `start\nprint "hello"\nend`,
+  { output: ['hello'], errors: 0, warnings: 0 });
+
+test('a program without start and with end is complete',
+  `print "hello"\nend`,
+  { output: ['hello'], errors: 0, warnings: 0 });
 
 test('many errors at once (law 6)',
   `start
@@ -455,9 +463,9 @@ print q2
 end`,
   { output: ['Davide', '14'], errors: 0, warnings: 0, input: ['Davide', '14'] });
 
-test('empty program: only the start/end warnings',
+test('empty program: only the missing end is reported',
   ``,
-  { output: [], errors: 0, warnings: 2, contains: ['`start`', '`end`'] });
+  { output: [], errors: 0, warnings: 1, contains: ['`end`'] });
 
 test('else on its own',
   `start

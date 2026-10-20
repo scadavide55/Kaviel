@@ -28,7 +28,7 @@ python3 -m http.server 8765 --bind 127.0.0.1 &
   --no-sandbox --dump-dom "http://127.0.0.1:8765/ide-test.html" --virtual-time-budget=150000
 ```
 
-144 checks must pass. The result is printed at the end of the page as `N passed, M failed`; a single failing check prints its name and, when the check was written with a detail argument, what it saw.
+145 checks must pass. The result is printed at the end of the page as `N passed, M failed`; a single failing check prints its name and, when the check was written with a detail argument, what it saw.
 
 Other tools:
 

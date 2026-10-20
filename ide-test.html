@@ -78,6 +78,8 @@
     await load();
     var doc = frame.contentDocument, win = frame.contentWindow;
     var code = doc.getElementById('code');
+    var badge = doc.getElementById('brand-version');
+    check('The version sits beside the name and is the engine\'s own', !!badge && badge.textContent === 'v' + frame.contentWindow.Kaviel.VERSION.replace(/-beta$/, ''), badge ? badge.textContent : 'no badge');
     check('Restores saved source', code.value.includes('"saved"'));
     check('Does not run restored source automatically', doc.getElementById('out').textContent === '');
     check('Run starts idle with Stop hidden', state(doc) === 'idle' && doc.getElementById('stop').hidden);

@@ -2,6 +2,7 @@
 
 ## 1.5.1 — 20 October 2026
 
+- The version (`v1.5.1`) sits beside the name, read from the engine so it cannot drift. The footer no longer carries a hand-written engine version.
 - **A thing with parts.** A word inside the braces names a part: `define monster{hp} = 10`, `set monster{hp} = monster{hp} - 3`, `print monster{hp}`. Numbered slots work as before.
 - **`random(1, 6)`** gives a whole number from 1 to 6, both ends included. `random 70` followed by a block is unchanged.
 - Lessons: a new lesson, "Things with parts" (five steps), and four steps on `random(a, b)` in "Luck", in English, Italian and French; the quick help (`?`) has both. The quick help also said `over 18` meant "18 or more"; since 1.5 it means "more than 18", and now it says so.

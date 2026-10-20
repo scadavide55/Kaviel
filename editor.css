@@ -352,3 +352,6 @@ dialog::backdrop { background: #2b242088; }
 .lesson-summary .finish-title { display: block; font-size: 17px; }
 .lesson-summary p { margin: 4px 0 10px; color: var(--muted); }
 .start-lessons { margin-top: 12px; }
+
+.brand-version { align-self: center; margin-left: 6px; font-size: 12px; font-weight: 700; color: var(--muted); }
+@media (max-width: 460px) { .brand-version { margin-left: 4px; font-size: 11px; } }

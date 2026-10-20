@@ -2,6 +2,9 @@
 
 ## 1.5.1 — 20 October 2026
 
+- **A thing with parts.** A word inside the braces names a part: `define monster{hp} = 10`, `set monster{hp} = monster{hp} - 3`, `print monster{hp}`. Numbered slots work as before.
+- **`random(1, 6)`** gives a whole number from 1 to 6, both ends included. `random 70` followed by a block is unchanged.
+- Lessons: a new lesson, "Things with parts" (five steps), and four steps on `random(a, b)` in "Luck", in English, Italian and French; the quick help (`?`) has both. The quick help also said `over 18` meant "18 or more"; since 1.5 it means "more than 18", and now it says so.
 - Lessons: five new steps, in English, Italian and French, for what no lesson showed yet: an empty line (`print nothing`), a question in one line (`ask("...")`), a command called from a one-line `if`, `pick` from a list, and `\n` / `\"` inside a text. The line-by-line panel explains each new shape.
 - The lesson list shows how many lessons are done, a Continue button that returns to the step you were on, and a closing card when all are done. In an empty output, a newcomer sees "Start with lesson 1" instead of having to find a small icon.
 - On a phone, Run brings the output into view, and the language name is no longer cut short.

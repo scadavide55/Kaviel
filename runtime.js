@@ -62,6 +62,7 @@
       this.depth = 0;
     }
     key(name, slot) { return name + '\u0000' + (slot || 1); }
+    label(name, slot) { return slot && slot !== 1 ? name + '{' + slot + '}' : name; }
     problem(kind, line, message, hint = '') {
       // The same mistake inside a loop would otherwise fill the panel with copies.
       for (const p of this.problems) {
@@ -211,9 +212,9 @@
             }
             return;
           }
-          if (st.type === 'Define' && scope.has(key) && !this.madeInLoop(key)) this.warning(st.line, '`' + st.name + '` already existed: the new value took over.', 'To change it on purpose, the command is `set`.');
+          if (st.type === 'Define' && scope.has(key) && !this.madeInLoop(key)) this.warning(st.line, '`' + this.label(st.name, st.slot) + '` already existed: the new value took over.', 'To change it on purpose, the command is `set`.');
           if (st.type === 'Set' && !scope.has(key)) {
-            this.warning(st.line, '`' + st.name + '` did not exist: I created it just now.', 'To create it on purpose, use `define`.');
+            this.warning(st.line, '`' + this.label(st.name, st.slot) + '` did not exist: I created it just now.', 'To create it on purpose, use `define`.');
             (this.locals || this.vars).set(key, value);
           } else scope.set(key, value);
           return;
@@ -287,7 +288,7 @@
           if (!scope.has(key)) {
             const names = [...this.vars.keys(), ...(this.locals ? this.locals.keys() : [])].map(k => k.split('\u0000')[0]);
             const suggestion = language.suggestFor(node.name, names);
-            return this.error(node.line, 'I do not know `' + node.name + '`. Did you create it with `define`?',
+            return this.error(node.line, 'I do not know `' + this.label(node.name, node.slot) + '`. Did you create it with `define`?',
               (suggestion ? 'Did you mean `' + suggestion + '`? ' : '') + 'To show the word as text, put it in quotes: "' + node.name + '".');
           }
           return scope.get(key);
@@ -314,6 +315,15 @@
           for (const expr of node.args) { const value = yield* this.eval(expr); if (value === ERROR) return ERROR; args.push(value); }
           if (args.length > 1) this.warning(node.line, '`ask` takes one question: I used the first one.');
           return yield* this.read(args.length ? show(args[0]) : '', node.line);
+        }
+        case 'RandomNumber': {
+          let low = yield* this.eval(node.low); if (low === ERROR) return ERROR;
+          let high = yield* this.eval(node.high); if (high === ERROR) return ERROR;
+          for (const bound of [low, high]) {
+            if (typeof bound !== 'number' || !Number.isInteger(bound)) return this.error(node.line, '`random(a, b)` wants two whole numbers, not ' + (typeof bound === 'number' ? show(bound) : typeName(bound)) + '.', 'For example: random(1, 6). A number typed by someone is text: use number(...) first.');
+          }
+          if (low > high) { this.warning(node.line, 'The first number of `random` was bigger than the second: I swapped them.', 'Write the smallest first.'); [low, high] = [high, low]; }
+          return low + Math.min(high - low, Math.floor(this.rng() * (high - low + 1)));
         }
         case 'Pick': {
           let pool = [];

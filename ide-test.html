@@ -255,6 +255,15 @@
     doc.querySelectorAll('.tutorial-lesson')[valuesLesson].click();
     var valueRows = Array.prototype.slice.call(doc.querySelectorAll('.tutorial-code .code-row'));
     check('Every line of the true/false lesson has a note', valueRows.length === 5 && valueRows.every(function (r) { return !!r.querySelector('.note'); }), JSON.stringify(valueRows.map(function (r) { return [r.querySelector('.src').textContent, (r.querySelector('.note') || {}).textContent || '']; })));
+    var recordLesson = T.findIndex(function (l) { return l.title === 'Things with parts'; });
+    doc.querySelectorAll('.tutorial-lesson')[recordLesson].click();
+    var recordRows = Array.prototype.slice.call(doc.querySelectorAll('.tutorial-code .code-row'));
+    check('The records lesson explains a part and every line has a note', recordRows.length > 0 && recordRows.every(function (r) { return !!r.querySelector('.note'); }) && /part called name/.test(recordRows[1].textContent), recordRows.map(function (r) { return r.textContent; }).join(' | '));
+    var luckLesson = T.findIndex(function (l) { return l.title === 'Luck'; });
+    doc.querySelectorAll('.tutorial-lesson')[luckLesson].click();
+    for (var toRandom = 0; toRandom < T[luckLesson].steps.length - 4; toRandom++) doc.querySelectorAll('.nav-row .btn')[1].click();
+    var diceRow = Array.prototype.slice.call(doc.querySelectorAll('.tutorial-code .code-row')).filter(function (r) { return /random\(1, 6\)/.test(r.querySelector('.src').textContent); })[0];
+    check('random(a, b) is explained', !!diceRow && /whole number/.test(diceRow.querySelector('.note').textContent), diceRow ? diceRow.textContent : 'row missing');
     var plainLesson = T.findIndex(function (l) { return l.title === 'Your own commands'; });
     doc.querySelectorAll('.tutorial-lesson')[plainLesson].click();
     check('Choosing a lesson shows its first step', doc.querySelector('.tutorial-step h3').textContent === 'Make a command' && doc.querySelector('.tutorial-code').textContent.includes('define greet(name)') && !!doc.querySelector('.code-row .note') && !!doc.querySelector('.see-box'));

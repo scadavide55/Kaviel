@@ -16,7 +16,7 @@ The repository is public. Nothing personal about the owner goes into it.
 export PATH="/usr/local/bin:$PATH"   # node is not on the default PATH on this machine
 
 node test.js        # 117  language behaviour and the error table
-node v1-test.js     # 72   thresholds, functions, lists, keys, async, cancellation
+node v1-test.js     # 89   thresholds, functions, lists, keys, async, cancellation
 node cli-test.js    # 38   the command through pipes and signals, and every example
 ```
 
@@ -28,7 +28,7 @@ python3 -m http.server 8765 --bind 127.0.0.1 &
   --no-sandbox --dump-dom "http://127.0.0.1:8765/ide-test.html" --virtual-time-budget=150000
 ```
 
-142 checks must pass. The result is printed at the end of the page as `N passed, M failed`; a single failing check prints its name and, when the check was written with a detail argument, what it saw.
+144 checks must pass. The result is printed at the end of the page as `N passed, M failed`; a single failing check prints its name and, when the check was written with a detail argument, what it saw.
 
 Other tools:
 

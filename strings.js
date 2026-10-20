@@ -5,6 +5,7 @@
 window.KavielStrings = [
   // Proper names and single letters stay themselves in every language.
   ['Kaviel', 'Kaviel', 'Kaviel'],
+  ['Rex', 'Rex', 'Rex'],
   ['KAVIEL', 'KAVIEL', 'KAVIEL'],
   ['  Ada  ', '  Ada  ', '  Ada  '],
   ['a,b,c', 'a,b,c', 'a,b,c'],
@@ -14,6 +15,11 @@ window.KavielStrings = [
   ['The end', 'Fine', 'Fin'],
   ['\\"Kaviel\\"', '\\"Kaviel\\"', '\\"Kaviel\\"'],
   ['Ada\\nLuca', 'Ada\\nLuca', 'Ada\\nLuca'],
+  ['Name:', 'Nome:', 'Nom:'],
+  ['Hits:', 'Colpi:', 'Coups:'],
+  ['I thought of a number from 1 to 10.', 'Ho pensato a un numero da 1 a 10.', 'J\'ai pensé à un nombre de 1 à 10.'],
+  ['It is more than 5.', 'È più di 5.', 'C\'est plus que 5.'],
+  ['It is 5 or less.', 'È 5 o meno.', 'C\'est 5 ou moins.'],
   ['Hello again!', 'Ciao di nuovo!', 'Salut encore!'],
   ['I can type code!', 'So scrivere codice!', 'Je sais écrire du code!'],
   ['My name is Kaviel.', 'Mi chiamo Kaviel.', 'Je m\'appelle Kaviel.'],

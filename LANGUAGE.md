@@ -73,6 +73,11 @@ The braces are optional: `define age = 12` is `define age{1} = 12`.
 - Reading a name never created → **error**, value `nothing`, run continues.
 - `define` of an existing name → **warning**, the new value wins — unless that name was created inside the loop that is running, which is what a loop is for.
 - `set` of a name that never existed → **warning** ("it did not exist, I created it") and it is created.
+- **A word inside the braces names a part**: `define monster{hp} = 10`, `set monster{hp} = monster{hp} - 3`, `print monster{hp}`. It works exactly like a numbered slot, with a name instead of a number, so `monster{name}` and `monster{hp}` are two parts of one thing, and `hero{hp}` is another thing. Decided by Davide, 20 October 2026.
+  - The word is written plain: not text, not a box. `monster{"hp"}` is an error with a hint.
+  - It cannot be a reserved word (`and`, `is`, `over`...).
+  - A missing part is named in full in the error: ``I do not know `monster{mana}` ``.
+  - There is no way yet to list the parts of a thing, nor to put a box in the braces (`monster{field}`). Both would be new decisions.
 - Names: letters, digits, `_`, starting with a letter. Letters include the accented ones, so `città` and `perché` are names. Case counts.
 
 ---
@@ -125,6 +130,13 @@ random 33
 - The draw happens once, when execution reaches the lines. The result is frozen.
 
 `pick` chooses a value, all with equal chance: `pick 1, 2, 3` or `pick items` (a list of choices).
+
+`random(a, b)` is a **value**, not a block: a whole number from `a` to `b`, both ends included, with equal chance. `random(1, 6)` is a die; `items[random(1, length(items))]` is a place that exists. Decided by Davide, 20 October 2026.
+
+- Both numbers must be whole numbers; text (even `"6"`) and decimals are an **error** with a hint (`number(...)` turns an answer into a number).
+- A first number bigger than the second is a **warning**, and the two are swapped.
+- It takes exactly two numbers. `random` followed by a space and a chance is still the block above: the two never meet, because the value form needs brackets right after the word.
+- Each time execution reaches it, it throws again. Keep the result in a box to use it twice.
 
 ---
 
@@ -314,7 +326,7 @@ The step limit is the only automatic stop, and it is mandatory: a wrong `set` in
 | Not there | Why |
 |---|---|
 | `import` / modules | nothing real to import yet |
-| objects / classes | out of reach and not needed for the goal |
+| objects / classes | out of reach; a thing with named parts, `monster{hp}`, covers what a game needs (added on 20 October 2026) |
 | `else if` | `else` plus an indented `if` does the same |
 | `while` | `repeat` and `until` cover it |
 | declared types | the value decides the type |
@@ -351,7 +363,7 @@ Static files, no dependencies, no build step:
 | `kaviel.html` | editor window, layout and run integration |
 | `editor.css` | responsive workspace theme |
 | `editor-ui.js` | highlighting, find, local files, guide, status |
-| `tutorials.js` | 19 lessons (72 steps) in a side panel next to the editor, texts in `lessons.js` (en, it, fr) |
+| `tutorials.js` | 20 lessons (81 steps) in a side panel next to the editor, texts in `lessons.js` (en, it, fr) |
 | `test.js` | 112 language tests, including the §14 examples |
 | `v1-test.js` | 72 tests: thresholds, functions, lists, keys, async and cancellation |
 | `cli-test.js` | 20 tests of the `kaviel` command through pipes and signals |
@@ -398,7 +410,7 @@ The `kaviel` command comes with the desktop app: on first launch the app writes 
 - Output streams as it is printed, including before an answer or a key.
 - Problems are buttons; click one to select its source line. Editing clears old marks and marks the output as belonging to the previous run.
 - `Tab` two spaces, `Shift+Tab` up to two back, Enter keeps indentation and opens a block after `if`, `else`, `repeat`, `until`, `random`, `define name(...)`.
-- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Lessons** opens a side panel with 19 lessons (67 steps, ending in a guided treasure game) and 16 examples; each step loads into the editor, and the previous code is kept for restoring.
+- `Cmd/Ctrl+F` searches; `?` opens the language guide; **Lessons** opens a side panel with 20 lessons (81 steps, ending in a guided treasure game) and 16 examples; each step loads into the editor, and the previous code is kept for restoring.
 - The symbol bar above the code puts `"` `(` `)` `{` `}` `[` `]` `=` `#` `,` where the cursor is: on a French keyboard the curly and square brackets need AltGr, and on a tablet they are missing. A symbol replaces the selected text and marks the file as edited.
 - Every lesson step has **Listen**: the browser's own voice reads the title and the text in the language of the site, and the same button stops it. Steps and closing the panel stop the reading. Without a voice on the system the button is not there.
 - **Download** in the top bar points at the installer for the system you are on (macOS, Windows, Linux) and names it in its title; on a phone, and inside the desktop app, it is not there. The file names live in one place, `window.KAVIEL_APP` in the head of `kaviel.html`, so moving the installers elsewhere is one line.

@@ -29,6 +29,8 @@ window.KavielLessons = {
       ifInline: 'If the check is true, do the action on the same line.',
       askNow: 'Asks the question now, and puts the answer in the box.',
       ifCall: 'If the check is true, runs the command on the same line.',
+      randomNum: 'Picks a whole number between the two numbers, both ends included.',
+      recordDef: 'Gives the thing {name} a part called {part}.',
       newLine: 'The \\n inside the text starts a new line.',
       ifBlock: 'Checks something. The pushed-in lines below only run if it is true.',
       else: 'Otherwise: these lines run when the check above was false.',
@@ -209,7 +211,17 @@ The last line is a one-line choice: if the die is 6, print Lucky!`, `You rolled 
         ['Unfair chances', `Sometimes you want some things to be rare. A random block has a number: its chance out of 100. Blocks right next to each other are one draw, and only one of them runs.
 
 Here the pebble comes 80 times out of 100, the coin 19 times, and the diamond only once.`, `Rolling the magic box...
-Just a pebble. (most of the time)`, `Make the diamond more common, but keep the total at 100.`, `The chances should add up to 100. If not, Kaviel warns you and fixes the numbers.`]
+Just a pebble. (most of the time)`, `Make the diamond more common, but keep the total at 100.`, `The chances should add up to 100. If not, Kaviel warns you and fixes the numbers.`],
+        ['A number from a to b', `pick chooses between things you list. When you want a number inside a range, use random with two numbers in brackets: random(1, 6) is a die. Both ends can come out.`, `4
+(a number from 1 to 6: it changes each time)`, `Change it to random(1, 100) and run it a few times.`, `random(1, 6) wants two whole numbers. random(1, 2.5), or a number typed by someone (that is text), is a mistake: for text use number(...).`],
+        ['Two dice', `random is a value like any other: you can keep it in a box and do sums with it. Each time Kaviel meets random, it throws again.`, `2 + 5 = 7
+(different every time)`, `Add a third die.`, `One random is one throw. If you write random(1, 6) twice, you throw twice. Put the throw in a box if you need the same number again.`],
+        ['A secret number', `The program thinks of a number and keeps it in a box. Then you look at the box; you do not throw again.`, `I thought of a number from 1 to 10.
+It is more than 5.
+(or: It is 5 or less.)`, `Add a check that says when the number is exactly 10.`, `Do not call random again to check: put the secret in a box once, then compare the box.`],
+        ['A random place', `Lists count from 1, so random(1, length(pets)) is always a place that exists. It is like pick pets, but you also know which place came out.`, `2
+dog
+(it changes each time)`, `Add a fourth pet to the list, without changing anything else.`, `The place must be between 1 and length(pets). random(0, 3) can give 0, and position 0 does not exist.`]
       ]],
       ['Your own commands', 'Give a few lines a name', [
         ['Make a command', `A command of your own is a little machine you build. It has a name, it takes something in, and it gives something back. Write define, a name, and brackets with what it takes in.
@@ -266,6 +278,24 @@ You read it with two positions: the row first, then the item inside that row. gr
 
 Inside every row you read the name and the points. One idea, used twice, and you have a table.`, `Ada 10
 Luca 7`, 'Add a third player with 12 points.', `append adds a row to the outer list. To change a point inside a row, use set row[2] = 12.`]
+      ]],
+      ['Things with parts', 'Keep together what belongs together', [
+        ['A thing with parts', `So far a box held one value. But a dog has a name and an age: two values that belong together.
+
+Put a word in curly brackets after the name: dog{name} and dog{age} are two parts of the same thing. You have already seen curly brackets with numbers, like ask{1}; here a word works too.
+
+The word inside is not a box and not text: write it as it is, with no quotes.`, `Name: Rex
+Age: 3`, `Add a third part called legs, with the number 4, and print it.`, `Do not put quotes inside the curly brackets: dog{name}, not dog{"name"}.`],
+        ['Change a part', `set changes one part and leaves the others alone. To add one to the age, read the part and write the new value back.
+
+A part works like any box: you can use it in sums, in comparisons and in print.`, `Name: Rex
+Age: 4`, `Make the dog two years older.`, `A part that was never defined is a mistake, like a box that does not exist: Kaviel says which part is missing, for example dog{legs}.`],
+        ['Many things, same parts', `Two dogs, or two players, have the same kind of parts. Give each one its own name: ada and luca both have points, and they never get mixed up.`, `Ada 10
+Luca 12`, `Give luca 3 more points and print again.`, `Pick names that say who it is. ada{points} and luca{points} are two different things.`],
+        ['Parts inside a command', `A command can change a part of a thing that exists outside it. That is how a game keeps the score: the command adds, and the thing remembers.
+
+Define the thing before you call the command.`, `7`, `Add a command lose(n) that takes points away.`, `set changes the part that exists outside. define inside a command would make a new, private one.`],
+        ['A fight with a loop', `Parts and loops go well together. Here a monster has 10 life points. Each hit takes 4 away, until it has less than 1. The box rounds counts the hits.`, `Hits: 3`, `Make the damage 3 and guess how many hits it will take.`, `Inside an until loop, always change the part, or it never ends.`]
       ]],
       ['Words and letters', 'Play with text', [
         ['Big letters, small letters', `The computer can change the size of letters. upper makes every letter big, lower makes every letter small.
@@ -436,6 +466,8 @@ When you are happy, press Save to keep your game as a .kv file. Show it to your 
       ifInline: 'Se il controllo è vero, fa l\'azione sulla stessa riga.',
       askNow: 'Fa subito la domanda e mette la risposta nella scatola.',
       ifCall: 'Se il controllo è vero, fa girare il comando sulla stessa riga.',
+      randomNum: 'Sceglie un numero intero tra i due numeri, estremi compresi.',
+      recordDef: 'Dà alla cosa {name} una parte chiamata {part}.',
       newLine: 'Il \\n dentro il testo va a capo.',
       ifBlock: 'Controlla qualcosa. Le righe spostate a destra sotto vengono eseguite solo se è vero.',
       else: 'Altrimenti: queste righe vengono eseguite se il controllo sopra era falso.',
@@ -616,7 +648,17 @@ L'ultima riga è una scelta su una riga: se il dado è 6, stampa Fortunato!`, `H
         ['Probabilità ingiuste', `A volte vuoi che certe cose siano rare. Un blocco random ha un numero: la sua probabilità su 100. Blocchi vicini sono una sola estrazione, e ne viene eseguito uno solo.
 
 Qui il sassolino esce 80 volte su 100, la moneta 19 volte, e il diamante solo una.`, `Apro la scatola magica...
-Solo un sassolino. (quasi sempre)`, `Rendi il diamante più comune, ma tieni il totale a 100.`, `Le probabilità devono sommare 100. Se no Kaviel ti avvisa e sistema i numeri.`]
+Solo un sassolino. (quasi sempre)`, `Rendi il diamante più comune, ma tieni il totale a 100.`, `Le probabilità devono sommare 100. Se no Kaviel ti avvisa e sistema i numeri.`],
+        ['Un numero da a a b', `pick sceglie tra cose che elenchi. Quando vuoi un numero dentro un intervallo, usa random con due numeri tra parentesi: random(1, 6) è un dado. Possono uscire anche gli estremi.`, `4
+(un numero da 1 a 6: cambia ogni volta)`, `Cambialo in random(1, 100) e riesegui qualche volta.`, `random(1, 6) vuole due numeri interi. random(1, 2.5), o un numero scritto da qualcuno (che è testo), è un errore: per il testo usa number(...).`],
+        ['Due dadi', `random è un valore come gli altri: puoi tenerlo in una scatola e farci dei conti. Ogni volta che Kaviel incontra random, tira di nuovo.`, `2 + 5 = 7
+(diverso ogni volta)`, `Aggiungi un terzo dado.`, `Un random è un lancio. Se scrivi random(1, 6) due volte, fai due lanci. Metti il lancio in una scatola se ti serve ancora lo stesso numero.`],
+        ['Un numero segreto', `Il programma pensa a un numero e lo tiene in una scatola. Poi si guarda la scatola: non si tira un'altra volta.`, `Ho pensato a un numero da 1 a 10.
+È più di 5.
+(oppure: È 5 o meno.)`, `Aggiungi un controllo che dice quando il numero è esattamente 10.`, `Non richiamare random per controllare: metti il segreto in una scatola una volta sola, poi confronta la scatola.`],
+        ['Un posto a caso', `Le liste contano da 1, quindi random(1, length(pets)) è sempre un posto che esiste. È come pick pets, ma in più sai quale posto è uscito.`, `2
+cane
+(cambia ogni volta)`, `Aggiungi un quarto animale alla lista, senza cambiare altro.`, `Il posto deve stare tra 1 e length(pets). random(0, 3) può dare 0, e la posizione 0 non esiste.`]
       ]],
       ['I tuoi comandi', 'Dai un nome a qualche riga', [
         ['Crea un comando', `Un comando tuo è una piccola macchina che costruisci. Ha un nome, prende qualcosa dentro e restituisce qualcosa. Scrivi define, un nome e le parentesi con quello che prende.
@@ -673,6 +715,24 @@ La leggi con due posizioni: prima la riga, poi l’elemento dentro quella riga. 
 
 Dentro ogni riga leggi il nome e i punti. Un’idea sola, usata due volte, e hai una tabella.`, `Ada 10
 Luca 7`, 'Aggiungi un terzo giocatore con 12 punti.', `append aggiunge una riga alla lista esterna. Per cambiare un punto dentro una riga, usa set row[2] = 12.`]
+      ]],
+      ['Cose con più parti', 'Tieni insieme ciò che va insieme', [
+        ['Una cosa con delle parti', `Finora una scatola conteneva un valore. Ma un cane ha un nome e un'età: due valori che stanno insieme.
+
+Metti una parola tra parentesi graffe dopo il nome: dog{name} e dog{age} sono due parti della stessa cosa. Le graffe con i numeri le hai già viste, come in ask{1}; qui funziona anche una parola.
+
+La parola dentro non è una scatola e non è testo: scrivila com'è, senza virgolette.`, `Nome: Rex
+Età: 3`, `Aggiungi una terza parte chiamata legs, con il numero 4, e stampala.`, `Non mettere virgolette dentro le graffe: dog{name}, non dog{"name"}.`],
+        ['Cambia una parte', `set cambia una parte e lascia stare le altre. Per aggiungere uno all'età, leggi la parte e riscrivi il nuovo valore.
+
+Una parte funziona come ogni scatola: la usi nei conti, nei confronti e in print.`, `Nome: Rex
+Età: 4`, `Fai invecchiare il cane di due anni.`, `Una parte mai definita è un errore, come una scatola che non esiste: Kaviel dice quale parte manca, per esempio dog{legs}.`],
+        ['Tante cose, stesse parti', `Due cani, o due giocatori, hanno lo stesso tipo di parti. Dai a ognuno il suo nome: ada e luca hanno entrambi dei points, e non si confondono mai.`, `Ada 10
+Luca 12`, `Dai a luca altri 3 punti e stampa di nuovo.`, `Scegli nomi che dicono chi è. ada{points} e luca{points} sono due cose diverse.`],
+        ['Parti dentro un comando', `Un comando può cambiare la parte di una cosa che esiste fuori di lui. Così un gioco tiene il punteggio: il comando aggiunge, e la cosa ricorda.
+
+Definisci la cosa prima di chiamare il comando.`, `7`, `Aggiungi un comando lose(n) che toglie punti.`, `set cambia la parte che esiste fuori. define dentro un comando ne farebbe una nuova e privata.`],
+        ['Una battaglia con un ciclo', `Parti e cicli vanno d'accordo. Qui un mostro ha 10 punti vita. Ogni colpo ne toglie 4, finché ne ha meno di 1. La scatola rounds conta i colpi.`, `Colpi: 3`, `Metti il danno a 3 e indovina quanti colpi servono.`, `Dentro un ciclo until cambia sempre la parte, altrimenti non finisce mai.`]
       ]],
       ['Parole e lettere', 'Gioca con il testo', [
         ['Lettere grandi, lettere piccole', `Il computer può cambiare la dimensione delle lettere. upper rende ogni lettera grande, lower la rende piccola.
@@ -843,6 +903,8 @@ Quando sei contento, premi Salva per tenere il gioco come file .kv. Mostralo all
       ifInline: 'Si le test est vrai, fait l\'action sur la même ligne.',
       askNow: 'Pose tout de suite la question et met la réponse dans la boîte.',
       ifCall: 'Si le test est vrai, lance la commande sur la même ligne.',
+      randomNum: 'Choisit un nombre entier entre les deux nombres, bouts compris.',
+      recordDef: 'Donne à la chose {name} une partie appelée {part}.',
       newLine: 'Le \\n dans le texte va à la ligne.',
       ifBlock: 'Vérifie quelque chose. Les lignes poussées à droite en dessous ne s\'exécutent que si c\'est vrai.',
       else: 'Sinon : ces lignes s\'exécutent si le test du dessus était faux.',
@@ -1023,7 +1085,17 @@ La dernière ligne est un choix sur une ligne : si le dé fait 6, affiche Chance
         ['Des chances inégales', `Parfois tu veux que certaines choses soient rares. Un bloc random a un nombre : sa chance sur 100. Des blocs côte à côte forment un seul tirage, et un seul s'exécute.
 
 Ici le caillou sort 80 fois sur 100, la pièce 19 fois, et le diamant une seule fois.`, `J'ouvre la boîte magique...
-Juste un caillou. (presque toujours)`, `Rends le diamant plus fréquent, mais garde le total à 100.`, `Les chances doivent faire 100 au total. Sinon Kaviel te prévient et corrige les nombres.`]
+Juste un caillou. (presque toujours)`, `Rends le diamant plus fréquent, mais garde le total à 100.`, `Les chances doivent faire 100 au total. Sinon Kaviel te prévient et corrige les nombres.`],
+        ['Un nombre de a à b', `pick choisit parmi des choses que tu listes. Quand tu veux un nombre dans un intervalle, utilise random avec deux nombres entre parenthèses : random(1, 6) est un dé. Les deux bouts peuvent sortir.`, `4
+(un nombre de 1 à 6 : ça change à chaque fois)`, `Change-le en random(1, 100) et relance plusieurs fois.`, `random(1, 6) veut deux nombres entiers. random(1, 2.5), ou un nombre tapé par quelqu'un (c'est du texte), est une erreur : pour le texte utilise number(...).`],
+        ['Deux dés', `random est une valeur comme les autres : tu peux la garder dans une boîte et faire des calculs avec. Chaque fois que Kaviel rencontre random, il lance de nouveau.`, `2 + 5 = 7
+(différent à chaque fois)`, `Ajoute un troisième dé.`, `Un random est un lancer. Si tu écris random(1, 6) deux fois, tu fais deux lancers. Mets le lancer dans une boîte si tu as encore besoin du même nombre.`],
+        ['Un nombre secret', `Le programme pense à un nombre et le garde dans une boîte. Ensuite on regarde la boîte : on ne lance pas une autre fois.`, `J'ai pensé à un nombre de 1 à 10.
+C'est plus que 5.
+(ou : C'est 5 ou moins.)`, `Ajoute un test qui dit quand le nombre est exactement 10.`, `Ne rappelle pas random pour vérifier : mets le secret dans une boîte une seule fois, puis compare la boîte.`],
+        ['Une place au hasard', `Les listes comptent à partir de 1, donc random(1, length(pets)) est toujours une place qui existe. C'est comme pick pets, mais en plus tu sais quelle place est sortie.`, `2
+chien
+(ça change à chaque fois)`, `Ajoute un quatrième animal à la liste, sans rien changer d'autre.`, `La place doit être entre 1 et length(pets). random(0, 3) peut donner 0, et la position 0 n'existe pas.`]
       ]],
       ['Tes propres commandes', 'Donne un nom à quelques lignes', [
         ['Crée une commande', `Une commande à toi est une petite machine que tu construis. Elle a un nom, elle prend quelque chose et elle renvoie quelque chose. Écris define, un nom, et des parenthèses avec ce qu'elle prend.
@@ -1080,6 +1152,24 @@ Tu la lis avec deux positions : la ligne d’abord, puis l’élément dans cett
 
 Dans chaque ligne tu lis le nom et les points. Une seule idée, utilisée deux fois, et tu as un tableau.`, `Ada 10
 Luca 7`, 'Ajoute un troisième joueur avec 12 points.', `append ajoute une ligne à la liste extérieure. Pour changer un point dans une ligne, utilise set row[2] = 12.`]
+      ]],
+      ['Des choses avec des parties', 'Garde ensemble ce qui va ensemble', [
+        ['Une chose avec des parties', `Jusqu'ici une boîte contenait une valeur. Mais un chien a un nom et un âge : deux valeurs qui vont ensemble.
+
+Mets un mot entre accolades après le nom : dog{name} et dog{age} sont deux parties de la même chose. Tu as déjà vu les accolades avec des nombres, comme ask{1} ; ici un mot marche aussi.
+
+Le mot à l'intérieur n'est ni une boîte ni du texte : écris-le tel quel, sans guillemets.`, `Nom: Rex
+Âge: 3`, `Ajoute une troisième partie appelée legs, avec le nombre 4, et affiche-la.`, `Pas de guillemets dans les accolades : dog{name}, pas dog{"name"}.`],
+        ['Change une partie', `set change une partie et laisse les autres tranquilles. Pour ajouter un à l'âge, lis la partie et réécris la nouvelle valeur.
+
+Une partie marche comme n'importe quelle boîte : tu l'utilises dans les calculs, les comparaisons et print.`, `Nom: Rex
+Âge: 4`, `Fais vieillir le chien de deux ans.`, `Une partie jamais définie est une erreur, comme une boîte qui n'existe pas : Kaviel dit quelle partie manque, par exemple dog{legs}.`],
+        ['Plusieurs choses, mêmes parties', `Deux chiens, ou deux joueurs, ont le même genre de parties. Donne à chacun son nom : ada et luca ont tous les deux des points, et ils ne se mélangent jamais.`, `Ada 10
+Luca 12`, `Donne 3 points de plus à luca et affiche encore.`, `Choisis des noms qui disent qui c'est. ada{points} et luca{points} sont deux choses différentes.`],
+        ['Des parties dans une commande', `Une commande peut changer la partie d'une chose qui existe en dehors d'elle. C'est ainsi qu'un jeu garde le score : la commande ajoute, et la chose se souvient.
+
+Définis la chose avant d'appeler la commande.`, `7`, `Ajoute une commande lose(n) qui enlève des points.`, `set change la partie qui existe dehors. define dans une commande en ferait une nouvelle et privée.`],
+        ['Un combat avec une boucle', `Les parties et les boucles vont bien ensemble. Ici un monstre a 10 points de vie. Chaque coup en enlève 4, jusqu'à ce qu'il en ait moins de 1. La boîte rounds compte les coups.`, `Coups: 3`, `Mets les dégâts à 3 et devine combien de coups il faut.`, `Dans une boucle until, change toujours la partie, sinon elle ne finit jamais.`]
       ]],
       ['Mots et lettres', 'Joue avec le texte', [
         ['Grandes lettres, petites lettres', `L’ordinateur peut changer la taille des lettres. upper rend chaque lettre grande, lower la rend petite.

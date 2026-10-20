@@ -227,6 +227,30 @@
           text: 'random blocks let you set the chance. Blocks next to each other are one draw, and only one of them runs. The numbers add up to 100.',
           code: 'start\nprint "Rolling the magic box..."\nrandom 80\n  print "Just a pebble."\nrandom 19\n  print "A shiny coin!"\nrandom 1\n  print "A DIAMOND!"\nend',
           turn: 'Make the diamond more common.'
+        },
+        {
+          title: 'A number from a to b',
+          text: '',
+          code: 'start\nprint random(1, 6)\nend',
+          turn: ''
+        },
+        {
+          title: 'Two dice',
+          text: '',
+          code: 'start\ndefine first = random(1, 6)\ndefine second = random(1, 6)\nprint first "+" second "=" first + second\nend',
+          turn: ''
+        },
+        {
+          title: 'A secret number',
+          text: '',
+          code: 'start\ndefine secret = random(1, 10)\nprint "I thought of a number from 1 to 10."\nif secret > 5 = print "It is more than 5."\nif secret < 6 = print "It is 5 or less."\nend',
+          turn: ''
+        },
+        {
+          title: 'A random place',
+          text: '',
+          code: 'start\ndefine pets = ["cat", "dog", "fox"]\ndefine place = random(1, length(pets))\nprint place\nprint pets[place]\nend',
+          turn: ''
         }
       ]
     },
@@ -323,6 +347,42 @@
           text: 'This is how a score table is made: one list, and a small list for every player. append adds a row to the outer list, and for each walks the rows.\n\nInside every row you read the name and the points. One idea, used twice, and you have a table.',
           code: 'start\ndefine rows = []\nappend(rows, ["Ada", 10])\nappend(rows, ["Luca", 7])\nfor each row in rows\n  print row[1] row[2]\nend',
           turn: 'Add a third player with 12 points.'
+        }
+      ]
+    },
+    {
+      title: 'Things with parts',
+      subtitle: '',
+      steps: [
+        {
+          title: 'A thing with parts',
+          text: '',
+          code: 'start\ndefine dog{name} = "Rex"\ndefine dog{age} = 3\nprint "Name:" dog{name}\nprint "Age:" dog{age}\nend',
+          turn: ''
+        },
+        {
+          title: 'Change a part',
+          text: '',
+          code: 'start\ndefine dog{name} = "Rex"\ndefine dog{age} = 3\nset dog{age} = dog{age} + 1\nprint "Name:" dog{name}\nprint "Age:" dog{age}\nend',
+          turn: ''
+        },
+        {
+          title: 'Many things, same parts',
+          text: '',
+          code: 'start\ndefine ada{points} = 10\ndefine luca{points} = 7\nset luca{points} = luca{points} + 5\nprint "Ada" ada{points}\nprint "Luca" luca{points}\nend',
+          turn: ''
+        },
+        {
+          title: 'Parts inside a command',
+          text: '',
+          code: 'start\ndefine score{points} = 0\ndefine win(n)\n  set score{points} = score{points} + n\nwin(3)\nwin(4)\nprint score{points}\nend',
+          turn: ''
+        },
+        {
+          title: 'A fight with a loop',
+          text: '',
+          code: 'start\ndefine monster{life} = 10\ndefine rounds = 0\nuntil monster{life} < 1\n  set monster{life} = monster{life} - 4\n  set rounds = rounds + 1\nprint "Hits:" rounds\nend',
+          turn: ''
         }
       ]
     },
@@ -589,6 +649,7 @@
     if (t === 'break') return e.breakIt;
     // A text command inside a line explains the line better than print does.
     if ((m = t.match(/\b(upper|lower|trim|part|split|join)\(/)) && e[m[1]]) return e[m[1]];
+    if (/\brandom\(/.test(t) && e.randomNum) return e.randomNum;
     if (/\/\//.test(t) && e.whole) return e.whole;
     if (/\s%\s/.test(t) && e.rest) return e.rest;
     if (/^for\s+each\b/.test(t)) return e.forEach;
@@ -605,6 +666,7 @@
     if (/^print\b/.test(t)) return e.print;
     if ((m = t.match(/^define\s+ask\{(\d+)\}/))) return e.askDef.replace('{n}', m[1]);
     if (/^define\s+keypress\{/.test(t)) return e.keyDef;
+    if ((m = t.match(/^define\s+([A-Za-z_]\w*)\{([A-Za-z_]\w*)\}/)) && e.recordDef) return e.recordDef.replace('{name}', m[1]).replace('{part}', m[2]);
     if ((m = t.match(/^define\s+([A-Za-z_]\w*)\s*\(/))) return e.fnDef.replace('{name}', m[1]);
     if ((m = t.match(/^define\s+([A-Za-z_]\w*)\s*=\s*pick\b/))) return e.pick.replace('{name}', m[1]);
     if ((m = t.match(/^define\s+([A-Za-z_]\w*)/))) return e.define.replace('{name}', m[1]);

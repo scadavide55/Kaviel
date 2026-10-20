@@ -598,7 +598,8 @@
               pos++;
               var numTok = peek();
               if (numTok.type === 'number' && isFinite(numTok.value)) { slot = Math.floor(numTok.value); pos++; }
-              else { error(numTok, 'Inside `{ }` goes a number, like in `' + nameTok.value + '{1}`.', ''); recover(); return null; }
+              else if (numTok.type === 'ident') { slot = numTok.value; pos++; }
+              else { error(numTok, 'Inside `{ }` goes a number or a word, like in `' + nameTok.value + '{1}` or `' + nameTok.value + '{hp}`.', ''); recover(); return null; }
               if (isOp('}')) pos++;
               else { error(peek(), 'The `}` that closes `{ ' + slot + '` is missing.', ''); recover(); return null; }
             }
@@ -945,6 +946,24 @@
           else error(peek(), 'The `)` that closes `ask` is missing.', '');
           return { type: 'Ask', args: args, line: t.line };
         }
+        if (t.value === 'random' && peek(1).type === 'op' && peek(1).value === '(') {
+          pos += 2;
+          var bounds = [];
+          for (;;) {
+            var beforeBound = pos;
+            bounds.push(parseExpression());
+            if (pos === beforeBound) break;
+            if (isOp(',')) { pos++; continue; }
+            break;
+          }
+          if (isOp(')')) pos++;
+          else error(peek(), 'The `)` that closes `random` is missing.', 'For example: random(1, 6)');
+          if (bounds.length !== 2) {
+            error(t, '`random(a, b)` wants two numbers: the smallest and the biggest.', 'For example: random(1, 6) is a die.');
+            return { type: 'Bad', line: t.line };
+          }
+          return { type: 'RandomNumber', low: bounds[0], high: bounds[1], line: t.line };
+        }
         if (t.value === 'pick') {
           pos++;
           var items = [];
@@ -978,7 +997,8 @@
           pos++;
           var num = peek();
           if (num.type === 'number') { slot = Math.floor(num.value); pos++; }
-          else { error(num, 'Inside `{ }` goes a number.', 'For example: points{2}'); }
+          else if (num.type === 'ident') { slot = num.value; pos++; }
+          else { error(num, 'Inside `{ }` goes a number or a word.', 'For example: points{2} or monster{hp}'); }
           if (isOp('}')) pos++;
           else error(peek(), 'The `}` is missing.', '');
         }

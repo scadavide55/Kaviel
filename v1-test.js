@@ -75,6 +75,26 @@ check('not covers the whole comparison', program('define age = 9\nif not age = 9
 check('not with brackets and in arithmetic stays valid', program('define age = 9\nif not (age > 3)\n  print "D"\nprint -age'), {output: ['-9']});
 check('unknown word suggests quotes', program('print Hello'), {errors: 1, contains: 'put it in quotes: "Hello"'});
 check('step budget', program('until false\n  print "loop"'), {limit: 20, errors: 1, stopped: true, contains: 'used its'});
+// Records: a word inside the braces is a named slot, like points{2} with a name instead of a number.
+check('record fields', program('define monster{name} = "Orc"\ndefine monster{hp} = 10\nset monster{hp} = monster{hp} - 3\nprint monster{name} "has" monster{hp} "hp"'), {output: ['Orc has 7 hp']});
+check('two records do not mix', program('define hero{hp} = 5\ndefine orc{hp} = 8\nprint hero{hp} + orc{hp}\nprint hero{hp}'), {output: ['13', '5']});
+check('a record field is changed inside a command', program('define hit(n)\n  set monster{hp} = monster{hp} - n\ndefine monster{hp} = 10\nhit(4)\nprint monster{hp}'), {output: ['6']});
+check('a missing field is named in full', program('define monster{hp} = 10\nprint monster{mana}\nprint "alive"'), {output: ['alive'], errors: 1, contains: 'monster{mana}'});
+check('a field defined twice warns with its full name', program('define m{hp} = 1\ndefine m{hp} = 2'), {warnings: 1, contains: 'm{hp}'});
+check('quotes inside the braces are refused with a hint', program('define m{"hp"} = 1\nprint "alive"'), {output: ['alive'], errors: 1, contains: 'a number or a word'});
+check('numbered slots still work', program('define points{1} = 3\ndefine points{2} = 4\nprint points{1} + points{2}'), {output: ['7']});
+// random(a, b): a whole number from a to b, both ends included.
+check('random(a, b) takes the first value when the dice says zero', program('print random(1, 6)'), {output: ['1']});
+for (const [dice, expected] of [[0.9999999, '6'], [0.5, '4'], [0, '1']]) {
+  const r = run(program('print random(1, 6)'), {rng: () => dice});
+  assert.deepEqual(r.output, [expected]); assert.equal(r.errors, 0); passed++;
+}
+check('random works with negatives and in expressions', program('define n = random(-1, -1) + random(10, 10)\nprint n'), {output: ['9']});
+check('random swaps a reversed pair and says so', program('print random(6, 6)\nprint random(3, 3)\nprint random(3, 1)'), {output: ['6', '3', '1'], warnings: 1, contains: 'swapped'});
+check('random refuses text, with the way out', program('print random(1, "6")\nprint "alive"'), {output: ['alive'], errors: 1, contains: 'number(...)'});
+check('random refuses a decimal', program('print random(1, 2.5)\nprint "alive"'), {output: ['alive'], errors: 1, contains: 'whole numbers, not 2.5'});
+check('random wants exactly two numbers', program('print random(6)\nprint "alive"'), {output: ['alive'], errors: 1, contains: 'two numbers'});
+check('random as a block of chances is unchanged', program('random 100\n  print "always"'), {output: ['always']});
 (async () => {
   const seen = [];
   const asyncResult = await runAsync(keyProgram, {onOutput: text => seen.push(text), keypress: async key => { assert.equal(key, 'C'); assert.deepEqual(seen, ['Press C to start']); return 'C'; }, input: async () => '21'});

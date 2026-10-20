@@ -953,6 +953,34 @@ print answer{1}
 end`,
   { output: ['Ada'], errors: 0, warnings: 0, keypress: ['C'], input: ['Ada'] });
 
+test('a command of your own can be the action of a one-line if',
+  `start
+define greet(name)
+  print "Hello " + name
+if true = greet("Ada")
+if false = greet("Bob")
+end`,
+  { output: ['Hello Ada'], errors: 0, warnings: 0 });
+
+test('with a block underneath, the = is still a comparison',
+  `start
+define total = 3
+define pets = [1, 2, 3]
+if total = length(pets)
+  print "equal"
+if total = 99
+  print "never"
+end`,
+  { output: ['equal'], errors: 0, warnings: 0 });
+
+test('a comparison in a one-line if still compares two values',
+  `start
+define n = 2
+if n = 2 = print "two"
+if n = 3 = print "three"
+end`,
+  { output: ['two'], errors: 0, warnings: 0 });
+
 /* ---------------------------------------------------------- result */
 
 console.log('');

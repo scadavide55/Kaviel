@@ -262,7 +262,7 @@
     var known = new Set();
     var sawStart = false, sawEnd = false;
     var declaredFunctions = new Set();
-    var functionDepth = 0, loopDepth = 0;
+    var functionDepth = 0, loopDepth = 0, inCondition = 0;
     var mainEndLine = 1;
 
     function peek(k) { return tokens[Math.min(pos + (k || 0), tokens.length - 1)]; }
@@ -272,6 +272,9 @@
     function atEnd() {
       var t = peek();
       return t.type === 'newline' || t.type === 'eof' || t.type === 'dedent';
+    }
+    function note(t, message, hint) {
+      problems.push({kind: 'hint', line: t.line, col: t.col, message: message, hint: hint || ''});
     }
     function problem(kind, t, message, hint) {
       problems.push({ line: t.line, col: t.col, kind: kind, message: message, hint: hint || '' });
@@ -369,9 +372,31 @@
       return { type: 'Function', name: name.value, params: params, body: body, line: t.line };
     }
 
+    // True when an indented block starts on the line after the one we are reading.
+    function blockFollows() {
+      var depth = 0;
+      for (var i = pos; i < tokens.length; i++) {
+        var t = tokens[i];
+        if (t.type === 'op' && (t.value === '(' || t.value === '[' || t.value === '{')) depth++;
+        else if (t.type === 'op' && (t.value === ')' || t.value === ']' || t.value === '}')) depth--;
+        else if (t.type === 'newline' && depth <= 0) {
+          var next = tokens[i + 1];
+          return !!next && next.type === 'indent';
+        } else if (t.type === 'eof') return false;
+      }
+      return false;
+    }
+
     function inlineAction() {
-      var next = peek(1);
-      return isOp('=') && next.type === 'keyword' && ['print', 'ask', 'set', 'define', 'return', 'break'].indexOf(next.value) >= 0 && (next.value !== 'ask' || peek(2).value === '{');
+      var next = peek(1), after = peek(2);
+      if (!isOp('=')) return false;
+      if (next.type === 'keyword' && ['print', 'ask', 'set', 'define', 'return', 'break'].indexOf(next.value) >= 0) {
+        return next.value !== 'ask' || after.value === '{';
+      }
+      // A command of your own is an action only when no block follows the line:
+      // with a block underneath, the `=` is a comparison, as it always was.
+      if (next.type === 'ident' && after.type === 'op' && after.value === '(') return !blockFollows();
+      return false;
     }
 
     function parseKeyDefinition(t) {
@@ -620,7 +645,9 @@
             pos++;
             if (peek().value === 'keypress' && peek(1).value === '{') return parseKeyLink(t);
             var beforeCond = problems.length;
+            inCondition++;
             var cond = parseExpression();
+            inCondition--;
             if (problems.length > beforeCond || (!atEnd() && !inlineAction())) {
               if (!atEnd() && problems.length === beforeCond) {
                 error(peek(), 'Nothing goes after the `if` condition.', 'For example: if age > 10');

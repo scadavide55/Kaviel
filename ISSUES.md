@@ -56,7 +56,7 @@ Priority: **P0** breaks a program silently · **P1** wrong or missing behaviour 
 
 ## A. Bugs in the language
 
-### A24 · `if cond = myFunction(...)` runs the call as part of the condition — **P0, for 1.5.1**
+### A24 · `if cond = myFunction(...)` runs the call as part of the condition — **fixed in 1.5.1**
 
 Only `print`, `set`, `break`, `return` and `define` are accepted after the `=` of a one-line `if` (`engine.js`, `inlineAction`). A call of a command of your own is not, so the `=` is read as equality and the call becomes the second operand: it runs **every time**, whatever the condition says.
 
@@ -70,7 +70,7 @@ The fix needs a decision, because `if total = length(pets)` is a real comparison
 2. keep the grammar and turn the silent comparison into an error when one side is `true`/`false` and the other is `nothing`;
 3. add a word: `then` for the action, so `if ok then greet("Ada")`.
 
-**Not to be done now: decided for 1.5.1.**
+**Fixed on 20 October 2026**, in the third way and without new words: `inlineAction` now accepts a call, but only when the line has no indented block under it. A header line keeps its `=` as a comparison, so `if total = length(pets)` with a block still compares. Three tests cover the three shapes.
 
 ### A1 · `pick` on the left of a comparison swallows the operator — **P0**
 

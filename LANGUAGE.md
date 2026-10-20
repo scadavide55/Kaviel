@@ -101,7 +101,12 @@ if score > 10 = set best = score
 if n = 0 = return 1
 ```
 
-`=` after the condition is the separator; inside the condition, `=` still means equality and `>= <=` still work. This is the only place where one `=` does two jobs, and it is unambiguous by position.
+`=` after the condition is the separator; inside the condition, `=` still means equality and `>= <=` still work. This is the only place where one `=` does two jobs, and it is unambiguous by position — and by shape:
+
+- a line that stands alone, with no indented block under it, takes an action after the `=`;
+- a line with an indented block under it is a header, so its `=` is a comparison. `if total = length(pets)` followed by a block compares the total with the number of pets.
+
+The action can be `print`, `set`, `ask{n}`, `break`, `return`, `define`, or **a command of your own**: `if ready = greet("Ada")` runs `greet` when the check is true, and only then.
 
 ---
 
@@ -434,6 +439,7 @@ The `kaviel` command comes with the desktop app: on first launch the app writes 
 | `define ask{1}` with no text | error | **Davide's decision** |
 | `under 18` / `over 18` | `< 18` / `> 18` | **Davide's decision**, changed on 20 October 2026 so that they match `<` and `>` |
 | `is 18` | `= 18`, and both read a number out of text | **Davide's decision**, 20 October 2026: `is` and `=` now agree on numbers |
+| `if cond = name(...)` | the call is an action when the line has no block under it | 20 October 2026: a command of your own had to be written on a separate line, and `if 1 = 2 = greet()` ran `greet` anyway |
 | `for each x in list` | three words, one block, no counter | **Davide's decision**, 20 October 2026: the shortest way to walk a list that still reads like English |
 | `nothing` printed | an empty line | 20 October 2026: the word `nothing` on screen looked like a value |
 | punctuation in `print` | `! ? . , : ;` attach to the word before | 20 October 2026: `Ciao Mario !` was wrong in Italian and French |

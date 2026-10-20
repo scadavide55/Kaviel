@@ -887,7 +887,7 @@ Le double est 8
 Plus dix fait 14`, `Fais afficher le nombre fois 100.`, `number() ne marche que si le texte est vraiment un nombre.`]
       ]],
       ['Fais des choix', 'Laisse le programme décider', [
-        ['Si ceci, alors cela', `Un programme peut choisir. if regarde quelque chose et n'exécute les lignes en dessous que si c'est vrai. Ces lignes sont poussées à droite vers la droite de deux espaces. La touche Tab le fait pour toi.
+        ['Si ceci, alors cela', `Un programme peut choisir. if regarde quelque chose et n'exécute les lignes en dessous que si c'est vrai. Ces lignes sont poussées vers la droite de deux espaces. La touche Tab le fait pour toi.
 
 Le dernier print n'est pas poussé à droite, donc il s'exécute toujours, quoi qu'il arrive au-dessus.`, `Tu as gagné!
 Bien joué.

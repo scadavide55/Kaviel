@@ -155,11 +155,11 @@
     await answer(doc, win, '14');
     await idle(doc);
     check('Numbered questions open the expected prompts in order', JSON.stringify(askedPrompts) === JSON.stringify(["What's your name? ", 'How old are you? ']));
-    check('Numbered answers appear in the requested sentence', doc.getElementById('out').textContent === 'Hello Luca You are 14 Years old.');
+    check('Numbered answers appear in the requested sentence', doc.getElementById('out').textContent === 'Hello Luca You are 14 years old.');
     check('Numbered example completes without problems', doc.getElementById('problems').textContent === 'No problems.');
     check('Numbered answers are highlighted as built-in values', Array.from(doc.querySelectorAll('#highlight .tok-value')).filter(function (span) { return span.textContent === 'answer'; }).length === 2);
     await runWith(doc, win, ['Ada', '21']);
-    check('Running again asks again and uses only the new responses', doc.getElementById('out').textContent === 'Hello Ada You are 21 Years old.');
+    check('Running again asks again and uses only the new responses', doc.getElementById('out').textContent === 'Hello Ada You are 21 years old.');
     check('The answer bar hides when the run ends', doc.getElementById('answer-bar').hidden && state(doc) === 'idle');
     code = setSource('start\nprint answer{9}\nprint "alive"\nend');
     await runWith(doc, win);

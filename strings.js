@@ -147,7 +147,7 @@ window.KavielStrings = [
   ['Not this time. I was thinking of', 'Non stavolta. Pensavo a', 'Pas cette fois. Je pensais à'],
   ['Count:', 'Conteggio:', 'Nombre:'],
   ['You are', 'Hai', 'Tu as'],
-  ['Years old.', 'anni.', 'ans.'],
+  ['years old.', 'anni.', 'ans.'],
   ['You made it.', 'Ce l\'hai fatta.', 'Tu as réussi.'],
   ['Keep going.', 'Continua.', 'Continue.'],
   ['Teenager', 'Adolescente', 'Adolescent'],

@@ -34,6 +34,23 @@
 | G10 | the unused `fs` import left the command line |
 | — | `tools/sync-examples.js` regenerates the copies of the examples inside `kaviel.html`, so the two can no longer drift without a test noticing |
 
+## Checked again for 1.5.1 (20 October 2026)
+
+Each line was run or read, not remembered.
+
+| Item | Result |
+|---|---|
+| A22 | not a defect: after `define length = 3`, `length("abc")` still answers `3`; the built-in command wins over the name. `define print = 3` is an error, as intended |
+| E1, E3 | fixed: "The citadel" and its subtitle are in `i18n.js`; "Lessons and examples" appears once |
+| E5, E6 | fixed: the Italian and French lessons no longer carry the English words |
+| E7 | fixed in 1.5.1: "poussées vers la droite de deux espaces" |
+| E8 | fixed in 1.5.1: `questions.kv` prints `years old.` (key in `strings.js`, copy in `kaviel.html` and two tests follow) |
+| G5 | fixed in 1.5.1: the download button named `Kaviel-1.0.0-beta-*` files that the release does not hold (a 404); it now names the `1.5.0-beta` installers, and a CLI test compares file names with the release tag |
+| I1 | fixed in 1.5 (Escape reaches the program) |
+| I2, I3, I4, I6 | still not tried in a browser |
+| I5 | not checked yet |
+| E4 | still open: nothing checks that every label in `kaviel.html` has a translation |
+
 ## Still open after 1.5
 
 | Item | Why it is still open |

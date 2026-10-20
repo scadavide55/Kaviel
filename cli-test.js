@@ -70,7 +70,7 @@ check('legacy form without run still works', () => {
 check('piped answers reach numbered questions in order', () => {
   const r = run(['run', 'examples/questions.kv'], 'Luca\n14\n');
   assert.equal(r.status, 0);
-  assert.equal(r.stdout, "What's your name? Luca\nHow old are you? 14\nHello Luca You are 14 Years old.\n");
+  assert.equal(r.stdout, "What's your name? Luca\nHow old are you? 14\nHello Luca You are 14 years old.\n");
 });
 
 check('a key waits for the matching letter', () => {

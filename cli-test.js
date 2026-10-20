@@ -206,6 +206,16 @@ check('stdin closing early does not hang the program', () => {
     });
   }
 
+  check('the download button names files that the release really holds', () => {
+    const page = fs.readFileSync(path.join(__dirname, 'kaviel.html'), 'utf8');
+    const version = /version: '([^']+)'/.exec(page)[1];
+    const tag = /releases\/download\/(v[\d.]+)\//.exec(page)[1];
+    const files = /files: \{([^}]*)\}/.exec(page)[1].match(/'[^']+'/g).map(f => f.slice(1, -1));
+    assert.equal(files.length, 3);
+    for (const f of files) assert.ok(f.includes('-' + version + '-'), f + ' does not carry ' + version);
+    assert.equal(tag, 'v' + version.replace(/-beta$/, ''));
+  });
+
   console.log(passed + ' CLI tests passed');
 })().catch(e => {
   console.error(e.stack || e);

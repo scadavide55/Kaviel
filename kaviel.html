@@ -10,12 +10,12 @@
   // Where the desktop installers live. Change base to a GitHub Releases folder
   // (or anything that serves the files) when the site moves to GitHub Pages.
   window.KAVIEL_APP = {
-    version: '1.0.0-beta',
+    version: '1.5.0-beta', // names the installers published in the release below, not the engine
     base: 'application/',
     // Where the installers are when the page is served by GitHub Pages:
     // they are too big for the repository, so they live in the release.
     release: 'https://github.com/scadavide55/Kaviel/releases/download/v1.5.0/',
-    files: {mac: 'Kaviel-1.0.0-beta-universal.dmg', win: 'Kaviel-1.0.0-beta-setup.exe', linux: 'Kaviel-1.0.0-beta-linux-x64.tar.gz'}
+    files: {mac: 'Kaviel-1.5.0-beta-universal.dmg', win: 'Kaviel-1.5.0-beta-setup.exe', linux: 'Kaviel-1.5.0-beta-linux-x64.tar.gz'}
   };
   // The desktop app never shows the download button: it is already installed.
   if (window.kavielDesktop) document.documentElement.dataset.desktop = '1';
@@ -46,7 +46,7 @@
   <button class="tool" id="tutorials-toggle" aria-expanded="false" aria-controls="tutorial" title="Lessons and examples"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 4.5c2.5-1 5-1 7 .8 2-1.800 4.500-1.800 7-.8v11c-2.500-1-5-1-7 .8-2-1.800-4.500-1.800-7-.8z M10 5.300v11"/></svg><span>Lessons</span></button>
   <button class="tool" id="guide-toggle" aria-expanded="false" aria-controls="guide" title="Quick help · press ?"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.500"/><path d="M7.800 8a2.300 2.300 0 1 1 3.300 2c-.8.500-1.100.9-1.100 1.800M10 14.200v.1"/></svg><span>Help</span></button>
   <select id="lang" class="lang" aria-label="Language" title="Language"><option value="en">English</option><option value="it">Italiano</option><option value="fr">Français</option></select>
-  <a class="tool download" id="download" href="application/Kaviel-1.0.0-beta-universal.dmg" title="Download Kaviel for your computer"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5v9m-3.5-3 3.5 3.5 3.5-3.5M4 15.5h12"/></svg><span>Download</span></a>
+  <a class="tool download" id="download" href="application/Kaviel-1.5.0-beta-universal.dmg" title="Download Kaviel for your computer"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5v9m-3.5-3 3.5 3.5 3.5-3.5M4 15.5h12"/></svg><span>Download</span></a>
   <button class="tool icon-only" id="theme-toggle" title="Switch between light and dark" aria-label="Switch between light and dark"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M16.500 11.500A7 7 0 1 1 8.500 3.500a5.500 5.500 0 0 0 8 8z"/></svg></button>
   <button class="stop" id="stop" hidden title="Stop the program · Esc"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10" rx="2" fill="currentColor" stroke="none"/></svg>Stop</button>
   <button class="run" id="run" title="Run your program · Cmd/Ctrl+Enter"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4.500 2.500 9 5.500-9 5.500z" fill="currentColor" stroke="none"/></svg>Run</button>
@@ -192,10 +192,10 @@ random 33
 
 <div class="toast" id="toast" role="status" hidden><span id="toast-text"></span><button id="toast-action" hidden></button></div>
 
-<script src="strings.js?v=1.5.0-5"></script>
-<script src="i18n.js?v=1.5.0-5"></script>
-<script src="runtime.js?v=1.5.0-5"></script>
-<script src="engine.js?v=1.5.0-5"></script>
+<script src="strings.js?v=1.5.1-1"></script>
+<script src="i18n.js?v=1.5.1-1"></script>
+<script src="runtime.js?v=1.5.1-1"></script>
+<script src="engine.js?v=1.5.1-1"></script>
 <script>
 (function () {
   'use strict';
@@ -1457,8 +1457,8 @@ random 33
   });
 })();
 </script>
-<script src="editor-ui.js?v=1.5.0-5"></script>
-<script src="lessons.js?v=1.5.0-5"></script>
-<script src="tutorials.js?v=1.5.0-5"></script>
+<script src="editor-ui.js?v=1.5.1-1"></script>
+<script src="lessons.js?v=1.5.1-1"></script>
+<script src="tutorials.js?v=1.5.1-1"></script>
 </body>
 </html>

@@ -2,6 +2,7 @@
 
 ## 1.5.1 — 20 October 2026
 
+- The download button on the site pointed at `Kaviel-1.0.0-beta-*` files that the 1.5 release does not hold (a 404). It now names the real `1.5.0-beta` installers, and a test checks that file names and release tag agree.
 - `if ready = greet("Ada")` now runs `greet` when the check is true. Before, the call was read as part of the check, so it ran every time and its answer was compared. The shape is the tie-breaker: a line with an indented block under it keeps `=` as a comparison.
 - The engine pauses on elapsed time instead of at every checkpoint, so the editor is as fast as the terminal: the Kaviel machine went from 0.97 s to 0.025 s.
 

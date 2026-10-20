@@ -1,6 +1,6 @@
 {
   "name": "kaviel",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "A small language that reads like you think.",
   "private": true,
   "main": "electron/main.js",
